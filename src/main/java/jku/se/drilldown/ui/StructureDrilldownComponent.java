@@ -1,0 +1,1 @@
+//Untere Komponente, zeigt Projekte/Pakete/Dateien an, abgeleitet von DrilldownComponent
