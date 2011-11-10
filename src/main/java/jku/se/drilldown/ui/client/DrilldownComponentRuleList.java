@@ -1,5 +1,5 @@
 //Abgeleitet von DrilldownComponentList, erweitert sie um zusätzliche Spalte für Regeln
-package jku.se.drilldown.ui;
+package jku.se.drilldown.ui.client;
 
 import java.util.List;
 

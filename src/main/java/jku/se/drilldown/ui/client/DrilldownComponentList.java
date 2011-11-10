@@ -1,12 +1,14 @@
 //Abgeleitet von DrilldownComponent, stellt alle Listen dar
-package jku.se.drilldown.ui;
+package jku.se.drilldown.ui.client;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.sonar.wsclient.services.Measure;
 
 
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DrilldownComponentList extends DrilldownComponent{
 	private Grid grid;
