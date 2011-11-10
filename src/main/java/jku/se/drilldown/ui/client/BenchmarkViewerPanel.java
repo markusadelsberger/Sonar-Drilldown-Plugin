@@ -3,9 +3,6 @@ package jku.se.drilldown.ui.client;
 import java.util.LinkedList;
 import java.util.List;
 
-import jku.se.drilldown.ui.DrilldownComponentRuleList;
-import jku.se.drilldown.ui.QuantilDrilldown;
-import jku.se.drilldown.ui.QuantilGraphic;
 
 import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
@@ -16,7 +13,6 @@ import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,12 +22,12 @@ public class BenchmarkViewerPanel extends Page {
 		
 		//Create the 3 Objects needed in the Benchmark Drilldown
 		//2011-11-09: Maven compains about missing sources -> currently not used
-		//QuantilDrilldown quantilDrilldown = new QuantilDrilldown();
-		//DrilldownComponentRuleList ruleList = new DrilldownComponentRuleList(fetchMeasures(resource));
-		//QuantilGraphic quantilGraphic = new QuantilGraphic();
-		Label quantilDrilldown = new Label("quantilDrilldown");
-		Label ruleList = new Label("ruleList");
-		Label quantilGraphic = new Label("quantilGraphic");
+		DrilldownComponent quantilDrilldown = new QuantilDrilldown();
+		DrilldownComponent ruleList = new DrilldownComponentRuleList(fetchMeasures(resource));
+		DrilldownComponent quantilGraphic = new QuantilGraphic();
+		//Label quantilDrilldown = new Label("quantilDrilldown");
+		//Label ruleList = new Label("ruleList");
+		//Label quantilGraphic = new Label("quantilGraphic");
 		
 		
 		//Create the right VerticalPanel with the ruleList and the quantilGraphic
