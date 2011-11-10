@@ -7,4 +7,8 @@ package jku.se.drilldown.ui;
  */
 public class StructureDrilldownComponent extends DrilldownComponent{
 	
+	public StructureDrilldownComponent(){
+	
+	}
+	
 }
