@@ -1,9 +1,0 @@
-# Compiled Files #
-##################
-/bin
-/target
-
-# Eclipse Files  #
-##################
-.classpath
-.project
