@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.sonar.wsclient.services.Resource;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+
 
 public class DrilldownComponentRuleList extends DrilldownComponentList{
 
-	public DrilldownComponentRuleList(List<Resource> resourceList, int key, String requestQUery) {
-		super(resourceList, 0, requestQUery);
+	public DrilldownComponentRuleList(List<Resource> resourceList, int key, ClickHandler clickHandler) {
+		super(resourceList, 0, clickHandler);
 		// TODO Auto-generated constructor stub
 	}
 	
