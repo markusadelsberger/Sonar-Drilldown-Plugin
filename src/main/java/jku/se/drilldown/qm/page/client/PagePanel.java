@@ -12,8 +12,13 @@ public class PagePanel extends Page{
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
+		
 	    final VerticalPanel panel = new VerticalPanel();
-	    panel.add(new Label(I18nConstants.INSTANCE.sample()));
+
+	    panel.setWidth("100%");
+	    
+	    panel.add( new Label(I18nConstants.INSTANCE.sample()));
+	    panel.add( new StructureDrilldownComponent(resource));
 	    
 	    return panel;
 	}
