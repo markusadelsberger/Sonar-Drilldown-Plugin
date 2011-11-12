@@ -6,8 +6,12 @@ import org.sonar.wsclient.services.Resource;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import jku.se.drilldown.qm.page.client.I18nConstants;
 
+/**
+ * 
+ * @author Johannes
+ *
+ */ 
 public class PagePanel extends Page{
 	
 	@Override
@@ -18,7 +22,7 @@ public class PagePanel extends Page{
 	    panel.setWidth("100%");
 	    
 	    panel.add( new Label(I18nConstants.INSTANCE.sample()));
-	    panel.add( new StructureDrilldownComponent(resource));
+	    panel.add( new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage"));
 	    
 	    return panel;
 	}

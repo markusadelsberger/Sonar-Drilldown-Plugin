@@ -33,8 +33,16 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	private DrilldownComponentList packageList;
 	private DrilldownComponentList fileList;
 	
-	public StructureDrilldownComponent(Resource resource){
+	private String pageID; 
+	
+	/**
+	 * 
+	 * @param resource
+	 * @param pageID The gwtID of the page that contains this element. for example "jku.se.drilldown.qm.page.QMDrilldownPage" 
+	 */
+	public StructureDrilldownComponent(Resource resource, String pageID){
 		this.resource=resource;
+		this.pageID= pageID;
 		
 		verticalPanel = new VerticalPanel();
 		
@@ -52,7 +60,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		loadData();
 	}
 	
-	protected void loadData() {
+	private void loadData() {
 		structurePanel.clear();
 	
 		boolean cont= false;
@@ -70,7 +78,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 				protected void doOnResponse(List<Resource> resources) {
 					resources.remove(0);
 					
-					moduleList = new DrilldownComponentList(resources, 0, clickHandler);
+					moduleList = new StructureDrilldownList(resources, clickHandler, pageID);
 					structurePanel.add(moduleList);
 				}
 			});
@@ -87,7 +95,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 					
 				@Override
 				protected void doOnResponse(List<Resource> resources) {
-					packageList = new DrilldownComponentList(resources, 0, clickHandler);
+					packageList = new StructureDrilldownList(resources, clickHandler, pageID);
 					structurePanel.add(packageList);
 				}
 			});
@@ -104,7 +112,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 					
 				@Override
 				protected void doOnResponse(List<Resource> resources) {
-					fileList = new DrilldownComponentList(resources, 0, null);
+					fileList = new StructureDrilldownList(resources, null, pageID);
 					structurePanel.add(fileList);
 				}
 			});
