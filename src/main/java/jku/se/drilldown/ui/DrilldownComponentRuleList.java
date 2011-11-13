@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure>{
 
 	public DrilldownComponentRuleList(List<Measure> measureList, ClickHandler clickHandler) {
-		super(measureList, clickHandler);
+		super(clickHandler);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,6 +37,12 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure>{
 	@Override
 	public String getItemIdentifier(Measure item) {
 		return item.getRuleKey();
+	}
+
+	@Override
+	public void doLoadData() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

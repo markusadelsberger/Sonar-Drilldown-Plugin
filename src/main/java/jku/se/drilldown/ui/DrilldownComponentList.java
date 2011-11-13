@@ -1,6 +1,5 @@
 package jku.se.drilldown.ui;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	// hashmap stores the id of an item as key and its row in the grid as value
 	private Map<String,Integer> hashmap;
 	
-	public DrilldownComponentList(List<T> itemList, ClickHandler clickHandler) {
+	public DrilldownComponentList(ClickHandler clickHandler) {
 		this.setItemList(itemList);
 		this.setClickHandler(clickHandler);
 		this.selectedItem = null;
@@ -60,28 +59,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 		doLoadData();
 	}
 	
-	public void doLoadData()
-	{
-		this.grid = new Grid(itemList.size(), gridColumnCount());
-		
-		this.hashmap= new HashMap<String,Integer>();
-		
-		int row = 0;
-		
-		for (T item : this.itemList) {
-			renderRow(item, row);
-		
-			hashmap.put(getItemIdentifier(item), new Integer(row));
-
-			row++;
-		}
-		
-		if(containsSelectedItem())
-			this.selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
-				
-	
-		render(grid);	
-	}
+	public abstract void doLoadData();
 
 	public abstract String getItemIdentifier(T item);
 	
@@ -89,12 +67,12 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	
 	public abstract void renderRow(T item, int row);
 	
-	private void selectRow(int row){
+	public void selectRow(int row){
 		for(int i=0; i<grid.getCellCount(row); i++)
 			grid.getCellFormatter().setStyleName(row, i, getRowCssClass(row, true));
 	}
 	
-	private void deselectRow(int row){
+	public void deselectRow(int row){
 		for(int i=0; i<grid.getCellCount(row); i++)
 			grid.getCellFormatter().setStyleName(row, i, getRowCssClass(row, false));
 	}
@@ -147,6 +125,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 		selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
 	}
 	
+	public void setHashmap(Map<String,Integer> hashmap)
+	{
+		this.hashmap= hashmap;
+	}
+	
 	public T getSelectedItem()
 	{
 		return this.selectedItem;
@@ -159,6 +142,5 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 				return true;
 		
 		return false;
-	
 	}
 }

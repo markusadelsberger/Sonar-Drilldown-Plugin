@@ -1,19 +1,12 @@
 package jku.se.drilldown.ui;
 
-import java.util.List;
-
-import org.sonar.gwt.Metrics;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -26,16 +19,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class StructureDrilldownComponent extends DrilldownComponent implements ClickHandler{
 	
 	private Panel verticalPanel;
-	private Panel structurePanel;
+	private Grid structurePanel;
 	private Resource resource;
 	
 	final static String[] STRUCTURE = {Resource.SCOPE_SET, Resource.SCOPE_SPACE, Resource.SCOPE_ENTITY};
 	
-	private DrilldownComponentList<Resource> moduleList;
-	private DrilldownComponentList<Resource> packageList;
-	private DrilldownComponentList<Resource> fileList;
-	
-	private Measure selectedMeasure;
+	private StructureDrilldownList moduleList;
+	private StructureDrilldownList packageList;
+	private StructureDrilldownList fileList;
 	
 	private String pageID; 
 	
@@ -59,7 +50,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 
 	@Override
 	public void onLoad() {
-		structurePanel = new HorizontalPanel();
+		structurePanel = new Grid(1,4);
 		verticalPanel.add(structurePanel);
 		loadData();
 	}
@@ -70,58 +61,32 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		boolean cont= false;
 		
 		final ClickHandler clickHandler = this;
-		
-		
-		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
-			ResourceQuery query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
-		    		.setScopes(STRUCTURE[0])
-		    		.setDepth(-1);
-			
-			Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
 				
-				@Override
-				protected void doOnResponse(List<Resource> resources) {
-					resources.remove(0);
-					
-					moduleList = new StructureDrilldownList(resources, clickHandler, pageID);
-					structurePanel.add(moduleList);
-				}
-			});
+		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
+			moduleList = new StructureDrilldownList(resource, STRUCTURE[0], clickHandler, pageID);
+			structurePanel.setWidget(0, 1, moduleList);
 			
 			cont =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || cont){
-			ResourceQuery query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
-			    	.setScopes(STRUCTURE[1])
-			    	.setDepth(-1);
-			
-			Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
-					
-				@Override
-				protected void doOnResponse(List<Resource> resources) {
-					packageList = new StructureDrilldownList(resources, clickHandler, pageID);
-					structurePanel.add(packageList);
-				}
-			});
+			packageList = new StructureDrilldownList(resource, STRUCTURE[1], clickHandler, pageID);
+			structurePanel.setWidget(0, 2, packageList);
 				
 			cont =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || cont){
-			ResourceQuery query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
-			    	.setScopes(STRUCTURE[2])
-			    	.setDepth(-1);
-				
-			Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
-					
-				@Override
-				protected void doOnResponse(List<Resource> resources) {
-					fileList = new StructureDrilldownList(resources, null, pageID);
-					structurePanel.add(fileList);
-				}
-			});
+			fileList = new StructureDrilldownList(resource, STRUCTURE[2], null, pageID);
+			structurePanel.setWidget(0, 3, fileList);
 		}
+		
+		// TODO moduleList / packageList können null sein!
+		moduleList.addNext(packageList);
+		packageList.addNext(fileList);
+		
+		fileList.addPrev(packageList);
+		packageList.addPrev(moduleList);
 	}
 
 	public void onClick(ClickEvent event) {
@@ -137,100 +102,26 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 			{		
 				this.moduleList.setSelectedItem(drillResource);
 				
-				updatePackageList(this.moduleList.getSelectedItem());
-				
-				if(((StructureDrilldownList)packageList).getSelectedItem()!= null)
-					updateFileList(((StructureDrilldownList)packageList).getSelectedItem());
-				else
-					updateFileList(((StructureDrilldownList)moduleList).getSelectedItem());
+				this.packageList.loadData();
 				
 			} 
 			else if(drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{								
 				this.packageList.setSelectedItem(drillResource);
 				
-				updateFileList(this.packageList.getSelectedItem());
+				this.fileList.loadData();
 			}
 		}
 		
 		if(drillMeasure != null)
-		{		
+		{				
+			// TODO moduleList / packageList können null sein!
+			this.moduleList.setSelectedMeasure(drillMeasure);
+			this.packageList.setSelectedMeasure(drillMeasure);
+			this.fileList.setSelectedMeasure(drillMeasure);
 			
-			this.selectedMeasure=drillMeasure;
-			
-			//TODO: moduleList/packageListe können null sein
-			updateModuleList(resource);
-			
-			if(((StructureDrilldownList)moduleList).getSelectedItem()!= null)
-				updatePackageList(((StructureDrilldownList)moduleList).getSelectedItem());
-			else
-				updatePackageList(resource);
-			
-			if(((StructureDrilldownList)packageList).getSelectedItem()!= null)
-				updateFileList(((StructureDrilldownList)packageList).getSelectedItem());
-			else if(((StructureDrilldownList)moduleList).getSelectedItem()!= null)
-				updateFileList(((StructureDrilldownList)moduleList).getSelectedItem());
-			else
-				updateFileList(resource);
+			this.moduleList.loadData();
 		}
-	}
-	
-	private void updateModuleList(final Resource drillResource)
-	{
-		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
-		    	.setScopes(STRUCTURE[0])
-		    	.setDepth(-1);
-		
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
-			
-		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
-				
-			@Override
-			protected void doOnResponse(List<Resource> resources) {
-				resources.remove(0);
-				moduleList.setItemList(resources);
-				moduleList.loadData();
-			}
-		});
-	}
-	
-	private void updatePackageList(final Resource drillResource)
-	{
-		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
-		    	.setScopes(STRUCTURE[1])
-		    	.setDepth(-1);
-		
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
-			
-		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
-				
-			@Override
-			protected void doOnResponse(List<Resource> resources) {
-				packageList.setItemList(resources);
-				packageList.loadData();
-			}
-		});
-	}
-	
-	private void updateFileList(final Resource drillResource)
-	{
-		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
-		    	.setScopes(STRUCTURE[2])
-		    	.setDepth(-1);
-		
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
-		
-		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
-				
-			@Override
-			protected void doOnResponse(List<Resource> resources) {
-				fileList.setItemList(resources);
-				fileList.loadData();
-			}
-		});
 	}
 }
  
