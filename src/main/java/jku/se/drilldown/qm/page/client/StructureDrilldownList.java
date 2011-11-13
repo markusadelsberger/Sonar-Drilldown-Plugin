@@ -9,7 +9,6 @@ import org.sonar.wsclient.services.Resource;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -19,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Johannes
  *
  */
-public class StructureDrilldownList extends DrilldownComponentList {
+public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 
 	private String pageID;
 	
@@ -28,25 +27,24 @@ public class StructureDrilldownList extends DrilldownComponentList {
 		
 		this.pageID = pageID;
 	}
-
+ 
+	@Override
 	public Widget createHeader() {
 		return new Label("");
 	}
 	
-	public void doLoadData() {
-		setGrid(new Grid(getResourceList().size(), 4));
-
-		int row = 0;
-
-		for (Resource resource : getResourceList()) {
-			renderIconCells(resource, row);
-			renderNameCell( resource, row, 2);
-			renderValueCell( resource, row, 3);
-			row++;
-		}
-		render(getGrid());
+	@Override
+	public int gridColumnCount() {
+		return 4;
 	}
-	
+
+	@Override
+	public void renderRow(Resource item, int row) {
+		renderIconCells(item, row);
+		renderNameCell( item, row, 2);
+		renderValueCell( item, row, 3);
+	}
+		
 	private void renderIconCells(Resource resource, int row ) {
 		if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 		{
@@ -60,10 +58,9 @@ public class StructureDrilldownList extends DrilldownComponentList {
 
 	private void renderNameCell(final Resource resource, int row, int column) {
 		Anchor link = new Anchor(resource.getName());
-
+		
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
-	    link.getElement().setAttribute("gridRow", ""+row);
 		
 	    // register listener
 	    if(getClickHandler() != null)
@@ -76,5 +73,19 @@ public class StructureDrilldownList extends DrilldownComponentList {
 	private void renderValueCell(Resource resource, int row, int column) {
 		getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());
 		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
+	}
+
+	@Override
+	public String getItemIdentifier(Resource item) {
+		return item.getKey();
+	}
+	
+	@Override
+	public Resource getSelectedItem()
+	{
+		if(getItemList().contains(super.getSelectedItem()))
+			return super.getSelectedItem();
+		else
+			return null;
 	}
 }

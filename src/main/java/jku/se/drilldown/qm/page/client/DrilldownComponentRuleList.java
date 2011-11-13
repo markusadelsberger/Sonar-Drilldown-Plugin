@@ -3,16 +3,16 @@ package jku.se.drilldown.qm.page.client;
 
 import java.util.List;
 
-import org.sonar.wsclient.services.Resource;
+import org.sonar.wsclient.services.Measure;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class DrilldownComponentRuleList extends DrilldownComponentList{
+public class DrilldownComponentRuleList extends DrilldownComponentList<Measure>{
 
-	public DrilldownComponentRuleList(List<Resource> resourceList, ClickHandler clickHandler) {
-		super(resourceList, clickHandler);
+	public DrilldownComponentRuleList(List<Measure> measureList, ClickHandler clickHandler) {
+		super(measureList, clickHandler);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -23,9 +23,21 @@ public class DrilldownComponentRuleList extends DrilldownComponentList{
 	}
 
 	@Override
-	public void doLoadData() {
+	public int gridColumnCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void renderRow(Measure item, int row) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getItemIdentifier(Measure item) {
+		return item.getRuleKey();
+	}
+
 	
 }
