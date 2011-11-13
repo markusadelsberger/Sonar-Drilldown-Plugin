@@ -83,7 +83,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 	@Override
 	public Resource getSelectedItem()
 	{
-		if(getItemList().contains(super.getSelectedItem()))
+		if(containsSelectedItem())
 			return super.getSelectedItem();
 		else
 			return null;
