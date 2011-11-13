@@ -63,10 +63,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	public void doLoadData()
 	{
 		this.grid = new Grid(itemList.size(), gridColumnCount());
+		
 		this.hashmap= new HashMap<String,Integer>();
 		
 		int row = 0;
-
+		
 		for (T item : this.itemList) {
 			renderRow(item, row);
 		
@@ -75,10 +76,10 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 			row++;
 		}
 		
-		if(this.selectedItem!= null)
-			if(hashmap.get(getItemIdentifier(this.selectedItem))!=null)
-				this.selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
-			
+		if(containsSelectedItem())
+			this.selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
+				
+	
 		render(grid);	
 	}
 
@@ -149,5 +150,15 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	public T getSelectedItem()
 	{
 		return this.selectedItem;
+	}
+	
+	public boolean containsSelectedItem()
+	{
+		if(this.selectedItem!= null)
+			if(hashmap.get(getItemIdentifier(this.selectedItem))!=null)
+				return true;
+		
+		return false;
+	
 	}
 }

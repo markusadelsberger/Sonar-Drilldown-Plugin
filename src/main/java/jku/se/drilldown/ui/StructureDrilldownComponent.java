@@ -14,7 +14,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -131,7 +130,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		
 		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
 		Measure drillMeasure = (Measure)element.getPropertyObject("measureObj");
-						
+	
 		if(drillResource != null)
 		{		
 			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE))
@@ -139,8 +138,12 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 				this.moduleList.setSelectedItem(drillResource);
 				
 				updatePackageList(this.moduleList.getSelectedItem());
-				updateFileList(this.packageList.getSelectedItem()==null ? 
-						this.moduleList.getSelectedItem() : this.packageList.getSelectedItem());
+				
+				if(((StructureDrilldownList)packageList).getSelectedItem()!= null)
+					updateFileList(((StructureDrilldownList)packageList).getSelectedItem());
+				else
+					updateFileList(((StructureDrilldownList)moduleList).getSelectedItem());
+				
 			} 
 			else if(drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{								
@@ -155,17 +158,24 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 			
 			this.selectedMeasure=drillMeasure;
 			
+			//TODO: moduleList/packageListe können null sein
 			updateModuleList(resource);
 			
-			updatePackageList(this.moduleList.getSelectedItem()==null ? resource : this.moduleList.getSelectedItem());
+			if(((StructureDrilldownList)moduleList).getSelectedItem()!= null)
+				updatePackageList(((StructureDrilldownList)moduleList).getSelectedItem());
+			else
+				updatePackageList(resource);
 			
-			updateFileList(this.packageList.getSelectedItem()==null ? 
-					this.moduleList.getSelectedItem()==null ? resource : this.moduleList.getSelectedItem() 
-							: this.packageList.getSelectedItem());
+			if(((StructureDrilldownList)packageList).getSelectedItem()!= null)
+				updateFileList(((StructureDrilldownList)packageList).getSelectedItem());
+			else if(((StructureDrilldownList)moduleList).getSelectedItem()!= null)
+				updateFileList(((StructureDrilldownList)moduleList).getSelectedItem());
+			else
+				updateFileList(resource);
 		}
 	}
 	
-	private void updateModuleList(Resource drillResource)
+	private void updateModuleList(final Resource drillResource)
 	{
 		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
 		    	.setScopes(STRUCTURE[0])
@@ -185,7 +195,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		});
 	}
 	
-	private void updatePackageList(Resource drillResource)
+	private void updatePackageList(final Resource drillResource)
 	{
 		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
 		    	.setScopes(STRUCTURE[1])
@@ -204,7 +214,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		});
 	}
 	
-	private void updateFileList(Resource drillResource)
+	private void updateFileList(final Resource drillResource)
 	{
 		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
 		    	.setScopes(STRUCTURE[2])
