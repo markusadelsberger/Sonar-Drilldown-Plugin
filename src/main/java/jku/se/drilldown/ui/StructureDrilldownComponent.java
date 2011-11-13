@@ -3,8 +3,10 @@ package jku.se.drilldown.ui;
 import java.util.List;
 
 import org.sonar.gwt.Metrics;
+import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.AbstractListCallback;
 import org.sonar.wsclient.gwt.Sonar;
+import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
@@ -12,6 +14,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -29,9 +32,11 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	
 	final static String[] STRUCTURE = {Resource.SCOPE_SET, Resource.SCOPE_SPACE, Resource.SCOPE_ENTITY};
 	
-	private DrilldownComponentList moduleList;
-	private DrilldownComponentList packageList;
-	private DrilldownComponentList fileList;
+	private DrilldownComponentList<Resource> moduleList;
+	private DrilldownComponentList<Resource> packageList;
+	private DrilldownComponentList<Resource> fileList;
+	
+	private Measure selectedMeasure;
 	
 	private String pageID; 
 	
@@ -43,7 +48,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	public StructureDrilldownComponent(Resource resource, String pageID){
 		this.resource=resource;
 		this.pageID= pageID;
-		
+
 		verticalPanel = new VerticalPanel();
 		
 		initWidget(verticalPanel);	
@@ -66,6 +71,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		boolean cont= false;
 		
 		final ClickHandler clickHandler = this;
+		
 		
 		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
 			ResourceQuery query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
@@ -122,26 +128,61 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	public void onClick(ClickEvent event) {
 		
 		Element element = event.getRelativeElement();
-		Resource drillResource = (Resource) element.getPropertyObject("resourceObj");
 		
+		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
+		Measure drillMeasure = (Measure)element.getPropertyObject("measureObj");
+						
 		if(drillResource != null)
-		{
-			int row = Integer.parseInt(element.getAttribute("gridRow"));
-			
+		{		
 			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE))
-			{				
-				this.moduleList.setSelectedRow(row);
+			{		
+				this.moduleList.setSelectedItem(drillResource);
 				
-				updatePackageList(drillResource);
-				updateFileList(drillResource);
+				updatePackageList(this.moduleList.getSelectedItem());
+				updateFileList(this.packageList.getSelectedItem()==null ? 
+						this.moduleList.getSelectedItem() : this.packageList.getSelectedItem());
 			} 
 			else if(drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{								
-				this.packageList.setSelectedRow(row);
+				this.packageList.setSelectedItem(drillResource);
 				
-				updateFileList(drillResource);
+				updateFileList(this.packageList.getSelectedItem());
 			}
 		}
+		
+		if(drillMeasure != null)
+		{		
+			
+			this.selectedMeasure=drillMeasure;
+			
+			updateModuleList(resource);
+			
+			updatePackageList(this.moduleList.getSelectedItem()==null ? resource : this.moduleList.getSelectedItem());
+			
+			updateFileList(this.packageList.getSelectedItem()==null ? 
+					this.moduleList.getSelectedItem()==null ? resource : this.moduleList.getSelectedItem() 
+							: this.packageList.getSelectedItem());
+		}
+	}
+	
+	private void updateModuleList(Resource drillResource)
+	{
+		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
+		    	.setScopes(STRUCTURE[0])
+		    	.setDepth(-1);
+		
+		if(this.selectedMeasure!= null)
+			query.setRules(selectedMeasure.getRuleKey());
+			
+		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
+				
+			@Override
+			protected void doOnResponse(List<Resource> resources) {
+				resources.remove(0);
+				moduleList.setItemList(resources);
+				moduleList.loadData();
+			}
+		});
 	}
 	
 	private void updatePackageList(Resource drillResource)
@@ -149,12 +190,15 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
 		    	.setScopes(STRUCTURE[1])
 		    	.setDepth(-1);
+		
+		if(this.selectedMeasure!= null)
+			query.setRules(selectedMeasure.getRuleKey());
 			
 		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
 				
 			@Override
 			protected void doOnResponse(List<Resource> resources) {
-				packageList.setResourceList(resources);
+				packageList.setItemList(resources);
 				packageList.loadData();
 			}
 		});
@@ -165,12 +209,15 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		ResourceQuery query = ResourceQuery.createForResource(drillResource, Metrics.VIOLATIONS)
 		    	.setScopes(STRUCTURE[2])
 		    	.setDepth(-1);
-			
+		
+		if(this.selectedMeasure!= null)
+			query.setRules(selectedMeasure.getRuleKey());
+		
 		Sonar.getInstance().findAll(query, new AbstractListCallback<Resource>() {
 				
 			@Override
 			protected void doOnResponse(List<Resource> resources) {
-				fileList.setResourceList(resources);
+				fileList.setItemList(resources);
 				fileList.loadData();
 			}
 		});
