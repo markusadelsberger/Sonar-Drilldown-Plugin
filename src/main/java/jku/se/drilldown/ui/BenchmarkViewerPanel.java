@@ -1,7 +1,9 @@
-package jku.se.drilldown.ui.client;
+package jku.se.drilldown.ui;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import jku.se.drilldown.ui.client.DrilldownComponentList;
 
 
 import org.sonar.gwt.Metrics;
