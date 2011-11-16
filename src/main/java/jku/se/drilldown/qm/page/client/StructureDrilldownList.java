@@ -186,5 +186,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 		this.prev=prev;
 	}
 	
-
+	public StructureDrilldownList getPrev()
+	{
+		return this.prev;
+	}
 }
