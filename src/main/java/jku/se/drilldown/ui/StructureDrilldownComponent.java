@@ -1,5 +1,9 @@
 package jku.se.drilldown.ui;
 
+import jku.se.drilldown.qm.page.client.DrilldownComponent;
+import jku.se.drilldown.qm.page.client.MeasuresList;
+import jku.se.drilldown.qm.page.client.StructureDrilldownList;
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
@@ -38,7 +42,11 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	public StructureDrilldownComponent(Resource resource, String pageID){
 		this.resource=resource;
 		this.pageID= pageID;
-
+		
+		this.moduleList = null;
+		this.packageList = null;
+		this.fileList = null;
+		
 		verticalPanel = new VerticalPanel();
 		
 		initWidget(verticalPanel);	
@@ -50,7 +58,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 
 	@Override
 	public void onLoad() {
-		structurePanel = new Grid(1,4);
+		structurePanel = new Grid(1,5);
 		verticalPanel.add(structurePanel);
 		loadData();
 	}
@@ -61,7 +69,7 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		boolean cont= false;
 		
 		final ClickHandler clickHandler = this;
-				
+		
 		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
 			moduleList = new StructureDrilldownList(resource, STRUCTURE[0], clickHandler, pageID);
 			structurePanel.setWidget(0, 1, moduleList);
@@ -72,21 +80,28 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || cont){
 			packageList = new StructureDrilldownList(resource, STRUCTURE[1], clickHandler, pageID);
 			structurePanel.setWidget(0, 2, packageList);
-				
+			
+			if(cont)
+				packageList.addPrev(moduleList);
+			
 			cont =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || cont){
 			fileList = new StructureDrilldownList(resource, STRUCTURE[2], null, pageID);
 			structurePanel.setWidget(0, 3, fileList);
+			
+			if(cont)
+				fileList.addPrev(packageList);	
 		}
 		
-		// TODO moduleList / packageList können null sein!
-		moduleList.addNext(packageList);
-		packageList.addNext(fileList);
-		
-		fileList.addPrev(packageList);
-		packageList.addPrev(moduleList);
+		if(packageList!=null)
+		{
+			packageList.addNext(fileList);
+			
+			if(moduleList!=null)
+				moduleList.addNext(packageList);
+		}
 	}
 
 	public void onClick(ClickEvent event) {
@@ -100,28 +115,46 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 		{		
 			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE))
 			{		
-				this.moduleList.setSelectedItem(drillResource);
+				moduleList.setSelectedItem(drillResource);
 				
-				this.packageList.loadData();
+				packageList.loadData();
 				
 			} 
 			else if(drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{								
-				this.packageList.setSelectedItem(drillResource);
-				
-				this.fileList.loadData();
+				packageList.setSelectedItem(drillResource);
+							
+				fileList.loadData();
 			}
 		}
 		
 		if(drillMeasure != null)
-		{				
-			// TODO moduleList / packageList können null sein!
-			this.moduleList.setSelectedMeasure(drillMeasure);
-			this.packageList.setSelectedMeasure(drillMeasure);
-			this.fileList.setSelectedMeasure(drillMeasure);
+		{		
 			
-			this.moduleList.loadData();
+			StructureDrilldownList startReloadingComp = null;
+			
+			if(moduleList!= null)
+			{
+				moduleList.setSelectedMeasure(drillMeasure);
+				startReloadingComp = moduleList;
+			}
+			
+			if(packageList!= null)
+			{
+				this.packageList.setSelectedMeasure(drillMeasure);
+				if(startReloadingComp==null)
+					startReloadingComp= packageList;
+			}
+
+			if(fileList!= null)
+			{
+				this.fileList.setSelectedMeasure(drillMeasure);
+				if(startReloadingComp==null)
+					startReloadingComp= fileList;
+			}
+			
+			if(startReloadingComp != null)
+				startReloadingComp.loadData();
 		}
 	}
-}
- 
+} 
