@@ -115,8 +115,7 @@ public class MeasuresList extends DrilldownComponentList<Measure> {
 		if(selectedMeasure != null)
 		{		
 			this.setSelectedItem(selectedMeasure);
-			controller.onSelectedItemChanged("measure");
+			controller.onSelectedItemChanged("rule");
 		} 
-		
 	}
 }

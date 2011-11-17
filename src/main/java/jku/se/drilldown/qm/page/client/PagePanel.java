@@ -26,6 +26,7 @@ public class PagePanel extends Page{
 	    
 	    PathComponent controller = new PathComponent();
 	    MeasuresList ruleList = new MeasuresList(resource,controller);
+	    //DrilldownComponentRuleList ruleList = new DrilldownComponentRuleList(null);
 	    StructureDrilldownComponent struct = new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage",controller);
 	       
 	    

@@ -135,9 +135,12 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	public void setSelectedModule(Resource selectedModule)
 	{
 		if(moduleList.containsSelectedItem())
+		{
+			moduleList.setSelectedItem(selectedModule);
 			packageList.loadData();
-		
-		moduleList.setSelectedItem(selectedModule);
+		}
+		else
+			moduleList.setSelectedItem(selectedModule);
 	}
 	
 	public Resource getSelectedModule()
@@ -148,9 +151,12 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	public void setSelectedPackage(Resource selectedPackage)
 	{
 		if(packageList.containsSelectedItem())
+		{
+			packageList.setSelectedItem(selectedPackage);	
 			fileList.loadData();
-		
-		packageList.setSelectedItem(selectedPackage);	
+		}
+		else
+			packageList.setSelectedItem(selectedPackage);	
 	}
 	
 	public Resource getSelectedPackage()

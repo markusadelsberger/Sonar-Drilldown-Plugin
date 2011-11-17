@@ -26,7 +26,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	private Grid pathInformation;
 	
 	private StructureDrilldownComponent structureDrilldown;
-	private DrilldownComponentList<Measure> ruleList;
+	private DrilldownComponentRuleList ruleList;
 	
 	public PathComponent()
 	{
@@ -52,7 +52,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		pathInformation.setWidget(0, 4, new Label(" "));
 	}
 	
-	public void setRuleList(DrilldownComponentList<Measure> ruleList)
+	public void setRuleList(DrilldownComponentRuleList ruleList)
 	{
 		this.ruleList=ruleList;
 	}
@@ -68,7 +68,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		
 		String clearItem = element.getAttribute("clearItem");
 		
-		if(clearItem.equals("measure"))
+		if(clearItem.equals("rule"))
 		{
 			ruleList.setSelectedItem(null);
 			structureDrilldown.reloadLists(null);
