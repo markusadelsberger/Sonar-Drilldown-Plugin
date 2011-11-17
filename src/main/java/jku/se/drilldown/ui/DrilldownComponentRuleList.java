@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.sonar.wsclient.services.Measure;
 
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
 
 
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure>{
 
-	public DrilldownComponentRuleList(List<Measure> measureList, ClickHandler clickHandler) {
-		super(clickHandler);
+	public DrilldownComponentRuleList(List<Measure> measureList) {
+		super();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -41,6 +41,11 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure>{
 
 	@Override
 	public void doLoadData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onClick(ClickEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
