@@ -10,7 +10,8 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
@@ -19,11 +20,13 @@ import com.google.gwt.user.client.ui.Widget;
 public class MeasuresList extends DrilldownComponentList<Measure> {
 
 	private Resource resource;
+	private ComponentController controller; 
 	
-	public MeasuresList(Resource resource, ClickHandler clickHandler) {
-		super(clickHandler);
+	public MeasuresList(Resource resource, ComponentController controller) {
+		super();
 		
 		this.resource=resource;
+		this.controller=controller;
 	}
 	
 	@Override
@@ -48,8 +51,7 @@ public class MeasuresList extends DrilldownComponentList<Measure> {
 	    link.getElement().setPropertyObject("measureObj", measure);
 		
 	    // register listener
-	    if(getClickHandler() != null)
-	    	link.addClickHandler(getClickHandler());
+    	link.addClickHandler(this);
 
 		getGrid().setWidget(row, column, link);
 		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
@@ -102,6 +104,19 @@ public class MeasuresList extends DrilldownComponentList<Measure> {
 	          }
 	        }
 	   });
+		
+	}
+
+	public void onClick(ClickEvent event) {
+		Element element = event.getRelativeElement();
+		
+		Measure selectedMeasure = (Measure)element.getPropertyObject("measureObj");
+
+		if(selectedMeasure != null)
+		{		
+			this.setSelectedItem(selectedMeasure);
+			controller.onSelectedItemChanged("measure");
+		} 
 		
 	}
 }

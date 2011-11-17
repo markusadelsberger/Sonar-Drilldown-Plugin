@@ -1,5 +1,6 @@
 package jku.se.drilldown.qm.page.client;
 
+
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
@@ -22,7 +23,18 @@ public class PagePanel extends Page{
 	    panel.setWidth("100%");
 	    
 	    panel.add( new Label(I18nConstants.INSTANCE.sample()));
-	    panel.add( new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage"));
+	    
+	    PathComponent controller = new PathComponent();
+	    MeasuresList ruleList = new MeasuresList(resource,controller);
+	    StructureDrilldownComponent struct = new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage",controller);
+	       
+	    
+	    controller.setRuleList(ruleList);
+	    controller.setStructureDrilldownComponent(struct);
+	    
+	    panel.add(ruleList);
+	    panel.add(struct);
+	    panel.add(controller);
 	    
 	    return panel;
 	}

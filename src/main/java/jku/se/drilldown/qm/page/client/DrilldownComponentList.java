@@ -17,23 +17,22 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Johannes
  * 
  */
-public abstract class DrilldownComponentList<T> extends DrilldownComponent {
+public abstract class DrilldownComponentList<T> extends DrilldownComponent implements ClickHandler{
 
 	private Panel listPanel;
 	private Panel data;
 
 	private List<T> itemList;
 
-	private ClickHandler clickHandler;
-	
 	private Grid grid;
 	private T selectedItem;
-	// hashmap stores the id of an item as key and its row in the grid as value
+	
+	// map stores the id of an item as key and its row in the grid as value
+	// map contains current list items displayed by the user interface
 	private Map<String,Integer> hashmap;
 	
-	public DrilldownComponentList(ClickHandler clickHandler) {
+	public DrilldownComponentList() {
 		this.setItemList(itemList);
-		this.setClickHandler(clickHandler);
 		this.selectedItem = null;
 		
 		listPanel = new VerticalPanel();
@@ -44,6 +43,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	public void onLoad() {
 		listPanel.add(createHeader());
 		data = new ScrollPanel();
+		data.setStyleName("scrollable");
 		listPanel.add(data);
 		loadData();
 	}
@@ -51,7 +51,8 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	public abstract Widget createHeader();
 
 	/**
-	 * Method is entry point to reload component. 
+	 * Method is entry point to reload component.
+	 * During the creation of the component a loading icon shows that the component is under work.  
 	 */
 	protected void loadData() {
 		data.clear();
@@ -61,6 +62,10 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	
 	public abstract void doLoadData();
 
+	/**
+	 * Method returns the unique identifier of an list item. 
+	 * The identifier is used as key value in the map. 
+	 */
 	public abstract String getItemIdentifier(T item);
 	
 	public abstract int gridColumnCount();
@@ -105,15 +110,13 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	public void setItemList (List<T> resourceList){
 		this.itemList=resourceList;
 	}
-	
-	public ClickHandler getClickHandler() {
-		return clickHandler;
-	}
-
-	public void setClickHandler(ClickHandler clickHandler) {
-		this.clickHandler = clickHandler;
-	}
-	
+		
+	/**
+	 * Changing the selected item includes a update of the user interface. 
+	 * In the case the selected item is not in the current list the row has not to be deselected. 
+	 * 
+	 * @param selectedItem The new selected item.
+	 */
 	public void setSelectedItem(T selectedItem)
 	{
 		if(this.selectedItem!=null)
@@ -121,8 +124,9 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 				deselectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
 				
 		this.selectedItem=selectedItem;
-				
-		selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
+		
+		if(this.selectedItem!=null)
+			selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
 	}
 	
 	public void setHashmap(Map<String,Integer> hashmap)
@@ -135,6 +139,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 		return this.selectedItem;
 	}
 	
+	/**
+	 * Checks if the selected item is in the current list which is presented as user interface. 
+	 * 
+	 * @return
+	 */
 	public boolean containsSelectedItem()
 	{
 		if(this.selectedItem!= null)
