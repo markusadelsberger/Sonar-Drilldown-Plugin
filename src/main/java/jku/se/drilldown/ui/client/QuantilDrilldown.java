@@ -66,71 +66,11 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	public void doLoadData()
 	{
 		setGrid(new Grid(5,3));
-		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));	
-		getGrid().setText(0, 1, "Blocker");	
-		//getGrid().setWidget(0, 1, getAnchor("Blocker", "resourceObj", resource));	
-		
-		getGrid().setWidget(1, 0, new HTML(Icons.get().priorityCritical().getHTML()));
-		getGrid().setText(1, 1, "Critical");	
-		//getGrid().setWidget(1, 1, getAnchor("Critical", "resourceObj", resource));	
-		
+		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));			
+		getGrid().setWidget(1, 0, new HTML(Icons.get().priorityCritical().getHTML()));		
 		getGrid().setWidget(2, 0, new HTML(Icons.get().priorityMajor().getHTML()));
-		getGrid().setText(2, 1, "Major");	
-		//getGrid().setWidget(2, 1, getAnchor("Major", "resourceObj", resource));	
-
 		getGrid().setWidget(3, 0, new HTML(Icons.get().priorityMinor().getHTML()));
-		getGrid().setText(3, 1, "Minor");	
-		//getGrid().setWidget(3, 1, getAnchor("Minor", "resourceObj", resource));	
-
 		getGrid().setWidget(4, 0, new HTML(Icons.get().priorityInfo().getHTML()));
-		getGrid().setText(4, 1, "Info");	
-		
-		//render(getGrid());
-		
-		//getGrid().setWidget(4, 1, getAnchor("Info", "resourceObj", resource));
-		
-		/*
-		Sonar.getInstance().find(getQuery(), new AbstractCallback<Resource>() {
-
-			@Override
-			protected void doOnResponse(Resource resource) {
-				List<Measure>measureList = resource.getMeasures();
-				setGrid(new Grid(measureList.size(), gridColumnCount()));
-
-				HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
-
-				int i = 0;
-				for (Measure measure : measureList)
-				{
-					getGrid().setText(0, i, measure.getRuleSeverity());
-					i++;
-				}
-
-				setHashmap(hashmap);
-
-				if(containsSelectedItem())
-					selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
-
-				render(getGrid());
-
-				if(next!=null)
-					next.loadData();
-			}
-
-		});*/
-	}
-	
-	private Anchor getAnchor(String title, String resourceName, Resource resource){
-		Anchor link = new Anchor(title);
-		// add resource object to link element
-		link.getElement().setPropertyObject("resourceObj", resource);
-
-		// register listener
-		if(getClickHandler() != null)
-			link.addClickHandler(getClickHandler());
-		
-		return link;
-		
 	}
 	
 	protected void addMeasures(int row, int violations){
@@ -147,4 +87,11 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 		return null;
 	}
 
+	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
+		Anchor a = new Anchor(name);
+		a.getElement().setPropertyObject("assignedList", measures);
+		if(getClickHandler() != null)
+			a.addClickHandler(getClickHandler());
+		getGrid().setWidget(row, 1, a);
+	}
 }

@@ -124,7 +124,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 		Anchor link = new Anchor(measure.getRuleName());
 
 		// add resource object to link element
-		link.getElement().setPropertyObject("resourceObj", resource);
+		link.setName(measure.getRuleKey());
+		link.setTitle(measure.getRuleName());
 
 		// register listener
 		if(getClickHandler() != null)
@@ -151,18 +152,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 			return super.getSelectedItem();
 		else
 			return null;
-	}
-
-	private ResourceQuery getQuery()
-	{
-		Resource queryResource = getRootResource();
-
-		ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.VIOLATIONS).setDepth(0).setExcludeRules(false);
-
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
-
-		return query;
 	}
 
 	public Resource getRootResource()
@@ -193,7 +182,11 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 		}
 	}
 	
+	protected void reloadBegin(){
+		getGrid().resizeRows(0);
+	}
 	protected void reloadFinished(){
 		render(getGrid());
 	}
+	
 }
