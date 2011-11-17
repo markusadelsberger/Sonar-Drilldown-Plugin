@@ -1,4 +1,4 @@
-package jku.se.drilldown.ui;
+package jku.se.drilldown.ui.client;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.sonar.wsclient.services.ResourceQuery;
 import org.sonar.wsclient.services.Violation;
 import org.sonar.wsclient.services.ViolationQuery;
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -35,29 +36,7 @@ public class BenchmarkViewerPanel extends Page {
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
-		panel.add(new Label("Drilldown"));
-		
-		mainPanel = new HorizontalPanel();
-		Label l;
-		//List<Measure> measureList = fetchMeasureList(resource, Metrics.VIOLATIONS, 0, false);
-		try{
-			ruleDrilldown = new DrilldownComponentList(resource, Metrics.VIOLATIONS, 0, false);
-			l = new Label(ruleDrilldown.toString());
-		}catch(Exception e){
-			l = new Label("In BenchmarkViewerPanel: "+e.toString()+", "+e.getCause().toString());
-		}
-		if(ruleDrilldown!=null){
-			panel.add(ruleDrilldown);
-		}
-		
-		
-		//drilldownGrid = new QuantilDrilldown(resource, Metrics.VIOLATIONS, -1, false);
-		
-		
-		mainPanel.add(l);
-		//mainPanel.add(l);
-		panel.add(mainPanel);
-
+		panel.add(new RuleDrilldownComponent(resource));
 		return panel;
 
 	}
@@ -74,9 +53,6 @@ public class BenchmarkViewerPanel extends Page {
 				if (resource!=null && !resource.getMeasures().isEmpty()) {
 					for (Measure measure : resource.getMeasures()) {
 						measureList.add(measure);
-						//ruleDrilldownGrid.setText(i, 0, measure.getCharacteristicKey());
-						//ruleDrilldownGrid.setText(i, 1, measure.getRuleName());
-						//ruleDrilldownGrid.setText(i, 2, String.valueOf(measure.getValue()));
 					}
 				}
 			}

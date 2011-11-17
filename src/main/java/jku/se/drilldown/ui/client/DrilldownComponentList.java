@@ -1,4 +1,4 @@
-package jku.se.drilldown.ui;
+package jku.se.drilldown.ui.client;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,9 @@ import java.util.Map;
 import org.sonar.gwt.ui.Loading;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -56,7 +58,12 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent {
 	protected void loadData() {
 		data.clear();
 		data.add(new Loading());
-		doLoadData();
+		try{
+			doLoadData();
+		}catch(Exception e){
+			Window.alert("Exception in loadData: "+e.toString());
+		}
+		
 	}
 	
 	public abstract void doLoadData();
