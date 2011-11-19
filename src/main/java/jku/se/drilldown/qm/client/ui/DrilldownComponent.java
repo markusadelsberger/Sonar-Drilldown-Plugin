@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm.page.client;
+package jku.se.drilldown.qm.client.ui;
 
 import com.google.gwt.user.client.ui.Composite;
 

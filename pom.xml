@@ -75,8 +75,8 @@
           <execution>
             <configuration>
               <modules>
-                <module>jku.se.drilldown.qm.page.QMDrilldownPage</module>
-                <module>jku.se.drilldown.qm.config.QMDrilldownConfig</module>
+                <module>jku.se.drilldown.qm.QMDrilldownPage</module>
+                <module>jku.se.drilldown.qm.QMDrilldownConfiguration</module>
               </modules>
               <webappDirectory>${project.build.directory}/classes</webappDirectory>
               <extraJvmArgs>-Xmx512m</extraJvmArgs>

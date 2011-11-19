@@ -1,5 +1,9 @@
-package jku.se.drilldown.qm.page.client;
+package jku.se.drilldown.qm.client;
 
+
+import jku.se.drilldown.qm.client.ui.MeasuresList;
+import jku.se.drilldown.qm.client.ui.PathComponent;
+import jku.se.drilldown.qm.client.ui.StructureDrilldownComponent;
 
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
@@ -39,5 +43,7 @@ public class PagePanel extends Page{
 	    
 	    return panel;
 	}
+	
+	
 
 }

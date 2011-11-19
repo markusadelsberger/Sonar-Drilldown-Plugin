@@ -2,7 +2,6 @@ package jku.se.drilldown.qm;
 
 import java.util.List;
 
-import jku.se.drilldown.qm.page.QMDrilldownPage;
 
 import org.sonar.api.SonarPlugin;
 
@@ -19,6 +18,7 @@ public class QMDrilldownPlugin extends SonarPlugin {
 		List extensions = Lists.newLinkedList();
 		  
 		extensions.add(QMDrilldownPage.class);
+		extensions.add(QMDrilldownConfiguration.class);
 
 		return extensions;
 	}

@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm.page.client;
+package jku.se.drilldown.qm.client;
 
 import com.google.gwt.core.client.GWT;
 

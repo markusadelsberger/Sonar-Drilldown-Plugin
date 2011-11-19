@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm.page;
+package jku.se.drilldown.qm;
 
 import org.sonar.api.web.GwtPage;
 import org.sonar.api.web.NavigationSection;

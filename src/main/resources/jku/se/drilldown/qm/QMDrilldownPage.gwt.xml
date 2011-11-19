@@ -5,7 +5,7 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="org.sonar.Sonar"/>
 
-  <entry-point class='jku.se.drilldown.qm.config.client.ConfigPanel'/>
+  <entry-point class='jku.se.drilldown.qm.client.PagePanel'/>
 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="fr"/>

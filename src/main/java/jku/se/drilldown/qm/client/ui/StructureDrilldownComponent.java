@@ -1,4 +1,6 @@
-package jku.se.drilldown.qm.page.client;
+package jku.se.drilldown.qm.client.ui;
+
+
 
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
