@@ -1,6 +1,8 @@
 package jku.se.drilldown.qm.client.ui;
 
 
+import jku.se.drilldown.qm.client.MeasuresList;
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
@@ -27,7 +29,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	private Grid pathInformation;
 	
 	private StructureDrilldownComponent structureDrilldown;
-	private DrilldownComponentRuleList ruleList;
+	private MeasuresList ruleList;
 	
 	public PathComponent()
 	{
@@ -53,7 +55,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		pathInformation.setWidget(0, 4, new Label(" "));
 	}
 	
-	public void setRuleList(DrilldownComponentRuleList ruleList)
+	public void setRuleList(MeasuresList ruleList)
 	{
 		this.ruleList=ruleList;
 	}

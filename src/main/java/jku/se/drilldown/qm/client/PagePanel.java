@@ -33,7 +33,7 @@ public class PagePanel extends Page{
 	    StructureDrilldownComponent struct = new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage",controller);
 	       
 	    
-	   // controller.setRuleList(ruleList);
+	    controller.setRuleList(ruleList);
 	    controller.setStructureDrilldownComponent(struct);
 	    
 	    panel.add(ruleList);
