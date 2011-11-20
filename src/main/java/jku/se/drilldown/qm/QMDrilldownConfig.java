@@ -1,7 +1,6 @@
 package jku.se.drilldown.qm;
 
 import org.sonar.api.web.GwtPage;
-import org.sonar.api.web.NavigationSection;
 import org.sonar.api.web.UserRole;
 
 @UserRole(UserRole.ADMIN)

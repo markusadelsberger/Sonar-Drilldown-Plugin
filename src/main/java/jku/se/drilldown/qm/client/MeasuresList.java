@@ -3,6 +3,9 @@ package jku.se.drilldown.qm.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import jku.se.drilldown.qm.client.ui.ComponentController;
+import jku.se.drilldown.qm.client.ui.DrilldownComponentList;
+
 import org.sonar.gwt.Metrics;
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;

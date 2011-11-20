@@ -1,7 +1,8 @@
 //Abgeleitet von DrilldownComponentList, erweitert sie um zus�tzliche Spalte f�r Regeln
-package jku.se.drilldown.qm.client;
+package jku.se.drilldown.qm.client.ui;
 
 import java.util.List;
+
 
 import org.sonar.wsclient.services.Measure;
 

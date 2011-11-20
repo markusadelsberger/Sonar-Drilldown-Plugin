@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm.client;
+package jku.se.drilldown.qm.client.ui;
 
 /**
  * 
