@@ -5,11 +5,10 @@ import org.sonar.api.web.NavigationSection;
 import org.sonar.api.web.UserRole;
 
 @UserRole(UserRole.ADMIN)
-@NavigationSection(NavigationSection.CONFIGURATION)
-public class QMDrilldownConfiguration extends GwtPage {
+public class QMDrilldownConfig extends GwtPage {
 
 	public String getGwtId() {
-		 return "jku.se.drilldown.qm.config.QMDrilldownConfig";
+		 return "jku.se.drilldown.qm.QMDrilldownConfig";
 	}
 
 	public String getTitle() {

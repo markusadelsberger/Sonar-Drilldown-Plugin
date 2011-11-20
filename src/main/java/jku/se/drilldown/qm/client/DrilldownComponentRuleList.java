@@ -1,5 +1,5 @@
 //Abgeleitet von DrilldownComponentList, erweitert sie um zus�tzliche Spalte f�r Regeln
-package jku.se.drilldown.qm.client.ui;
+package jku.se.drilldown.qm.client;
 
 import java.util.List;
 

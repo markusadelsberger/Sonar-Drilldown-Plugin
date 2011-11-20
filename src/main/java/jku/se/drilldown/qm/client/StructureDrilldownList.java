@@ -1,9 +1,7 @@
-package jku.se.drilldown.qm.client.ui;
+package jku.se.drilldown.qm.client;
 
 import java.util.HashMap;
 import java.util.List;
-
-
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;

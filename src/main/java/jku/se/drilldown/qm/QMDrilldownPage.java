@@ -9,7 +9,7 @@ public class QMDrilldownPage extends GwtPage {
 	//public static final String GWT_ID = "jku.se.drilldown.qm.page.QMDrilldownPage";
 	
 	public String getGwtId() {
-	    return "jku.se.drilldown.qm.page.QMDrilldownPage";
+	    return "jku.se.drilldown.qm.QMDrilldownPage";
 	}
 
 	public String getTitle() {

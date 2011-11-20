@@ -1,8 +1,7 @@
-package jku.se.drilldown.qm.client.ui;
+package jku.se.drilldown.qm.client;
 
 import java.util.List;
 import java.util.Map;
-
 
 import org.sonar.gwt.ui.Loading;
 
@@ -33,8 +32,8 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	private Map<String,Integer> hashmap;
 	
 	public DrilldownComponentList() {
+		this.setItemList(itemList);
 		this.selectedItem = null;
-		this.hashmap = null;
 		
 		listPanel = new VerticalPanel();
 		initWidget(listPanel);
