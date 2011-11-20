@@ -2,6 +2,8 @@
 ##################
 /bin
 /target
+/war
+.class
 
 # Eclipse Files  #
 ##################
