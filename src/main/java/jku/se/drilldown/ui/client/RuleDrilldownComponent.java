@@ -29,9 +29,10 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 	
 	private QuantilDrilldown quantilDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
+	private PathComponent pathComponent;
 	
 	
-	public RuleDrilldownComponent(Resource resource){
+	public RuleDrilldownComponent(Resource resource, PathComponent pathComponent){
 		this.resource=resource;
 		try{
 			mainPanel= new VerticalPanel();
@@ -41,7 +42,7 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 			
 			mainPanel.add(leftPanel);
 			mainPanel.add(rightPanel);
-
+			this.pathComponent = pathComponent;
 			
 			initWidget(mainPanel);
 		}catch (Exception e){
@@ -54,9 +55,9 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 	public void onLoad(){
 		final ClickHandler clickHandler = this;
 		try{
-			quantilDrilldown=new QuantilDrilldown(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer");
-			drilldownComponentRuleList=new DrilldownComponentRuleList(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer");
-
+			quantilDrilldown=new QuantilDrilldown(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent);
+			drilldownComponentRuleList=new DrilldownComponentRuleList(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent);
+			
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(quantilDrilldown);

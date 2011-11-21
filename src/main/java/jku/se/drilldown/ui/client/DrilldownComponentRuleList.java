@@ -13,6 +13,7 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -26,18 +27,15 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	private String pageID;
 	private Resource resource;
-	private String scope;
-	private Measure selectedMeasure;
-	private StructureDrilldownList next;
-	private StructureDrilldownList prev;
-	private ClickHandler clickHandler;
+	private PathComponent controller;
+	private Measure selectedItem;
 
-	public DrilldownComponentRuleList(Resource resource, String scope, ClickHandler clickHandler, String pageID) {
+	public DrilldownComponentRuleList(Resource resource, String scope, ClickHandler clickHandler, String pageID, PathComponent controller) {
 
 		this.resource=resource;
 		this.pageID = pageID;
-		this.scope=scope;		
-		this.clickHandler=clickHandler;
+		this.controller=controller;
+		controller.setRuleList(this);
 		
 		this.setStyleName("scrollable");
 		setGrid(new Grid(0, gridColumnCount()));
@@ -65,36 +63,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	public void doLoadData()
 	{
 
-		/*Sonar.getInstance().find(getQuery(), new AbstractCallback<Resource>() {
-
-			@Override
-			protected void doOnResponse(Resource resource) {
-				List<Measure>measureList = resource.getMeasures();
-				setGrid(new Grid(measureList.size(), gridColumnCount()));
-
-				HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
-
-				int i = 0;
-				for (Measure measure : measureList)
-				{
-					renderIconCells(measure, i);
-					renderNameCell(measure, i, 2);
-					renderValueCell(measure, i, 3);
-					i++;
-				}
-
-				setHashmap(hashmap);
-
-				if(containsSelectedItem())
-					selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
-
-				render(getGrid());
-
-				if(next!=null)
-					next.loadData();
-			}
-
-		});*/
 	}
 	
 	private String getIcon(String severity){
@@ -121,13 +89,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	private void renderNameCell(final Measure measure, int row, int column) {
 		Anchor link = new Anchor(measure.getRuleName());
 
-		// add resource object to link element
 		link.setName(measure.getRuleKey());
 		link.setTitle(measure.getRuleName());
-
-		// register listener
-		if(clickHandler != null)
-			link.addClickHandler(clickHandler);
+		link.getElement().setPropertyObject("measure", measure);
+		link.addClickHandler(this);
 
 		getGrid().setWidget(row, column, link);
 		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
@@ -144,12 +109,11 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 
 	@Override
-	public Measure getSelectedItem()
-	{
-		if(containsSelectedItem())
-			return super.getSelectedItem();
-		else
-			return null;
+	public Measure getSelectedItem(){
+		return selectedItem;
+	}
+	public void setSelectedItem(Measure item){
+		this.selectedItem=item;
 	}
 
 	protected void addMeasures(List<Measure> measures){
@@ -173,8 +137,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public void onClick(ClickEvent event) {
-		// TODO Auto-generated method stub
+		Element element = event.getRelativeElement();
+		setSelectedItem((Measure)element.getPropertyObject("measure"));
 		
+		controller.onSelectedItemChanged("rule");
 	}
 	
 }

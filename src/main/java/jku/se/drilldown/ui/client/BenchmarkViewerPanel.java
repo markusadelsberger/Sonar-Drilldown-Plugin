@@ -33,7 +33,9 @@ public class BenchmarkViewerPanel extends Page {
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
 		try{
-			panel.add(new RuleDrilldownComponent(resource));
+			PathComponent pathComponent = new PathComponent();
+			panel.add(new RuleDrilldownComponent(resource, pathComponent));
+			panel.add(pathComponent);
 		}catch (Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}

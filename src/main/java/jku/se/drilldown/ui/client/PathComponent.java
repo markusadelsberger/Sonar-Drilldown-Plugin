@@ -1,11 +1,14 @@
 package jku.se.drilldown.ui.client;
 
+import java.util.List;
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -27,6 +30,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
+	private QuantilDrilldown quantilDrilldown;
 	
 	public PathComponent()
 	{
@@ -60,6 +64,10 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	public void setStructureDrilldownComponent(StructureDrilldownComponent structureDrilldown)
 	{
 		this.structureDrilldown=structureDrilldown;
+	}
+	
+	public void setSeveretyDrilldownList(QuantilDrilldown quantilDrilldown){
+		this.quantilDrilldown=quantilDrilldown;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -137,6 +145,23 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 				
 		    	pathInformation.setWidget(0, 4, panel);
 			}
+		}
+		else if(component.equals("severety")){
+			List<Measure> measureList = quantilDrilldown.getSelectedItem();
+			ruleList.reloadBegin();
+			ruleList.addMeasures(measureList);
+			ruleList.reloadFinished();
+			
+			HorizontalPanel panel = new HorizontalPanel();
+			panel.add(new Label("Severity"));
+			
+			Anchor link = new Anchor("Clear");
+			link.getElement().setAttribute("clearItem", "rule");
+			link.addClickHandler(this);
+			panel.add(link);
+			
+	    	pathInformation.setWidget(0, 1, panel);
+			
 		}
 	}
 }

@@ -13,6 +13,7 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -22,21 +23,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class QuantilDrilldown extends DrilldownComponentList<Resource> {
+public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 
-	private String pageID;
-	private Resource resource;
-	private String scope;
-	private Measure selectedMeasure;
-	private ClickHandler clickHandler;
+	private PathComponent controller;
+	private List<Measure> selectedItem;
 
-	public QuantilDrilldown(Resource resource, String scope, ClickHandler clickHandler, String pageID) {
+	public QuantilDrilldown(Resource resource, String scope, ClickHandler clickHandler, String pageID, PathComponent controller) {
 
-		this.resource=resource;
-		this.pageID = pageID;
-		this.scope=scope;
-		this.clickHandler = clickHandler;
-
+		this.controller=controller;
+		controller.setSeveretyDrilldownList(this);
 	}
 	
 	@Override
@@ -52,7 +47,7 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	
 	
 	@Override
-	public void renderRow(Resource item, int row) {
+	public void renderRow(List<Measure> item, int row) {
 		//renderIconCells(item, row);
 		//renderNameCell( item, row, 2);
 		//renderValueCell( item, row, 3);
@@ -67,6 +62,7 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 		getGrid().setWidget(2, 0, new HTML(Icons.get().priorityMajor().getHTML()));
 		getGrid().setWidget(3, 0, new HTML(Icons.get().priorityMinor().getHTML()));
 		getGrid().setWidget(4, 0, new HTML(Icons.get().priorityInfo().getHTML()));
+		
 	}
 	
 	protected void addMeasures(int row, int violations){
@@ -78,7 +74,7 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	}
 
 	@Override
-	public String getItemIdentifier(Resource item) {
+	public String getItemIdentifier(List<Measure> item) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -86,14 +82,22 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
 		Anchor a = new Anchor(name);
 		a.getElement().setPropertyObject("assignedList", measures);
-		if(clickHandler != null)
-			a.addClickHandler(clickHandler);
+		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
+	}
+	
+	@Override
+	public List<Measure> getSelectedItem(){
+		return selectedItem;
+	}
+	public void setSelectedItem(List<Measure> item){
+		this.selectedItem=item;
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
-		// TODO Auto-generated method stub
-		
+		Element element = event.getRelativeElement();
+		setSelectedItem((List<Measure>)element.getPropertyObject("assignedList"));
+		controller.onSelectedItemChanged("severety");
 	}
 }
