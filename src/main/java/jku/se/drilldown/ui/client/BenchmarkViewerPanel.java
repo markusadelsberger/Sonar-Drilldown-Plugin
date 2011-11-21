@@ -28,15 +28,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BenchmarkViewerPanel extends Page {
-	private HorizontalPanel mainPanel;
-	public static final int LIMIT = 5;
-	private Panel drilldownGrid;
-	private Panel ruleDrilldown;
 
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
-		panel.add(new RuleDrilldownComponent(resource));
+		try{
+			panel.add(new RuleDrilldownComponent(resource));
+		}catch (Exception e){
+			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
+		}
+		
 		return panel;
 
 	}

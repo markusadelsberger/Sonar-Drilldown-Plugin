@@ -13,6 +13,7 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
@@ -27,19 +28,14 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	private Resource resource;
 	private String scope;
 	private Measure selectedMeasure;
-	private StructureDrilldownList next;
-	private StructureDrilldownList prev;
+	private ClickHandler clickHandler;
 
 	public QuantilDrilldown(Resource resource, String scope, ClickHandler clickHandler, String pageID) {
-		super(clickHandler);
 
 		this.resource=resource;
 		this.pageID = pageID;
 		this.scope=scope;
-
-		this.selectedMeasure=null;
-		this.next=null;
-		this.prev=null;
+		this.clickHandler = clickHandler;
 
 	}
 	
@@ -90,8 +86,14 @@ public class QuantilDrilldown extends DrilldownComponentList<Resource> {
 	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
 		Anchor a = new Anchor(name);
 		a.getElement().setPropertyObject("assignedList", measures);
-		if(getClickHandler() != null)
-			a.addClickHandler(getClickHandler());
+		if(clickHandler != null)
+			a.addClickHandler(clickHandler);
 		getGrid().setWidget(row, 1, a);
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,6 +1,5 @@
 package jku.se.drilldown.ui.client;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,20 +13,17 @@ import org.sonar.wsclient.services.ResourceQuery;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class RuleDrilldownComponent extends DrilldownComponent implements ClickHandler {
 	
 	private Resource resource;
-	private LayoutPanel mainPanel;
+	private VerticalPanel mainPanel;
 	private Panel rightPanel;
 	private Panel leftPanel;
 	
@@ -37,19 +33,21 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 	
 	public RuleDrilldownComponent(Resource resource){
 		this.resource=resource;
-		mainPanel= new LayoutPanel();
-		
-		rightPanel=new ScrollPanel();
-		leftPanel=new HorizontalPanel();
-		
-		mainPanel.add(leftPanel);
-		mainPanel.add(rightPanel);
-		
-		mainPanel.setWidgetLeftWidth(leftPanel, 0, Style.Unit.PX, 100,  Style.Unit.PX);  // Left panel
-		mainPanel.setWidgetLeftWidth(rightPanel, 0, Style.Unit.PX, 100,  Style.Unit.PCT);  // Left panel
+		try{
+			mainPanel= new VerticalPanel();
+			
+			rightPanel=new HorizontalPanel();
+			leftPanel=new HorizontalPanel();
+			
+			mainPanel.add(leftPanel);
+			mainPanel.add(rightPanel);
 
+			
+			initWidget(mainPanel);
+		}catch (Exception e){
+			mainPanel.add(new Label("RuleDrilldownComponent: "+e.toString()));
+		}
 		
-		initWidget(mainPanel);
 	}
 	
 	@Override
@@ -59,16 +57,12 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 			quantilDrilldown=new QuantilDrilldown(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer");
 			drilldownComponentRuleList=new DrilldownComponentRuleList(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer");
 
-			//loadRuleData();
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
-			
-			//quantilDrilldown.reloadFinished();
-			//drilldownComponentRuleList.reloadFinished();
 			
 			leftPanel.add(quantilDrilldown);
 			rightPanel.add(drilldownComponentRuleList);
 		}catch(Exception e){
-			Window.alert(e.toString());
+			mainPanel.add(new Label("RuleDrilldownComponent later: "+e.toString()));
 		}
 		
 	}

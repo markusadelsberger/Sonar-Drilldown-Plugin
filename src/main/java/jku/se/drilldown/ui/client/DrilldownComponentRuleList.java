@@ -13,6 +13,7 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class DrilldownComponentRuleList extends DrilldownComponentList<Resource> {
+public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
 	private String pageID;
 	private Resource resource;
@@ -29,17 +30,14 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 	private Measure selectedMeasure;
 	private StructureDrilldownList next;
 	private StructureDrilldownList prev;
+	private ClickHandler clickHandler;
 
 	public DrilldownComponentRuleList(Resource resource, String scope, ClickHandler clickHandler, String pageID) {
-		super(clickHandler);
 
 		this.resource=resource;
 		this.pageID = pageID;
-		this.scope=scope;
-
-		this.selectedMeasure=null;
-		this.next=null;
-		this.prev=null;
+		this.scope=scope;		
+		this.clickHandler=clickHandler;
 		
 		this.setStyleName("scrollable");
 		setGrid(new Grid(0, gridColumnCount()));
@@ -57,7 +55,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 	
 	
 	@Override
-	public void renderRow(Resource item, int row) {
+	public void renderRow(Measure item, int row) {
 		//renderIconCells(item, row);
 		//renderNameCell( item, row, 2);
 		//renderValueCell( item, row, 3);
@@ -128,8 +126,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 		link.setTitle(measure.getRuleName());
 
 		// register listener
-		if(getClickHandler() != null)
-			link.addClickHandler(getClickHandler());
+		if(clickHandler != null)
+			link.addClickHandler(clickHandler);
 
 		getGrid().setWidget(row, column, link);
 		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
@@ -141,33 +139,17 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 	}
 
 	@Override
-	public String getItemIdentifier(Resource item) {
-		return item.getKey();
+	public String getItemIdentifier(Measure item) {
+		return item.getMetricKey();
 	}
 
 	@Override
-	public Resource getSelectedItem()
+	public Measure getSelectedItem()
 	{
 		if(containsSelectedItem())
 			return super.getSelectedItem();
 		else
 			return null;
-	}
-
-	public Resource getRootResource()
-	{
-		if(prev==null)
-		{
-			return resource;
-		}
-		else if (prev.getSelectedItem()!= null)
-		{
-			return prev.getSelectedItem();
-		}
-		else
-		{
-			return prev.getRootResource();
-		}
 	}
 
 	protected void addMeasures(List<Measure> measures){
@@ -187,6 +169,12 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Resource>
 	}
 	protected void reloadFinished(){
 		render(getGrid());
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

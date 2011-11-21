@@ -3,6 +3,8 @@ package jku.se.drilldown.ui;
 
 import java.util.List;
 
+import jku.se.drilldown.ui.client.DrilldownComponentList;
+
 import org.sonar.wsclient.services.Measure;
 
 import com.google.gwt.event.dom.client.ClickEvent;
