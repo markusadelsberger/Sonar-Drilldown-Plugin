@@ -3,20 +3,17 @@ package jku.se.drilldown.ui.client;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * Component decomposes a resource object in its folder, packages and files.  
+ * Component decomposes a resource object in its folders, packages and files.  
  * 
  * @author Johannes
  *
  */
-public class StructureDrilldownComponent extends DrilldownComponent implements ClickHandler{
+public class StructureDrilldownComponent extends DrilldownComponent{
 	
 	private Panel verticalPanel;
 	private Grid structurePanel;
@@ -30,17 +27,23 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 	
 	private String pageID; 
 	
+	private ComponentController controller;
 	/**
 	 * 
-	 * @param resource
+	 * @param resource The selected resource object on the sonar platform. 
 	 * @param pageID The gwtID of the page that contains this element. for example "jku.se.drilldown.qm.page.QMDrilldownPage" 
 	 */
-	public StructureDrilldownComponent(Resource resource, String pageID){
+	public StructureDrilldownComponent(Resource resource, String pageID, ComponentController controller){
 		this.resource=resource;
 		this.pageID= pageID;
-
-		verticalPanel = new VerticalPanel();
 		
+		this.controller=controller;
+		
+		this.moduleList = null;
+		this.packageList = null;
+		this.fileList = null;
+		
+		verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);	
 	}
 		
@@ -50,78 +53,115 @@ public class StructureDrilldownComponent extends DrilldownComponent implements C
 
 	@Override
 	public void onLoad() {
-		structurePanel = new Grid(1,4);
+		structurePanel = new Grid(1,3);
 		verticalPanel.add(structurePanel);
 		loadData();
 	}
 	
+	/**
+	 * Method is the entry point to reload the component. 
+	 * It removes all items and creates them new. 
+	 * 
+	 * Additionally the method interlinks the list components together.
+	 */
 	private void loadData() {
 		structurePanel.clear();
 	
-		boolean cont= false;
+		boolean parentExists= false;
 		
-		final ClickHandler clickHandler = this;
-				
 		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
-			moduleList = new StructureDrilldownList(resource, STRUCTURE[0], clickHandler, pageID);
-			structurePanel.setWidget(0, 1, moduleList);
+			moduleList = new StructureDrilldownList(resource, STRUCTURE[0], pageID, controller);
+			structurePanel.setWidget(0, 0, moduleList);
 			
-			cont =true;
+			parentExists =true;
 		} 
 		
-		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || cont){
-			packageList = new StructureDrilldownList(resource, STRUCTURE[1], clickHandler, pageID);
-			structurePanel.setWidget(0, 2, packageList);
-				
-			cont =true;
+		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || parentExists){
+			packageList = new StructureDrilldownList(resource, STRUCTURE[1], pageID, controller);
+			structurePanel.setWidget(0, 1, packageList);
+			
+			if(parentExists)
+				packageList.setPrev(moduleList);
+			
+			parentExists =true;
 		} 
 		
-		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || cont){
-			fileList = new StructureDrilldownList(resource, STRUCTURE[2], null, pageID);
-			structurePanel.setWidget(0, 3, fileList);
+		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || parentExists){
+			fileList = new StructureDrilldownList(resource, STRUCTURE[2], pageID, controller);
+			structurePanel.setWidget(0, 2, fileList);
+			
+			if(parentExists)
+				fileList.setPrev(packageList);	
 		}
 		
-		// TODO moduleList / packageList können null sein!
-		moduleList.addNext(packageList);
-		packageList.addNext(fileList);
-		
-		fileList.addPrev(packageList);
-		packageList.addPrev(moduleList);
+		if(packageList!=null)
+		{
+			packageList.setNext(fileList);
+			
+			if(moduleList!=null)
+				moduleList.setNext(packageList);
+		}
 	}
 
-	public void onClick(ClickEvent event) {
+	public void reloadLists(Measure selectedMeasure)
+	{
+		StructureDrilldownList startReloadingComp = null;
 		
-		Element element = event.getRelativeElement();
+		if(moduleList!= null)
+		{
+			moduleList.setSelectedMeasure(selectedMeasure);
+			startReloadingComp = moduleList;
+		}
 		
-		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
-		Measure drillMeasure = (Measure)element.getPropertyObject("measureObj");
+		if(packageList!= null)
+		{
+			this.packageList.setSelectedMeasure(selectedMeasure);
+			if(startReloadingComp==null)
+				startReloadingComp= packageList;
+		}
 	
-		if(drillResource != null)
-		{		
-			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE))
-			{		
-				this.moduleList.setSelectedItem(drillResource);
-				
-				this.packageList.loadData();
-				
-			} 
-			else if(drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
-			{								
-				this.packageList.setSelectedItem(drillResource);
-				
-				this.fileList.loadData();
-			}
+		if(fileList!= null)
+		{
+			this.fileList.setSelectedMeasure(selectedMeasure);
+			if(startReloadingComp==null)
+				startReloadingComp= fileList;
 		}
 		
-		if(drillMeasure != null)
-		{				
-			// TODO moduleList / packageList können null sein!
-			this.moduleList.setSelectedMeasure(drillMeasure);
-			this.packageList.setSelectedMeasure(drillMeasure);
-			this.fileList.setSelectedMeasure(drillMeasure);
-			
-			this.moduleList.loadData();
+		if(startReloadingComp != null)
+			startReloadingComp.loadData();
+	}
+
+	
+	public void setSelectedModule(Resource selectedModule)
+	{
+		if(moduleList.containsSelectedItem())
+		{
+			moduleList.setSelectedItem(selectedModule);
+			packageList.loadData();
 		}
+		else
+			moduleList.setSelectedItem(selectedModule);
+	}
+	
+	public Resource getSelectedModule()
+	{
+		return this.moduleList.getSelectedItem();
+	}
+	
+	public void setSelectedPackage(Resource selectedPackage)
+	{
+		if(packageList.containsSelectedItem())
+		{
+			packageList.setSelectedItem(selectedPackage);	
+			fileList.loadData();
+		}
+		else
+			packageList.setSelectedItem(selectedPackage);	
+	}
+	
+	public Resource getSelectedPackage()
+	{
+		return this.packageList.getSelectedItem();
 	}
 }
  

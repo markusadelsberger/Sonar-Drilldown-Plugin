@@ -12,7 +12,8 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -20,21 +21,29 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * The component lists the items from a resource according to the defined scope. 
+ * Moreover the component is linked with its previous and next component. 
+ * So it can get a selected item from the previous list or reload the next list component when its state changes.  
  * 
  * @author Johannes
  *
  */
-public class StructureDrilldownList extends DrilldownComponentList<Resource> {
+public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 
 	private String pageID;
 	private Resource resource;
 	private String scope;
 	private Measure selectedMeasure;
+	
+	// child list
 	private StructureDrilldownList next;
+	// parent list
 	private StructureDrilldownList prev;
+	
+	private ComponentController controller;
 
-	public StructureDrilldownList(Resource resource, String scope, ClickHandler clickHandler, String pageID) {
-		super(clickHandler);
+	public StructureDrilldownList(Resource resource, String scope, String pageID, ComponentController controller) {
+		super();
 		
 		this.resource=resource;
 		this.pageID = pageID;
@@ -43,6 +52,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 		this.selectedMeasure=null;
 		this.next=null;
 		this.prev=null;
+		
+		this.controller=controller;
 	}
  
 	@Override
@@ -52,14 +63,15 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 	
 	@Override
 	public int gridColumnCount() {
-		return 4;
+		if(scope.equals(Resource.SCOPE_ENTITY))
+			return 3;
+		else 
+			return 4;
 	}
 
 	@Override
 	public void renderRow(Resource item, int row) {
-		renderIconCells(item, row);
-		renderNameCell( item, row, 2);
-		renderValueCell( item, row, 3);
+		renderValueCell( item, row, renderNameCell( item, row, renderIconCells(item, row, 0)));
 	}
 		
 	@Override
@@ -70,12 +82,16 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 			
 			@Override
 			protected void doOnResponse(List<Resource> resourceList) {
-				setGrid(new Grid(resourceList.size(), gridColumnCount()));
+				Grid gridList = new Grid(resourceList.size(), gridColumnCount());
+				gridList.setStyleName("spaced");
+				setGrid(gridList);
 				
 				HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
-				
+			
+				if(scope.equals(Resource.SCOPE_SET) && !resourceList.isEmpty())
+					resourceList.remove(0);
+									
 				int row = 0;
-				
 				for (Resource item : resourceList) 
 				{
 					renderRow(item, row);
@@ -98,29 +114,46 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 		});
 	}
 	
-	private void renderIconCells(Resource resource, int row ) {
+	/**
+	 * 
+	 * @param resource Contains the corresponding information.
+	 * @param row The row of the grid. 
+	 * @param column The column of the grid.
+	 * @return The next column in which a widget can be presented.
+	 */
+	private int renderIconCells(Resource resource, int row, int column ) {
+		
 		if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 		{
-			getGrid().setWidget(row, 0, new HTML("<a id=\"zoom" + row + "\" href=\"" + Links.urlForResourcePage(resource.getKey(), pageID, null)+"\">" + Icons.get().zoom().getHTML() + "</a>"));
-			getGrid().getCellFormatter().setStyleName(row, 0, getRowCssClass(row, false));
+			getGrid().setWidget(row, column, new HTML("<a id=\"zoom" + row + "\" href=\"" + Links.urlForResourcePage(resource.getKey(), pageID, null)+"\">" + Icons.get().zoom().getHTML() + "</a>"));
+			getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
+			
+			column++;
 		}
 			
-		getGrid().setWidget(row, 1,new HTML("<div>" + Icons.forQualifier(resource.getQualifier()).getHTML() + "</div>"));
-		getGrid().getCellFormatter().setStyleName(row, 1, getRowCssClass(row, false));
+		getGrid().setWidget(row, column,new HTML("<div>" + Icons.forQualifier(resource.getQualifier()).getHTML() + "</div>"));
+		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
+		
+		column++;
+		
+		return column;
 	}
 
-	private void renderNameCell(final Resource resource, int row, int column) {
+	private int renderNameCell(final Resource resource, int row, int column) {
 		Anchor link = new Anchor(resource.getName());
 		
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
 		
-	    // register listener
-	    if(getClickHandler() != null)
-	    	link.addClickHandler(getClickHandler());
+	    // register listener to the component
+    	link.addClickHandler(this);
 
 		getGrid().setWidget(row, column, link);
 		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
+		
+		column++;
+		
+		return column;
 	}
 
 	private void renderValueCell(Resource resource, int row, int column) {
@@ -142,6 +175,11 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 			return null;
 	}
 	
+	/**
+	 * Builds a resource query in consideration of the scope and selected measures. 
+	 * 
+	 * @return A resource query specified for the component's scope. 
+	 */
 	private ResourceQuery getQuery()
 	{
 		Resource queryResource = getRootResource();
@@ -156,7 +194,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 		return query;
 	}
 	
-	public Resource getRootResource()
+	/**
+	 * Methods works recursive in the case the previous component is set and has no selected item.  
+	 * 
+	 * @return
+	 */
+	private Resource getRootResource()
 	{
 		if(prev==null)
 		{
@@ -176,15 +219,36 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource> {
 		this.selectedMeasure = selectedMeasure;
 	}
 	
-	public void addNext(StructureDrilldownList next)
+	public void setNext(StructureDrilldownList next)
 	{
 		this.next=next;	
 	}
 	
-	public void addPrev(StructureDrilldownList prev)
+	public void setPrev(StructureDrilldownList prev)
 	{
 		this.prev=prev;
 	}
-	
 
+	/**
+	 *  Click handler to react on clicks from the list component.
+	 * 
+	 *  Sets the selected item and invokes its child component to refresh. 
+	 */
+	public void onClick(ClickEvent event) {
+		Element element = event.getRelativeElement();
+		
+		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
+		
+	
+		if(drillResource != null)
+		{		
+			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE)||drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
+			{				
+				this.setSelectedItem(drillResource);
+				this.next.loadData();
+				
+				this.controller.onSelectedItemChanged("structure");
+			} 
+		}	
+	}
 }
