@@ -28,15 +28,14 @@ public class PagePanel extends Page{
 	    panel.add( new Label(I18nConstants.INSTANCE.sample()));
 	    
 	    PathComponent controller = new PathComponent();
-	    MeasuresList ruleList = new MeasuresList(resource,controller);
 	    //DrilldownComponentRuleList ruleList = new DrilldownComponentRuleList(null);
 	    StructureDrilldownComponent struct = new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage",controller);
 	       
 	    
-	    controller.setRuleList(ruleList);
+	    //controller.setRuleList(ruleList);
 	    controller.setStructureDrilldownComponent(struct);
 	    
-	    panel.add(ruleList);
+	    //panel.add(ruleList);
 	    panel.add(struct);
 	    panel.add(controller);
 	    

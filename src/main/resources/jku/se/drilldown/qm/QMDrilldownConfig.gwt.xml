@@ -10,4 +10,6 @@
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="fr"/>
 
+  <servlet path='/greet' class='jku.se.drilldown.qm.server.GreetingServiceImpl'/> 
+
 </module>
