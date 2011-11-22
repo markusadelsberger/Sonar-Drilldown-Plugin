@@ -2,6 +2,7 @@ package jku.se.drilldown.qm.client;
 
 
 import jku.se.drilldown.qm.client.ui.PathComponent;
+import jku.se.drilldown.qm.client.ui.RuleDrilldownComponent;
 import jku.se.drilldown.qm.client.ui.StructureDrilldownComponent;
 
 import org.sonar.gwt.ui.Page;
@@ -20,25 +21,17 @@ public class PagePanel extends Page{
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
-		
 	    final VerticalPanel panel = new VerticalPanel();
-
 	    panel.setWidth("100%");
 	    
-	    panel.add( new Label(I18nConstants.INSTANCE.sample()));
-	    
 	    PathComponent controller = new PathComponent();
-	    //DrilldownComponentRuleList ruleList = new DrilldownComponentRuleList(null);
 	    StructureDrilldownComponent struct = new StructureDrilldownComponent(resource,"jku.se.drilldown.qm.page.QMDrilldownPage",controller);
-	       
-	    
-	    //controller.setRuleList(ruleList);
+	    RuleDrilldownComponent comp = new RuleDrilldownComponent(resource, controller);
 	    controller.setStructureDrilldownComponent(struct);
 	    
-	    //panel.add(ruleList);
+	    panel.add(comp);
 	    panel.add(struct);
 	    panel.add(controller);
-	    
 	    return panel;
 	}
 

@@ -5,14 +5,5 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-	<servlet>
-		<servlet-name>greetServlet</servlet-name>
-		<servlet-class>jku.se.drilldown.qm.server.GreetingServiceImpl</servlet-class>
-	</servlet>
-	
-	<servlet-mapping>
-		<servlet-name>greetServlet</servlet-name>
-		<url-pattern>/greet</url-pattern>
-	</servlet-mapping>
 
 </web-app>
