@@ -28,15 +28,15 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 	private PathComponent controller;
 	private List<Measure> selectedItem;
 
-	public QuantilDrilldown(Resource resource, String scope, ClickHandler clickHandler, String pageID, PathComponent controller) {
-
+	public QuantilDrilldown(PathComponent controller) {
+		super();
 		this.controller=controller;
 		controller.setSeveretyDrilldownList(this);
 	}
 	
 	@Override
 	public Widget createHeader() {
-		return new Label("");
+		return new Label("Severety");
 	}
 
 
@@ -56,7 +56,7 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 	@Override
 	public void doLoadData()
 	{
-		setGrid(new Grid(5,3));
+		setGrid(new Grid(5,gridColumnCount()));
 		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));			
 		getGrid().setWidget(1, 0, new HTML(Icons.get().priorityCritical().getHTML()));		
 		getGrid().setWidget(2, 0, new HTML(Icons.get().priorityMajor().getHTML()));

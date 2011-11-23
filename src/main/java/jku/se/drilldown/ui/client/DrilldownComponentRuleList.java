@@ -16,6 +16,7 @@ import org.sonar.wsclient.services.ResourceQuery;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -25,25 +26,19 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
-	private String pageID;
-	private Resource resource;
 	private PathComponent controller;
 	private Measure selectedItem;
 
-	public DrilldownComponentRuleList(Resource resource, String scope, ClickHandler clickHandler, String pageID, PathComponent controller) {
-
-		this.resource=resource;
-		this.pageID = pageID;
+	public DrilldownComponentRuleList(PathComponent controller) {
+		super();
 		this.controller=controller;
 		controller.setRuleList(this);
-		
-		this.setStyleName("scrollable");
 		setGrid(new Grid(0, gridColumnCount()));
 	}
 
 	@Override
 	public Widget createHeader() {
-		return new Label("");
+		return new Label("Rule Drilldown");
 	}
 
 	@Override
@@ -82,7 +77,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 	
 	private void renderIconCells(Measure measure, int row ) {
-		getGrid().setWidget(row, 0, new HTML("<a href=\"" + Links.urlForResourcePage(resource.getKey(), pageID, "rule="+measure.getRuleKey())+"\">" + getIcon(measure.getRuleSeverity()) + "</a>"));
+		getGrid().setWidget(row, 0, new HTML(getIcon(measure.getRuleSeverity())));
 		getGrid().getCellFormatter().setStyleName(row, 0, getRowCssClass(row, false));
 	}
 
@@ -139,7 +134,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		setSelectedItem((Measure)element.getPropertyObject("measure"));
-		
 		controller.onSelectedItemChanged("rule");
 	}
 	
