@@ -2,21 +2,13 @@ package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.sonar.gwt.Links;
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,13 +19,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
 	private PathComponent controller;
-	private Measure selectedItem;
 
 	public DrilldownComponentRuleList(PathComponent controller) {
 		super();
 		this.controller=controller;
 		controller.setRuleList(this);
-		setGrid(new Grid(0, gridColumnCount()));
+		Grid grid = new Grid(0, gridColumnCount());
+		grid.setStyleName("spaced");
+		setGrid(grid);
 	}
 
 	@Override
@@ -43,7 +36,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public int gridColumnCount() {
-		return 4;
+		return 3;
 	}
 	
 	
@@ -100,41 +93,48 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public String getItemIdentifier(Measure item) {
-		return item.getMetricKey();
+		return item.getRuleKey();
 	}
 
-	@Override
-	public Measure getSelectedItem(){
-		return selectedItem;
-	}
-	public void setSelectedItem(Measure item){
-		this.selectedItem=item;
-	}
-
-	protected void addMeasures(List<Measure> measures){
-		int gridCount = getGrid().getRowCount();
-		getGrid().resizeRows(gridCount+measures.size());
+	public void addMeasures(List<Measure> measures){
+		int row = getGrid().getRowCount();
+		getGrid().resizeRows(row+measures.size());		
+		
+		Map<String, Integer> hashmap= new HashMap<String,Integer>();
+		
 		for (Measure measure : measures)
 		{
-			renderIconCells(measure, gridCount);
-			renderNameCell(measure, gridCount, 2);
-			renderValueCell(measure, gridCount, 3);
-			gridCount++;
+			renderIconCells(measure, row);
+			renderNameCell(measure, row, 1);
+			renderValueCell(measure, row, 2);
+			
+			hashmap.put(getItemIdentifier(measure), new Integer(row));
+			
+			row++;
 		}
+		
+		if(containsSelectedItem())
+			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+		
+		this.setHashmap(hashmap);
 	}
 	
 	protected void reloadBegin(){
 		getGrid().resizeRows(0);
 	}
-	protected void reloadFinished(){
+	public void reloadFinished(){
 		render(getGrid());
 	}
 
-	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		setSelectedItem((Measure)element.getPropertyObject("measure"));
-		controller.onSelectedItemChanged("rule");
+
+		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
+
+		if(selectedMeasure != null)
+		{
+			this.setSelectedItem(selectedMeasure);
+			controller.onSelectedItemChanged("rule");
+		} 	
 	}
-	
 }

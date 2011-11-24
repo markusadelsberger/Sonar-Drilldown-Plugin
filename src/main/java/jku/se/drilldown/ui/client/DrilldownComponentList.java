@@ -3,12 +3,11 @@ package jku.se.drilldown.ui.client;
 import java.util.List;
 import java.util.Map;
 
+
 import org.sonar.gwt.ui.Loading;
 
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -59,12 +58,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	protected void loadData() {
 		data.clear();
 		data.add(new Loading());
-		try{
-			doLoadData();
-		}catch(Exception e){
-			Window.alert("Exception in loadData: "+e.toString());
-		}
-		
+		doLoadData();
 	}
 	
 	public abstract void doLoadData();
@@ -139,6 +133,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	public void setHashmap(Map<String,Integer> hashmap)
 	{
 		this.hashmap= hashmap;
+	}
+	
+	public Map<String,Integer> getHashmap()
+	{
+		return this.hashmap;
 	}
 	
 	public T getSelectedItem()
