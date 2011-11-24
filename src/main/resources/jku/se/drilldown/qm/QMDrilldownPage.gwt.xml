@@ -4,7 +4,9 @@
   <inherits name="com.google.gwt.json.JSON"/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="org.sonar.Sonar"/>
-
+  <!-- 
+  <inherits name="org.spqr.base.sqpr"/>
+ -->
   <entry-point class='jku.se.drilldown.qm.client.PagePanel'/>
 
   <extend-property name="locale" values="en"/>

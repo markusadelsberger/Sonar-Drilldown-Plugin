@@ -38,6 +38,13 @@
       <version>2.0.1</version>
       <scope>provided</scope>
     </dependency>
+ 
+	<dependency>
+		<groupId>org.spqr.base</groupId>
+		<artifactId>spqr</artifactId>
+		<version>1.0</version>
+		<scope>compile</scope>
+	</dependency> 
 
     <!-- unit tests -->
     <dependency>
@@ -49,7 +56,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.2</version>
+      <version>4.8.2</version> 
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -83,12 +90,11 @@
             </configuration>
             <goals>
               <goal>compile</goal>
-          <!--     <goal>generateAsync</goal> -->
             </goals>
           </execution>
         </executions>
       </plugin>
-       
+        
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

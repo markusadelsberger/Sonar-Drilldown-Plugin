@@ -147,6 +147,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
 		
+
     	if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 		{
     	    // register listener to the component

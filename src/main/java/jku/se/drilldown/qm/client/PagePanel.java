@@ -2,13 +2,13 @@ package jku.se.drilldown.qm.client;
 
 
 import jku.se.drilldown.qm.client.ui.PathComponent;
+import jku.se.drilldown.qm.client.ui.QualityModelOverview;
 import jku.se.drilldown.qm.client.ui.RuleDrilldownComponent;
 import jku.se.drilldown.qm.client.ui.StructureDrilldownComponent;
 
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,6 +32,8 @@ public class PagePanel extends Page{
 	    panel.add(comp);
 	    panel.add(struct);
 	    panel.add(controller);
+	    
+	    panel.add(new QualityModelOverview());
 	    return panel;
 	}
 
