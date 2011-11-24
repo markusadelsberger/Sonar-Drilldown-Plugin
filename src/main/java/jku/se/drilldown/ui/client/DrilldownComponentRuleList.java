@@ -113,10 +113,12 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 			row++;
 		}
 		
+		this.setHashmap(hashmap);
+		
 		if(containsSelectedItem())
 			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 		
-		this.setHashmap(hashmap);
+		
 	}
 	
 	protected void reloadBegin(){
