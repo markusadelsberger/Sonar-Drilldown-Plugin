@@ -35,7 +35,9 @@ public class BenchmarkViewerPanel extends Page {
 	private PathComponent pathComponent;
 	private QuantilDrilldown quantilDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
+	private StructureDrilldownComponent structureComponent;
 	private Resource resource;
+	private DrilldownController drilldownController;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
@@ -43,17 +45,23 @@ public class BenchmarkViewerPanel extends Page {
 		this.resource=resource;
 		
 		try{
-			this.pathComponent = new PathComponent();
-			
 			mainPanel= new HorizontalPanel();
 			rightPanel=new HorizontalPanel();
 			leftPanel=new HorizontalPanel();
 			
-			leftPanel.setWidth("200px");
+			leftPanel.setWidth("100px");
 			rightPanel.setWidth("100%");
 			
-			quantilDrilldown=new QuantilDrilldown(pathComponent);
-			drilldownComponentRuleList=new DrilldownComponentRuleList(pathComponent);
+			drilldownController = new DrilldownController();
+			pathComponent = new PathComponent(drilldownController);
+			quantilDrilldown=new QuantilDrilldown(drilldownController);
+			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
+			
+			drilldownController.setPathComponent(pathComponent);
+			drilldownController.setRuleList(drilldownComponentRuleList);
+			drilldownController.setSeveretyDrilldown(quantilDrilldown);
+			drilldownController.setStructureDrilldown(structureComponent);
 			
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
@@ -65,7 +73,7 @@ public class BenchmarkViewerPanel extends Page {
 			
 			panel.add(mainPanel);
 			
-			panel.add(new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent));
+			panel.add(structureComponent);
 			panel.add(pathComponent);
 		}catch (Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));

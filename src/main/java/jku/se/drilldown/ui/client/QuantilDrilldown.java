@@ -1,7 +1,9 @@
 package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -25,13 +27,17 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 
-	private PathComponent controller;
+	private ComponentController controller;
 	private List<Measure> selectedItem;
+	private String severety;
+	private HashMap<String, List<Measure>> hashmap;
 
-	public QuantilDrilldown(PathComponent controller) {
+	public QuantilDrilldown(ComponentController controller) {
 		super();
 		this.controller=controller;
-		controller.setSeveretyDrilldownList(this);
+		selectedItem=null;
+		severety=null;
+		hashmap = new HashMap<String, List<Measure>>();
 	}
 	
 	@Override
@@ -57,11 +63,17 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 	public void doLoadData()
 	{
 		setGrid(new Grid(5,gridColumnCount()));
-		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));			
+		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));	
 		getGrid().setWidget(1, 0, new HTML(Icons.get().priorityCritical().getHTML()));		
 		getGrid().setWidget(2, 0, new HTML(Icons.get().priorityMajor().getHTML()));
 		getGrid().setWidget(3, 0, new HTML(Icons.get().priorityMinor().getHTML()));
 		getGrid().setWidget(4, 0, new HTML(Icons.get().priorityInfo().getHTML()));
+		
+		getGrid().getRowFormatter().setStyleName(0, getRowCssClass(0, false));
+		getGrid().getRowFormatter().setStyleName(1, getRowCssClass(1, false));
+		getGrid().getRowFormatter().setStyleName(2, getRowCssClass(2, false));
+		getGrid().getRowFormatter().setStyleName(3, getRowCssClass(3, false));
+		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
 		
 	}
 	
@@ -81,23 +93,41 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 
 	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
 		Anchor a = new Anchor(name);
-		a.getElement().setPropertyObject("assignedList", measures);
+		a.getElement().setId(name);
 		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
+		hashmap.put(name, measures);
 	}
 	
 	@Override
 	public List<Measure> getSelectedItem(){
-		return selectedItem;
+		if(selectedItem!=null){
+			return selectedItem;
+		}else{
+			Set<String> keyset = hashmap.keySet();
+			List<Measure> measureList = new LinkedList<Measure>();
+			for(String s : keyset){
+				measureList.addAll(hashmap.get(s));
+			}
+			return measureList;
+		}
+		
 	}
-	public void setSelectedItem(List<Measure> item){
-		this.selectedItem=item;
+	
+	public void setSelectedItem(String name){
+		this.selectedItem=hashmap.get(name);
+	}
+	
+	public String getSelectedSeverety(){
+		return severety;
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		setSelectedItem((List<Measure>)element.getPropertyObject("assignedList"));
+		severety = element.getInnerText();
+		setSelectedItem(element.getId());
 		controller.onSelectedItemChanged("severety");
 	}
+
 }

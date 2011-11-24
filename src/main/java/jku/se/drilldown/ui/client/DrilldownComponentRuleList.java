@@ -26,13 +26,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
-	private PathComponent controller;
+	private ComponentController controller;
 	private Measure selectedItem;
 
-	public DrilldownComponentRuleList(PathComponent controller) {
+	public DrilldownComponentRuleList(ComponentController controller) {
 		super();
 		this.controller=controller;
-		controller.setRuleList(this);
 		setGrid(new Grid(0, gridColumnCount()));
 	}
 
@@ -49,9 +48,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	
 	@Override
 	public void renderRow(Measure item, int row) {
-		//renderIconCells(item, row);
-		//renderNameCell( item, row, 2);
-		//renderValueCell( item, row, 3);
+		renderIconCells(item, row);
+		renderNameCell( item, row, 2);
+		renderValueCell( item, row, 3);
+		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
 	}
 
 	@Override
@@ -78,7 +78,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	
 	private void renderIconCells(Measure measure, int row ) {
 		getGrid().setWidget(row, 0, new HTML(getIcon(measure.getRuleSeverity())));
-		getGrid().getCellFormatter().setStyleName(row, 0, getRowCssClass(row, false));
 	}
 
 	private void renderNameCell(final Measure measure, int row, int column) {
@@ -90,12 +89,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		link.addClickHandler(this);
 
 		getGrid().setWidget(row, column, link);
-		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
 	}
 
 	private void renderValueCell(Measure measure, int row, int column) {
 		getGrid().setHTML(row, column, String.valueOf(measure.getIntValue()));
-		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
 	}
 
 	@Override
@@ -116,9 +113,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		getGrid().resizeRows(gridCount+measures.size());
 		for (Measure measure : measures)
 		{
-			renderIconCells(measure, gridCount);
-			renderNameCell(measure, gridCount, 2);
-			renderValueCell(measure, gridCount, 3);
+			renderRow(measure, gridCount);
 			gridCount++;
 		}
 	}
