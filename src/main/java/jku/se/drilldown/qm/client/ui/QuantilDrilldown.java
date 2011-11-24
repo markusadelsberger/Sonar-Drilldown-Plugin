@@ -4,11 +4,9 @@ import java.util.List;
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -21,15 +19,15 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 	private PathComponent controller;
 	private List<Measure> selectedItem;
 
-	public QuantilDrilldown(Resource resource, String scope, ClickHandler clickHandler, String pageID, PathComponent controller) {
-
+	public QuantilDrilldown(PathComponent controller) {
+		super();
 		this.controller=controller;
 		controller.setSeveretyDrilldownList(this);
 	}
 	
 	@Override
 	public Widget createHeader() {
-		return new Label("");
+		return new Label("Severety");
 	}
 
 
@@ -49,7 +47,7 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 	@Override
 	public void doLoadData()
 	{
-		setGrid(new Grid(5,3));
+		setGrid(new Grid(5,gridColumnCount()));
 		getGrid().setWidget(0, 0, new HTML(Icons.get().priorityBlocker().getHTML()));			
 		getGrid().setWidget(1, 0, new HTML(Icons.get().priorityCritical().getHTML()));		
 		getGrid().setWidget(2, 0, new HTML(Icons.get().priorityMajor().getHTML()));
@@ -58,11 +56,11 @@ public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
 		
 	}
 	
-	protected void addMeasures(int row, int violations){
+	public void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
 	}
 	
-	protected void reloadFinished(){
+	public void reloadFinished(){
 		render(getGrid());
 	}
 

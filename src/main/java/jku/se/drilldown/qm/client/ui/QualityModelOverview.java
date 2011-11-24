@@ -18,8 +18,25 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-
+ 
+/**
+ * For use import sqpr.jar
+ * 
+ * Add following entry into pom.xml 
+ * 
+ * <dependency>
+ *		<groupId>org.spqr.base</groupId>
+ *		<artifactId>spqr</artifactId>
+ *		<version>1.0</version>
+ *		<scope>compile</scope>
+ *	</dependency> 
+ * 
+ * Store file sqpr-1.0.jar under: /User/.m2/repository/org/spqr/base/sqpr/1.0/sqpr-1.0.jar
+ * 
+ * 
+ * @author Johannes
+ *
+ */
 public class QualityModelOverview extends DrilldownComponent {
 
 	

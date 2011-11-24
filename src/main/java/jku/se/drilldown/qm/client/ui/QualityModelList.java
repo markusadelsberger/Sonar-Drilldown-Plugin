@@ -19,6 +19,14 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+
+/**
+ * NOT IN USE, so far 
+ * 
+ * 
+ * @author Johannes
+ *
+ */
 public class QualityModelList extends DrilldownComponentList<Resource>{
 
 	public void onClick(ClickEvent event) {

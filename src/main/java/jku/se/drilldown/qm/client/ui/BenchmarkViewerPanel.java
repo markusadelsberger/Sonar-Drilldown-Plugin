@@ -4,81 +4,67 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.sonar.gwt.Metrics;
+import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class RuleDrilldownComponent extends DrilldownComponent implements ClickHandler {
-	
-	private Resource resource;
+public class BenchmarkViewerPanel extends Page {
 	private HorizontalPanel mainPanel;
 	private Panel rightPanel;
 	private Panel leftPanel;
-	
+	private PathComponent pathComponent;
 	private QuantilDrilldown quantilDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
-	private PathComponent pathComponent;
+	private Resource resource;
 	
-	
-	public RuleDrilldownComponent(Resource resource, PathComponent pathComponent){
+	@Override
+	protected Widget doOnResourceLoad(Resource resource) {
+		VerticalPanel panel = new VerticalPanel();
 		this.resource=resource;
+		
 		try{
-			mainPanel= new HorizontalPanel();
+			this.pathComponent = new PathComponent();
 			
+			mainPanel= new HorizontalPanel();
 			rightPanel=new HorizontalPanel();
 			leftPanel=new HorizontalPanel();
 			
-			mainPanel.add(leftPanel);
-			mainPanel.add(rightPanel);
-			this.pathComponent = pathComponent;
+			leftPanel.setWidth("200px");
+			rightPanel.setWidth("100%");
 			
-			initWidget(mainPanel);
-		}catch (Exception e){
-			mainPanel.add(new Label("RuleDrilldownComponent: "+e.toString()));
-		}
-		
-	}
-	
-	@Override
-	public void onLoad(){
-		final ClickHandler clickHandler = this;
-		try{
-			quantilDrilldown=new QuantilDrilldown(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent);
-			drilldownComponentRuleList=new DrilldownComponentRuleList(resource, Resource.SCOPE_ENTITY, clickHandler, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent);
+			quantilDrilldown=new QuantilDrilldown(pathComponent);
+			drilldownComponentRuleList=new DrilldownComponentRuleList(pathComponent);
 			
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(quantilDrilldown);
 			rightPanel.add(drilldownComponentRuleList);
-		}catch(Exception e){
-			mainPanel.add(new Label("RuleDrilldownComponent later: "+e.toString()));
+			
+			mainPanel.add(leftPanel);
+			mainPanel.add(rightPanel);
+			
+			panel.add(mainPanel);
+			
+			panel.add(new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", pathComponent));
+			panel.add(pathComponent);
+		}catch (Exception e){
+			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}
 		
+		return panel;
+
 	}
 	
-	public void onClick(ClickEvent event) {
-		try{
-			Element element = event.getRelativeElement();
-			List<Measure> measureList = (List<Measure>)element.getPropertyObject("assignedList");
-			drilldownComponentRuleList.reloadBegin();
-			drilldownComponentRuleList.addMeasures(measureList);
-			drilldownComponentRuleList.reloadFinished();
-		}catch(Exception e){
-			Window.alert(e.toString());
-		}
-		
-	}
+	
 	
 	private void loadRuleDataForMetric(final String metric){
 		Sonar.getInstance().find(getQuery(metric), new AbstractCallback<Resource>() {
@@ -153,7 +139,7 @@ public class RuleDrilldownComponent extends DrilldownComponent implements ClickH
 				if(infoCount>0){
 					drilldownComponentRuleList.addMeasures(infoList);
 				}
-				
+					
 				quantilDrilldown.reloadFinished();
 				drilldownComponentRuleList.reloadFinished();
 			}

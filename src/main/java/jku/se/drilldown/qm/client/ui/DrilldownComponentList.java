@@ -135,6 +135,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		this.hashmap= hashmap;
 	}
 	
+	public Map<String,Integer> getHashmap()
+	{
+		return this.hashmap;
+	}
+	
 	public T getSelectedItem()
 	{
 		return this.selectedItem;
