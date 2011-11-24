@@ -30,7 +30,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
-	private QuantilDrilldown quantilDrilldown;
+	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownController drilldownController;
 	
 	public PathComponent(DrilldownController drilldownController)
@@ -67,8 +67,8 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		this.structureDrilldown=structureDrilldown;
 	}
 	
-	public void setSeveretyDrilldownList(QuantilDrilldown quantilDrilldown){
-		this.quantilDrilldown=quantilDrilldown;
+	public void setSeveretyDrilldownList(SeveretyDrilldown severetyDrilldown){
+		this.severetyDrilldown=severetyDrilldown;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -131,7 +131,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 			}
 		}
 		else if(component.equals("severety")){
-			List<Measure> measureList = quantilDrilldown.getSelectedItem();
+			List<Measure> measureList = severetyDrilldown.getSelectedItem();
 			ruleList.reloadBegin();
 			ruleList.addMeasures(measureList);
 			ruleList.reloadFinished();

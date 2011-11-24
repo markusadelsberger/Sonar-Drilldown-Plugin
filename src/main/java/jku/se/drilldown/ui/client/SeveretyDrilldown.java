@@ -25,14 +25,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class QuantilDrilldown extends DrilldownComponentList<List<Measure>> {
+public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
 	private ComponentController controller;
 	private List<Measure> selectedItem;
 	private String severety;
 	private HashMap<String, List<Measure>> hashmap;
 
-	public QuantilDrilldown(ComponentController controller) {
+	public SeveretyDrilldown(ComponentController controller) {
 		super();
 		this.controller=controller;
 		selectedItem=null;

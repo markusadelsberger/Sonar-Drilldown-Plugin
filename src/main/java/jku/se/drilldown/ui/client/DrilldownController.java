@@ -16,7 +16,7 @@ public class DrilldownController implements ComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
-	private QuantilDrilldown quantilDrilldown;
+	private SeveretyDrilldown severetyDrilldown;
 	private PathComponent pathComponent;
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
@@ -27,8 +27,8 @@ public class DrilldownController implements ComponentController{
 		this.ruleList = ruleList;
 	}
 	
-	public void setSeveretyDrilldown(QuantilDrilldown quantilDrilldown){
-		this.quantilDrilldown = quantilDrilldown;
+	public void setSeveretyDrilldown(SeveretyDrilldown severetyDrilldown){
+		this.severetyDrilldown = severetyDrilldown;
 	}
 	
 	public void setPathComponent(PathComponent pathComponent){
@@ -59,14 +59,14 @@ public class DrilldownController implements ComponentController{
 			}
 		}
 		else if(component.equals("severety")){
-			List<Measure> measureList = quantilDrilldown.getSelectedItem();
+			List<Measure> measureList = severetyDrilldown.getSelectedItem();
 			ruleList.reloadBegin();
 			ruleList.addMeasures(measureList);
 			ruleList.reloadFinished();
 			
 			String severety;
-			if(quantilDrilldown.getSelectedSeverety()!=null){
-				severety = quantilDrilldown.getSelectedSeverety();
+			if(severetyDrilldown.getSelectedSeverety()!=null){
+				severety = severetyDrilldown.getSelectedSeverety();
 			}else{
 				severety = "";
 			}
@@ -93,10 +93,10 @@ public class DrilldownController implements ComponentController{
 		}
 		else if (element.equals("severety"))
 		{
-			quantilDrilldown.setSelectedItem("All");
+			severetyDrilldown.setSelectedItem("All");
 			structureDrilldown.setSelectedPackage(null);
 			ruleList.reloadBegin();
-			ruleList.addMeasures(quantilDrilldown.getSelectedItem());
+			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
 			ruleList.reloadFinished();
 			pathComponent.setElement(" ", 1, null);
 		}

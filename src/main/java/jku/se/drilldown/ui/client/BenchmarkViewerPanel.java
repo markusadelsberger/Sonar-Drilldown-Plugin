@@ -33,7 +33,7 @@ public class BenchmarkViewerPanel extends Page {
 	private Panel rightPanel;
 	private Panel leftPanel;
 	private PathComponent pathComponent;
-	private QuantilDrilldown quantilDrilldown;
+	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
 	private Resource resource;
@@ -54,18 +54,18 @@ public class BenchmarkViewerPanel extends Page {
 			
 			drilldownController = new DrilldownController();
 			pathComponent = new PathComponent(drilldownController);
-			quantilDrilldown=new QuantilDrilldown(drilldownController);
+			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
 			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
-			drilldownController.setSeveretyDrilldown(quantilDrilldown);
+			drilldownController.setSeveretyDrilldown(severetyDrilldown);
 			drilldownController.setStructureDrilldown(structureComponent);
 			
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
-			leftPanel.add(quantilDrilldown);
+			leftPanel.add(severetyDrilldown);
 			rightPanel.add(drilldownComponentRuleList);
 			
 			mainPanel.add(leftPanel);
@@ -126,20 +126,20 @@ public class BenchmarkViewerPanel extends Page {
 						infoCount+=measure.getIntValue();
 					}
 				}
-				quantilDrilldown.addMeasures(0, blockerCount);
-				quantilDrilldown.addDrilldownAnchor("Blocker", 0, blockerList);
+				severetyDrilldown.addMeasures(0, blockerCount);
+				severetyDrilldown.addDrilldownAnchor("Blocker", 0, blockerList);
 				
-				quantilDrilldown.addMeasures(1, criticalCount);
-				quantilDrilldown.addDrilldownAnchor("Critical", 1, criticalList);
+				severetyDrilldown.addMeasures(1, criticalCount);
+				severetyDrilldown.addDrilldownAnchor("Critical", 1, criticalList);
 				
-				quantilDrilldown.addMeasures(2, majorCount);
-				quantilDrilldown.addDrilldownAnchor("Major", 2, majorList);
+				severetyDrilldown.addMeasures(2, majorCount);
+				severetyDrilldown.addDrilldownAnchor("Major", 2, majorList);
 				
-				quantilDrilldown.addMeasures(3, minorCount);
-				quantilDrilldown.addDrilldownAnchor("Minor", 3, minorList);
+				severetyDrilldown.addMeasures(3, minorCount);
+				severetyDrilldown.addDrilldownAnchor("Minor", 3, minorList);
 				
-				quantilDrilldown.addMeasures(4, infoCount);
-				quantilDrilldown.addDrilldownAnchor("Info", 4, infoList);
+				severetyDrilldown.addMeasures(4, infoCount);
+				severetyDrilldown.addDrilldownAnchor("Info", 4, infoList);
 				
 				if(blockerCount>0){
 					drilldownComponentRuleList.addMeasures(blockerList);
@@ -159,7 +159,7 @@ public class BenchmarkViewerPanel extends Page {
 					drilldownComponentRuleList.addMeasures(infoList);
 				}
 					
-				quantilDrilldown.reloadFinished();
+				severetyDrilldown.reloadFinished();
 				drilldownComponentRuleList.reloadFinished();
 			}
 
