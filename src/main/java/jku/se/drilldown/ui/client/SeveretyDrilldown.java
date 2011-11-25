@@ -1,10 +1,7 @@
 package jku.se.drilldown.ui.client;
 
-<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.LinkedList;
-=======
->>>>>>> 9eeb8f3fd72b2729f20bcfba71b37bd27dfb3091
 import java.util.List;
 import java.util.Set;
 
@@ -80,11 +77,11 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		
 	}
 	
-	protected void addMeasures(int row, int violations){
+	public void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
 	}
 	
-	protected void reloadFinished(){
+	public void reloadFinished(){
 		render(getGrid());
 	}
 

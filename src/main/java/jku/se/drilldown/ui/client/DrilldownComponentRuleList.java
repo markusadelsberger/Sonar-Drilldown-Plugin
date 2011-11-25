@@ -2,6 +2,7 @@ package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -26,13 +27,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
-	private ComponentController controller;
+	private DrilldownController controller;
 	private Measure selectedItem;
 
-	public DrilldownComponentRuleList(ComponentController controller) {
+	public DrilldownComponentRuleList(DrilldownController controller) {
 		super();
 		this.controller=controller;
-		setGrid(new Grid(0, gridColumnCount()));
+		controller.setRuleList(this);
+		Grid grid = new Grid(0, gridColumnCount());
+		grid.setStyleName("spaced");
+		setGrid(grid);
 	}
 
 	@Override
@@ -109,13 +113,22 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 
 	protected void addMeasures(List<Measure> measures){
-		int gridCount = getGrid().getRowCount();
-		getGrid().resizeRows(gridCount+measures.size());
+		int row = getGrid().getRowCount();
+		getGrid().resizeRows(row+measures.size());
+
+		Map<String, Integer> hashmap= new HashMap<String,Integer>();
+
 		for (Measure measure : measures)
 		{
-			renderRow(measure, gridCount);
-			gridCount++;
+			renderRow(measure, row);
+			hashmap.put(getItemIdentifier(measure), new Integer(row));
+			row++;
 		}
+
+		this.setHashmap(hashmap);
+
+		if(containsSelectedItem())
+			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 	}
 	
 	protected void reloadBegin(){
@@ -128,8 +141,12 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		setSelectedItem((Measure)element.getPropertyObject("measure"));
-		controller.onSelectedItemChanged("rule");
+		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
+		if(selectedMeasure != null)
+		{
+			this.setSelectedItem(selectedMeasure);
+			controller.onSelectedItemChanged("rule");
+		} 
 	}
 	
 }
