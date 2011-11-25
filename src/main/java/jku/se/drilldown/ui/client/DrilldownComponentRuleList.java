@@ -1,6 +1,7 @@
 package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
 	private DrilldownController controller;
-	private Measure selectedItem;
+	private DrilldownModel drilldownModel;
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
 		super();
@@ -37,6 +38,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		Grid grid = new Grid(0, gridColumnCount());
 		grid.setStyleName("spaced");
 		setGrid(grid);
+		drilldownModel=controller.getModel();
 	}
 
 	@Override
@@ -106,29 +108,18 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public Measure getSelectedItem(){
-		return selectedItem;
-	}
-	public void setSelectedItem(Measure item){
-		this.selectedItem=item;
+		return drilldownModel.getActiveMeasure();
 	}
 
 	protected void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
 		getGrid().resizeRows(row+measures.size());
 
-		Map<String, Integer> hashmap= new HashMap<String,Integer>();
-
 		for (Measure measure : measures)
 		{
 			renderRow(measure, row);
-			hashmap.put(getItemIdentifier(measure), new Integer(row));
 			row++;
 		}
-
-		this.setHashmap(hashmap);
-
-		if(containsSelectedItem())
-			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 	}
 	
 	protected void reloadBegin(){
@@ -144,9 +135,29 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
 		if(selectedMeasure != null)
 		{
-			this.setSelectedItem(selectedMeasure);
+			drilldownModel.setActiveMeasure(selectedMeasure);
 			controller.onSelectedItemChanged("rule");
 		} 
+	}
+	
+	public void reload(){
+		String activeElement = drilldownModel.getActiveElement("Severety");
+		if(activeElement!=null){
+			List<Measure> measureList = drilldownModel.getList(activeElement);
+			reloadBegin();
+			addMeasures(measureList);
+			reloadFinished();
+		}else{
+			List<Measure> measureList = new LinkedList<Measure>();
+			measureList.addAll(drilldownModel.getList("Blocker"));
+			measureList.addAll(drilldownModel.getList("Critical"));
+			measureList.addAll(drilldownModel.getList("Major"));
+			measureList.addAll(drilldownModel.getList("Minor"));
+			measureList.addAll(drilldownModel.getList("Info"));
+			reloadBegin();
+			addMeasures(measureList);
+			reloadFinished();
+		}
 	}
 	
 }

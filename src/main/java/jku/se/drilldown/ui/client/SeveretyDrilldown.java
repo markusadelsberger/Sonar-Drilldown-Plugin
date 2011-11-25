@@ -27,17 +27,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
-	private ComponentController controller;
-	private List<Measure> selectedItem;
-	private String severety;
-	private HashMap<String, List<Measure>> hashmap;
+	private DrilldownController controller;
+	private DrilldownModel drilldownModel;
 
-	public SeveretyDrilldown(ComponentController controller) {
+	public SeveretyDrilldown(DrilldownController controller) {
 		super();
 		this.controller=controller;
-		selectedItem=null;
-		severety=null;
-		hashmap = new HashMap<String, List<Measure>>();
+		drilldownModel=controller.getModel();
 	}
 	
 	@Override
@@ -74,7 +70,6 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getRowFormatter().setStyleName(2, getRowCssClass(2, false));
 		getGrid().getRowFormatter().setStyleName(3, getRowCssClass(3, false));
 		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
-		
 	}
 	
 	public void addMeasures(int row, int violations){
@@ -91,43 +86,32 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		return null;
 	}
 
-	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
+	public void addDrilldownAnchor(String name, int row){
 		Anchor a = new Anchor(name);
 		a.getElement().setId(name);
 		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
-		hashmap.put(name, measures);
-	}
-	
-	@Override
-	public List<Measure> getSelectedItem(){
-		if(selectedItem!=null){
-			return selectedItem;
-		}else{
-			Set<String> keyset = hashmap.keySet();
-			List<Measure> measureList = new LinkedList<Measure>();
-			for(String s : keyset){
-				measureList.addAll(hashmap.get(s));
-			}
-			return measureList;
-		}
-		
-	}
-	
-	public void setSelectedItem(String name){
-		this.selectedItem=hashmap.get(name);
-	}
-	
-	public String getSelectedSeverety(){
-		return severety;
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		severety = element.getInnerText();
-		setSelectedItem(element.getId());
+		String severety = element.getInnerText();
+		drilldownModel.setActiveElement("Severety", severety);
 		controller.onSelectedItemChanged("severety");
 	}
-
+	
+	public void reload(){
+		addMeasures(0, drilldownModel.getCount("Blocker"));
+		addMeasures(1, drilldownModel.getCount("Critical"));
+		addMeasures(2, drilldownModel.getCount("Major"));
+		addMeasures(3, drilldownModel.getCount("Minor"));
+		addMeasures(4, drilldownModel.getCount("Info"));
+		
+		addDrilldownAnchor("Blocker", 0);
+		addDrilldownAnchor("Critical", 1);
+		addDrilldownAnchor("Major", 2);
+		addDrilldownAnchor("Minor", 3);
+		addDrilldownAnchor("Info", 4);
+	}
 }

@@ -16,8 +16,8 @@ public class DrilldownController implements ComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
-	private SeveretyDrilldown severetyDrilldown;
 	private PathComponent pathComponent;
+	private DrilldownModel drilldownModel;
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
 		this.structureDrilldown = structureDrilldown;
@@ -27,12 +27,12 @@ public class DrilldownController implements ComponentController{
 		this.ruleList = ruleList;
 	}
 	
-	public void setSeveretyDrilldown(SeveretyDrilldown severetyDrilldown){
-		this.severetyDrilldown = severetyDrilldown;
-	}
-	
 	public void setPathComponent(PathComponent pathComponent){
 		this.pathComponent = pathComponent;
+	}
+	
+	public void setModel(DrilldownModel drilldownModel){
+		this.drilldownModel=drilldownModel;
 	}
 	
 	@Override
@@ -59,18 +59,10 @@ public class DrilldownController implements ComponentController{
 			}
 		}
 		else if(component.equals("severety")){
-			List<Measure> measureList = severetyDrilldown.getSelectedItem();
-			ruleList.reloadBegin();
-			ruleList.addMeasures(measureList);
-			ruleList.reloadFinished();
-			
-			String severety;
-			if(severetyDrilldown.getSelectedSeverety()!=null){
-				severety = severetyDrilldown.getSelectedSeverety();
-			}else{
-				severety = "";
-			}
+			String severety = drilldownModel.getActiveElement("Severety");
 			pathComponent.setElement(severety, 1, "severety");
+			drilldownModel.setActiveElement("Severety", severety);
+			ruleList.reload();
 		}
 	}
 	
@@ -93,13 +85,14 @@ public class DrilldownController implements ComponentController{
 		}
 		else if (element.equals("severety"))
 		{
-			severetyDrilldown.setSelectedItem("All");
+			drilldownModel.setActiveElement("Severety", null);
 			structureDrilldown.setSelectedPackage(null);
-			ruleList.reloadBegin();
-			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
-			ruleList.reloadFinished();
+			ruleList.reload();
 			pathComponent.setElement(" ", 1, null);
 		}
 	}
-
+	
+	public DrilldownModel getModel(){
+		return drilldownModel;
+	}
 }
