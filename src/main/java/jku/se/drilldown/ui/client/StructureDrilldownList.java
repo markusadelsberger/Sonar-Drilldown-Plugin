@@ -3,6 +3,7 @@ package jku.se.drilldown.ui.client;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
@@ -14,6 +15,7 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -145,9 +147,24 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
 		
-	    // register listener to the component
-    	link.addClickHandler(this);
 
+    	if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
+		{
+    	    // register listener to the component
+        	link.addClickHandler(this);
+		}
+    	else
+    	{
+    		link.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                	if(selectedMeasure != null)
+                		Links.openMeasurePopup(resource.getKey(), selectedMeasure.getMetricKey());
+                	else
+                		Links.openResourcePopup(resource.getKey());
+                }
+              });
+    	}
+    	
 		getGrid().setWidget(row, column, link);
 		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
 		
