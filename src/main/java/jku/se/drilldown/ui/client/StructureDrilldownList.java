@@ -2,7 +2,7 @@ package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -35,7 +35,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	private String pageID;
 	private Resource resource;
 	private String scope;
-	private Measure selectedMeasure;
+	
+	private List<Measure> selectedMeasures;
 	
 	// child list
 	private StructureDrilldownList next;
@@ -51,7 +52,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		this.pageID = pageID;
 		this.scope=scope;
 		
-		this.selectedMeasure=null;
+		this.selectedMeasures=null;
 		this.next=null;
 		this.prev=null;
 		
@@ -157,8 +158,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
     	{
     		link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	if(selectedMeasure != null)
-                		Links.openMeasurePopup(resource.getKey(), selectedMeasure.getMetricKey());
+                	if(selectedMeasures != null)
+                		Links.openMeasurePopup(resource.getKey(), selectedMeasures.get(0).getRuleKey());
                 	else
                 		Links.openResourcePopup(resource.getKey());
                 }
@@ -174,7 +175,21 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	}
 
 	private void renderValueCell(Resource resource, int row, int column) {
-		getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());
+		
+		if((this.selectedMeasures!=null) && (this.selectedMeasures.size()>0))
+		{
+			String value="";
+			//TODO: Wert stimmt nicht, wenn man eine Liste von Measures hat. 
+			for(Measure measure : resource.getMeasures())
+			{
+				value=value+ " "+resource.getMeasureValue(measure.getMetricKey());
+			}
+
+			getGrid().setHTML(row, column, ""+value);
+		}
+		else
+			getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());
+		
 		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
 	}
 
@@ -205,8 +220,19 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	    		.setScopes(scope)
 	    		.setDepth(-1);
 		
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
+		if(this.selectedMeasures!= null)
+		{
+			String[] selectedRuleKeys = new String[this.selectedMeasures.size()];
+			
+			int i =0;
+			for(Measure measure : selectedMeasures)
+			{
+				selectedRuleKeys[i]=measure.getRuleKey();
+				i++;
+			}
+					
+			query.setRules(selectedRuleKeys);
+		}
 		
 		return query;
 	}
@@ -232,9 +258,10 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		}
 	}
 	
-	public void setSelectedMeasure(Measure selectedMeasure) {
-		this.selectedMeasure = selectedMeasure;
+	public void setSelectedMeasures(List<Measure> selectedMeasures) {
+		this.selectedMeasures = selectedMeasures;
 	}
+	
 	
 	public void setNext(StructureDrilldownList next)
 	{

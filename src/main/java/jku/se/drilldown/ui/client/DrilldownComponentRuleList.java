@@ -4,20 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sonar.gwt.Links;
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,7 +19,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
 	private DrilldownController controller;
-	private Measure selectedItem;
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
 		super();
@@ -46,15 +36,15 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public int gridColumnCount() {
-		return 4;
+		return 3;
 	}
 	
 	
 	@Override
 	public void renderRow(Measure item, int row) {
 		renderIconCells(item, row);
-		renderNameCell( item, row, 2);
-		renderValueCell( item, row, 3);
+		renderNameCell( item, row, 1);
+		renderValueCell( item, row, 2);
 		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
 	}
 
@@ -101,18 +91,21 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public String getItemIdentifier(Measure item) {
-		return item.getMetricKey();
+		return item.getRuleKey();
 	}
 
+/* 
 	@Override
 	public Measure getSelectedItem(){
 		return selectedItem;
 	}
+	
+
 	public void setSelectedItem(Measure item){
 		this.selectedItem=item;
 	}
-
-	protected void addMeasures(List<Measure> measures){
+*/
+	public void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
 		getGrid().resizeRows(row+measures.size());
 
@@ -134,11 +127,11 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	protected void reloadBegin(){
 		getGrid().resizeRows(0);
 	}
-	protected void reloadFinished(){
+	
+	public void reloadFinished(){
 		render(getGrid());
 	}
 
-	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");

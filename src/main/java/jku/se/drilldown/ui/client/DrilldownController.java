@@ -5,13 +5,6 @@ import java.util.List;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-
 public class DrilldownController implements ComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
@@ -35,12 +28,30 @@ public class DrilldownController implements ComponentController{
 		this.pathComponent = pathComponent;
 	}
 	
-	@Override
 	public void onSelectedItemChanged(String component) {
-		if (component.equals("rule"))
+		
+		if(component.equals("severety")){
+			List<Measure> measureList = severetyDrilldown.getSelectedItem();
+			
+			ruleList.reloadBegin();
+			ruleList.addMeasures(measureList);
+			ruleList.reloadFinished();
+			
+			structureDrilldown.setSelectedRules(measureList);
+			
+			String severety;
+			if(severetyDrilldown.getSelectedSeverety()!=null){
+				severety = severetyDrilldown.getSelectedSeverety();
+			} else {
+				severety = "";
+			}
+			pathComponent.setElement(severety, 1, "severety");
+		} 
+		else if (component.equals("rule"))
 		{
 			Measure selectedMeasure = ruleList.getSelectedItem();
-			structureDrilldown.reloadLists(selectedMeasure);
+			
+			structureDrilldown.setSelectedRule(selectedMeasure);
 			pathComponent.setElement(selectedMeasure.getRuleName(), 2, "rule");
 		} 
 		else if(component.equals("structure"))
@@ -55,30 +66,25 @@ public class DrilldownController implements ComponentController{
 			
 			if (selectedPackage != null)
 			{
-				pathComponent.setElement(selectedPackage.getName(), 3, "package");
+				pathComponent.setElement(selectedPackage.getName(), 4, "package");
 			}
-		}
-		else if(component.equals("severety")){
-			List<Measure> measureList = severetyDrilldown.getSelectedItem();
-			ruleList.reloadBegin();
-			ruleList.addMeasures(measureList);
-			ruleList.reloadFinished();
-			
-			String severety;
-			if(severetyDrilldown.getSelectedSeverety()!=null){
-				severety = severetyDrilldown.getSelectedSeverety();
-			}else{
-				severety = "";
-			}
-			pathComponent.setElement(severety, 1, "severety");
 		}
 	}
 	
 	public void clearElement(String element){
-		if(element.equals("rule"))
+		if (element.equals("severety"))
+		{
+			severetyDrilldown.setSelectedItem("All");
+			structureDrilldown.setSelectedRules(null);
+			ruleList.reloadBegin();
+			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
+			ruleList.reloadFinished();
+			pathComponent.setElement(" ", 1, null);
+		} 
+		else if(element.equals("rule"))
 		{
 			ruleList.setSelectedItem(null);
-			structureDrilldown.reloadLists(null);
+			structureDrilldown.setSelectedRule(null);
 			pathComponent.setElement("Any rule >> ", 2, null);
 		} 
 		else if (element.equals("module"))
@@ -91,15 +97,5 @@ public class DrilldownController implements ComponentController{
 			structureDrilldown.setSelectedPackage(null);
 			pathComponent.setElement(" ", 4, null);
 		}
-		else if (element.equals("severety"))
-		{
-			severetyDrilldown.setSelectedItem("All");
-			structureDrilldown.setSelectedPackage(null);
-			ruleList.reloadBegin();
-			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
-			ruleList.reloadFinished();
-			pathComponent.setElement(" ", 1, null);
-		}
 	}
-
 }

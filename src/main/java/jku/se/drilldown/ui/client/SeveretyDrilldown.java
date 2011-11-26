@@ -5,19 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.sonar.gwt.Links;
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -122,7 +114,6 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		return severety;
 	}
 
-	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		severety = element.getInnerText();

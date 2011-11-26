@@ -1,6 +1,9 @@
 package jku.se.drilldown.ui.client;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
@@ -104,26 +107,44 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		}
 	}
 
-	public void reloadLists(Measure selectedMeasure)
+	public void setSelectedRule(Measure selectedMeasure)
+	{
+		if(selectedMeasure!=null)
+		{
+			List<Measure> selectedMeasures = new ArrayList<Measure>();
+			selectedMeasures.add(selectedMeasure);
+			
+			reloadLists(selectedMeasures);
+		}
+		else
+			reloadLists(null);
+	}
+	
+	public void setSelectedRules(List<Measure> selectedMeasures)
+	{
+		reloadLists(selectedMeasures);
+	}
+	
+	private void reloadLists(List<Measure> selectedMeasures)
 	{
 		StructureDrilldownList startReloadingComp = null;
 		
 		if(moduleList!= null)
 		{
-			moduleList.setSelectedMeasure(selectedMeasure);
+			moduleList.setSelectedMeasures(selectedMeasures);
 			startReloadingComp = moduleList;
 		}
 		
 		if(packageList!= null)
 		{
-			this.packageList.setSelectedMeasure(selectedMeasure);
+			this.packageList.setSelectedMeasures(selectedMeasures);
 			if(startReloadingComp==null)
 				startReloadingComp= packageList;
 		}
 	
 		if(fileList!= null)
 		{
-			this.fileList.setSelectedMeasure(selectedMeasure);
+			this.fileList.setSelectedMeasures(selectedMeasures);
 			if(startReloadingComp==null)
 				startReloadingComp= fileList;
 		}
@@ -131,7 +152,6 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		if(startReloadingComp != null)
 			startReloadingComp.loadData();
 	}
-
 	
 	public void setSelectedModule(Resource selectedModule)
 	{
