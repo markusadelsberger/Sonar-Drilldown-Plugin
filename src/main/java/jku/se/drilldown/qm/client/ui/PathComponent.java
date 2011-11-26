@@ -29,13 +29,14 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
-	private QuantilDrilldown quantilDrilldown;
+	private SeveretyDrilldown severetyDrilldown;
+	private DrilldownController drilldownController;
 	
-	public PathComponent()
+	public PathComponent(DrilldownController drilldownController)
 	{
 		this.structureDrilldown = null;
 		this.ruleList = null;
-		
+		this.drilldownController = drilldownController;
 		pathInformation = new Grid(1,5);
 		
 		initWidget(pathInformation);	
@@ -65,36 +66,16 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		this.structureDrilldown=structureDrilldown;
 	}
 	
-	public void setSeveretyDrilldownList(QuantilDrilldown quantilDrilldown){
-		this.quantilDrilldown=quantilDrilldown;
+	public void setSeveretyDrilldownList(SeveretyDrilldown severetyDrilldown){
+		this.severetyDrilldown=severetyDrilldown;
 	}
 
-	public void onClick(ClickEvent event) {
-				
+	public void onClick(ClickEvent event) {			
 		Element element = event.getRelativeElement();
 		
 		String clearItem = element.getAttribute("clearItem");
 		
-		if(clearItem.equals("rule"))
-		{
-			ruleList.setSelectedItem(null);
-			structureDrilldown.reloadLists(null);
-			
-			pathInformation.setWidget(0, 2, new Label("Any rule >> "));
-		} 
-		else if (clearItem.equals("module"))
-		{
-			structureDrilldown.setSelectedModule(null);
-			
-			pathInformation.setWidget(0, 3, new Label(" "));
-		}
-		else if (clearItem.equals("package"))
-		{
-			structureDrilldown.setSelectedPackage(null);
-			
-			pathInformation.setWidget(0, 4, new Label(" "));
-		}
-			
+		drilldownController.clearElement(clearItem);		
 	}
 
 	public void onSelectedItemChanged(String component) {
@@ -146,7 +127,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 			}
 		}
 		else if(component.equals("severety")){
-			List<Measure> measureList = quantilDrilldown.getSelectedItem();
+			List<Measure> measureList = severetyDrilldown.getSelectedItem();
 			ruleList.reloadBegin();
 			ruleList.addMeasures(measureList);
 			ruleList.reloadFinished();
@@ -162,5 +143,19 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 	    	pathInformation.setWidget(0, 1, panel);
 			
 		}
+	}
+	
+	public void setElement(String label, int column, String category){
+		HorizontalPanel panel = new HorizontalPanel();
+		panel.add(new Label(label));
+		
+		if(category!=null){
+			Anchor link = new Anchor("Clear");
+			link.getElement().setAttribute("clearItem", category);
+			link.addClickHandler(this);
+			panel.add(link);
+		}
+		
+    	pathInformation.setWidget(0, column, panel);
 	}
 }

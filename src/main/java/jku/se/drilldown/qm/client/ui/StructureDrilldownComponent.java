@@ -1,6 +1,8 @@
 package jku.se.drilldown.qm.client.ui;
 
 
+import java.util.List;
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
@@ -131,7 +133,6 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		if(startReloadingComp != null)
 			startReloadingComp.loadData();
 	}
-
 	
 	public void setSelectedModule(Resource selectedModule)
 	{

@@ -18,9 +18,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
-	private PathComponent controller;
+	private DrilldownController controller;
 
-	public DrilldownComponentRuleList(PathComponent controller) {
+	public DrilldownComponentRuleList(DrilldownController controller) {
 		super();
 		this.controller=controller;
 		controller.setRuleList(this);
@@ -42,9 +42,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	
 	@Override
 	public void renderRow(Measure item, int row) {
-		//renderIconCells(item, row);
-		//renderNameCell( item, row, 2);
-		//renderValueCell( item, row, 3);
+		renderIconCells(item, row);
+		renderNameCell( item, row, 1);
+		renderValueCell( item, row, 2);
+		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
 	}
 
 	@Override
@@ -71,7 +72,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	
 	private void renderIconCells(Measure measure, int row ) {
 		getGrid().setWidget(row, 0, new HTML(getIcon(measure.getRuleSeverity())));
-		getGrid().getCellFormatter().setStyleName(row, 0, getRowCssClass(row, false));
 	}
 
 	private void renderNameCell(final Measure measure, int row, int column) {
@@ -83,12 +83,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		link.addClickHandler(this);
 
 		getGrid().setWidget(row, column, link);
-		getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
 	}
 
 	private void renderValueCell(Measure measure, int row, int column) {
 		getGrid().setHTML(row, column, String.valueOf(measure.getIntValue()));
-		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
 	}
 
 	@Override
@@ -96,47 +94,52 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		return item.getRuleKey();
 	}
 
+/* 
+	@Override
+	public Measure getSelectedItem(){
+		return selectedItem;
+	}
+	
+
+	public void setSelectedItem(Measure item){
+		this.selectedItem=item;
+	}
+*/
 	public void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
-		getGrid().resizeRows(row+measures.size());		
-		
+		getGrid().resizeRows(row+measures.size());
+
 		Map<String, Integer> hashmap= new HashMap<String,Integer>();
-		
+
 		for (Measure measure : measures)
 		{
-			renderIconCells(measure, row);
-			renderNameCell(measure, row, 1);
-			renderValueCell(measure, row, 2);
-			
+			renderRow(measure, row);
 			hashmap.put(getItemIdentifier(measure), new Integer(row));
-			
 			row++;
 		}
-		
+
 		this.setHashmap(hashmap);
-		
+
 		if(containsSelectedItem())
 			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
-		
-		
 	}
 	
 	protected void reloadBegin(){
 		getGrid().resizeRows(0);
 	}
+	
 	public void reloadFinished(){
 		render(getGrid());
 	}
 
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
-
 		if(selectedMeasure != null)
 		{
 			this.setSelectedItem(selectedMeasure);
 			controller.onSelectedItemChanged("rule");
-		} 	
+		} 
 	}
+	
 }

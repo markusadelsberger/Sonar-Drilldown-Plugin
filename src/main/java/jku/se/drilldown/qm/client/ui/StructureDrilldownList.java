@@ -35,7 +35,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	private String pageID;
 	private Resource resource;
 	private String scope;
-	private Measure selectedMeasure;
+	
+	private Measure selectedRule;
 	
 	// child list
 	private StructureDrilldownList next;
@@ -51,7 +52,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		this.pageID = pageID;
 		this.scope=scope;
 		
-		this.selectedMeasure=null;
+		this.selectedRule=null;
 		this.next=null;
 		this.prev=null;
 		
@@ -157,8 +158,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
     	{
     		link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	if(selectedMeasure != null)
-                		Links.openMeasurePopup(resource.getKey(), selectedMeasure.getMetricKey());
+                	if(selectedRule != null)
+                		Links.openMeasurePopup(resource.getKey(), selectedRule.getMetricKey());
                 	else
                 		Links.openResourcePopup(resource.getKey());
                 }
@@ -205,8 +206,24 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	    		.setScopes(scope)
 	    		.setDepth(-1);
 		
-		if(this.selectedMeasure!= null)
-			query.setRules(selectedMeasure.getRuleKey());
+		if(this.selectedRule!= null)
+			query.setRules(selectedRule.getRuleKey());
+		
+		/*
+		if(this.selectedRules!=null)
+		{
+			String[] ruleKeys = new String[this.selectedRules.size()];
+			
+			int i=0;
+			for(Measure rule : this.selectedRules)
+			{
+				ruleKeys[i]=rule.getRuleKey();
+				i++;
+			}
+			
+			query.setRules(ruleKeys);
+		}
+		*/
 		
 		return query;
 	}
@@ -232,9 +249,16 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		}
 	}
 	
-	public void setSelectedMeasure(Measure selectedMeasure) {
-		this.selectedMeasure = selectedMeasure;
+	public void setSelectedMeasure(Measure selectedRule) {
+		this.selectedRule = selectedRule;
 	}
+	
+	/*
+	public void setSelectedMeasures(List<Measure> selectedRules)
+	{
+		this.selectedRules=selectedRules;
+	}
+	*/
 	
 	public void setNext(StructureDrilldownList next)
 	{
