@@ -32,11 +32,12 @@ public class DrilldownController implements ComponentController{
 		
 		if(component.equals("severety")){
 			List<Measure> measureList = severetyDrilldown.getSelectedItem();
+			
 			ruleList.reloadBegin();
 			ruleList.addMeasures(measureList);
 			ruleList.reloadFinished();
 			
-			//structureDrilldown.reloadLists(measureList);
+			structureDrilldown.setSelectedRules(measureList);
 			
 			String severety;
 			if(severetyDrilldown.getSelectedSeverety()!=null){
@@ -49,7 +50,8 @@ public class DrilldownController implements ComponentController{
 		else if (component.equals("rule"))
 		{
 			Measure selectedMeasure = ruleList.getSelectedItem();
-			structureDrilldown.reloadLists(selectedMeasure);
+			
+			structureDrilldown.setSelectedRule(selectedMeasure);
 			pathComponent.setElement(selectedMeasure.getRuleName(), 2, "rule");
 		} 
 		else if(component.equals("structure"))
@@ -70,10 +72,19 @@ public class DrilldownController implements ComponentController{
 	}
 	
 	public void clearElement(String element){
-		if(element.equals("rule"))
+		if (element.equals("severety"))
+		{
+			severetyDrilldown.setSelectedItem("All");
+			structureDrilldown.setSelectedRules(null);
+			ruleList.reloadBegin();
+			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
+			ruleList.reloadFinished();
+			pathComponent.setElement(" ", 1, null);
+		} 
+		else if(element.equals("rule"))
 		{
 			ruleList.setSelectedItem(null);
-			structureDrilldown.reloadLists(null);
+			structureDrilldown.setSelectedRule(null);
 			pathComponent.setElement("Any rule >> ", 2, null);
 		} 
 		else if (element.equals("module"))
@@ -86,15 +97,5 @@ public class DrilldownController implements ComponentController{
 			structureDrilldown.setSelectedPackage(null);
 			pathComponent.setElement(" ", 4, null);
 		}
-		else if (element.equals("severety"))
-		{
-			severetyDrilldown.setSelectedItem("All");
-			structureDrilldown.setSelectedPackage(null);
-			ruleList.reloadBegin();
-			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
-			ruleList.reloadFinished();
-			pathComponent.setElement(" ", 1, null);
-		}
 	}
-
 }

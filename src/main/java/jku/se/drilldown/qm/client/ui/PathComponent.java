@@ -1,10 +1,5 @@
 package jku.se.drilldown.qm.client.ui;
 
-import java.util.List;
-
-import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,19 +18,14 @@ import com.google.gwt.user.client.ui.Label;
  * @author Johannes
  *
  */
-public class PathComponent extends DrilldownComponent implements ClickHandler, ComponentController{
+public class PathComponent extends DrilldownComponent implements ClickHandler{
 
 	private Grid pathInformation;
 	
-	private StructureDrilldownComponent structureDrilldown;
-	private DrilldownComponentRuleList ruleList;
-	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownController drilldownController;
 	
 	public PathComponent(DrilldownController drilldownController)
 	{
-		this.structureDrilldown = null;
-		this.ruleList = null;
 		this.drilldownController = drilldownController;
 		pathInformation = new Grid(1,5);
 		
@@ -56,20 +46,6 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		pathInformation.setWidget(0, 4, new Label(" "));
 	}
 	
-	public void setRuleList(DrilldownComponentRuleList ruleList)
-	{
-		this.ruleList=ruleList;
-	}
-	
-	public void setStructureDrilldownComponent(StructureDrilldownComponent structureDrilldown)
-	{
-		this.structureDrilldown=structureDrilldown;
-	}
-	
-	public void setSeveretyDrilldownList(SeveretyDrilldown severetyDrilldown){
-		this.severetyDrilldown=severetyDrilldown;
-	}
-
 	public void onClick(ClickEvent event) {			
 		Element element = event.getRelativeElement();
 		
@@ -78,12 +54,13 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 		drilldownController.clearElement(clearItem);		
 	}
 
+	/*
 	public void onSelectedItemChanged(String component) {
 		
 		if (component.equals("rule"))
 		{
 			Measure selectedMeasure = ruleList.getSelectedItem();
-			structureDrilldown.reloadLists(selectedMeasure);
+			//structureDrilldown.reloadLists(selectedMeasure);
 			
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.add(new Label(selectedMeasure.getRuleName()));
@@ -144,6 +121,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler, C
 			
 		}
 	}
+	*/
 	
 	public void setElement(String label, int column, String category){
 		HorizontalPanel panel = new HorizontalPanel();
