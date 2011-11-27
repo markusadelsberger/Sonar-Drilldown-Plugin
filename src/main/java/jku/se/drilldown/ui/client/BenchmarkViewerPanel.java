@@ -132,9 +132,9 @@ public class BenchmarkViewerPanel extends Page {
 				drilldownModel.addCount("Major", majorCount);
 				drilldownModel.addCount("Minor", minorCount);
 				drilldownModel.addCount("Info", infoCount);
+				drilldownModel.addCount("SeveretyTotal", blockerCount+criticalCount+majorCount+minorCount+infoCount);
 				
 				severetyDrilldown.reload();
-				severetyDrilldown.reloadFinished();
 				drilldownComponentRuleList.reload();
 				drilldownComponentRuleList.reloadFinished();
 				

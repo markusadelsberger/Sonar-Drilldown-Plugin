@@ -1,23 +1,13 @@
 package jku.se.drilldown.ui.client;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
-import org.sonar.gwt.Links;
-import org.sonar.gwt.Metrics;
+import java.util.List;
+
 import org.sonar.gwt.ui.Icons;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -29,11 +19,18 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
 	private DrilldownController controller;
 	private DrilldownModel drilldownModel;
+	private String[] severeties;
 
 	public SeveretyDrilldown(DrilldownController controller) {
 		super();
 		this.controller=controller;
 		drilldownModel=controller.getModel();
+		severeties = new String[5];
+		severeties[0]="Blocker";
+		severeties[1]="Critical";
+		severeties[2]="Major";
+		severeties[3]="Minor";
+		severeties[4]="Info";
 	}
 	
 	@Override
@@ -70,14 +67,12 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getRowFormatter().setStyleName(2, getRowCssClass(2, false));
 		getGrid().getRowFormatter().setStyleName(3, getRowCssClass(3, false));
 		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
+		
+		getGrid().getColumnFormatter().setWidth(4, "70px");
 	}
 	
 	public void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
-	}
-	
-	public void reloadFinished(){
-		render(getGrid());
 	}
 
 	@Override
@@ -92,7 +87,23 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
 	}
-
+	
+	public double getGraphWidth(String severety){
+		Integer totalCount = drilldownModel.getCount("SeveretyTotal");
+		Integer severetyCount = drilldownModel.getCount(severety);
+		if(severetyCount!=null && totalCount!=null){
+			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
+		}else{
+			return -1D;
+		}
+	}
+	
+	public void addGraph(String severety, int row){
+		double width = getGraphWidth(severety);
+		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
+		getGrid().setWidget(row, 3, bar);
+	}
+	
 	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
@@ -102,16 +113,11 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	}
 	
 	public void reload(){
-		addMeasures(0, drilldownModel.getCount("Blocker"));
-		addMeasures(1, drilldownModel.getCount("Critical"));
-		addMeasures(2, drilldownModel.getCount("Major"));
-		addMeasures(3, drilldownModel.getCount("Minor"));
-		addMeasures(4, drilldownModel.getCount("Info"));
-		
-		addDrilldownAnchor("Blocker", 0);
-		addDrilldownAnchor("Critical", 1);
-		addDrilldownAnchor("Major", 2);
-		addDrilldownAnchor("Minor", 3);
-		addDrilldownAnchor("Info", 4);
+		for(int i=0;i<5;i++){
+			addMeasures(i, drilldownModel.getCount(severeties[i]));
+			addDrilldownAnchor(severeties[i], i);
+			addGraph(severeties[i], i);
+		}
+		render(getGrid());
 	}
 }

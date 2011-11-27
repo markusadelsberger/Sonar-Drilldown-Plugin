@@ -55,9 +55,27 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	@Override
 	public void renderRow(Measure item, int row) {
 		renderIconCells(item, row);
-		renderNameCell( item, row, 2);
-		renderValueCell( item, row, 3);
+		renderNameCell( item, row, 1);
+		renderValueCell( item, row, 2);
+		renderBarCell(item, row, 3);
 		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
+	}
+
+	private void renderBarCell(Measure item, int row, int column) {
+		String severety = item.getRuleSeverity();
+		double width = Math.round(getGraphWidth(severety, item));
+		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
+		getGrid().setWidget(row, 3, bar);
+	}
+	
+	public double getGraphWidth(String severety, Measure item){
+		Integer severetyCount = drilldownModel.getCount(severety);
+		Integer measureCount = item.getIntValue();
+		if(severetyCount!=null && measureCount!=null){
+			return (measureCount.doubleValue()/severetyCount.doubleValue())*100;
+		}else{
+			return -1D;
+		}
 	}
 
 	@Override
