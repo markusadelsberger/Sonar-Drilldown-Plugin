@@ -50,33 +50,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	public int gridColumnCount() {
 		return 4;
 	}
-	
-	
-	@Override
-	public void renderRow(Measure item, int row) {
-		renderIconCells(item, row);
-		renderNameCell( item, row, 1);
-		renderValueCell( item, row, 2);
-		renderBarCell(item, row, 3);
-		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
-	}
-
-	private void renderBarCell(Measure item, int row, int column) {
-		String severety = item.getRuleSeverity();
-		double width = Math.round(getGraphWidth(severety, item));
-		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
-		getGrid().setWidget(row, 3, bar);
-	}
-	
-	public double getGraphWidth(String severety, Measure item){
-		Integer severetyCount = drilldownModel.getCount(severety);
-		Integer measureCount = item.getIntValue();
-		if(severetyCount!=null && measureCount!=null){
-			return (measureCount.doubleValue()/severetyCount.doubleValue())*100;
-		}else{
-			return -1D;
-		}
-	}
 
 	@Override
 	public void doLoadData()
@@ -120,6 +93,32 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 
 	@Override
+	public void renderRow(Measure item, int row) {
+		renderIconCells(item, row);
+		renderNameCell( item, row, 1);
+		renderValueCell( item, row, 2);
+		renderBarCell(item, row, 3);
+		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
+	}
+
+	private void renderBarCell(Measure item, int row, int column) {
+		String severety = item.getRuleSeverity();
+		double width = Math.round(getGraphWidth(severety, item));
+		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
+		getGrid().setWidget(row, 3, bar);
+	}
+	
+	private double getGraphWidth(String severety, Measure item){
+		Integer severetyCount = drilldownModel.getCount(severety);
+		Integer measureCount = item.getIntValue();
+		if(severetyCount!=null && measureCount!=null){
+			return (measureCount.doubleValue()/severetyCount.doubleValue())*100;
+		}else{
+			return -1D;
+		}
+	}
+	
+	@Override
 	public String getItemIdentifier(Measure item) {
 		return item.getMetricKey();
 	}
@@ -128,8 +127,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	public Measure getSelectedItem(){
 		return drilldownModel.getActiveMeasure();
 	}
-
-	protected void addMeasures(List<Measure> measures){
+	
+	private void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
 		getGrid().resizeRows(row+measures.size());
 
@@ -157,7 +156,9 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 			controller.onSelectedItemChanged("rule");
 		} 
 	}
-	
+	/**
+	 * Reloads the rules from the model and rerenders the grid
+	 */
 	public void reload(){
 		String activeElement = drilldownModel.getActiveElement("Severety");
 		if(activeElement!=null){

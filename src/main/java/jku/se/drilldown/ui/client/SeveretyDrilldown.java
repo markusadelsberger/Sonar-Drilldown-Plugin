@@ -1,3 +1,7 @@
+/**
+ * @author markus
+ * Creates a graphical drilldown for given severeties
+ */
 package jku.se.drilldown.ui.client;
 
 
@@ -19,18 +23,16 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
 	private DrilldownController controller;
 	private DrilldownModel drilldownModel;
-	private String[] severeties;
+	private String[] severeties = {"Blocker", "Critical", "Major", "Minor", "Info"};
 
+	/**
+	 * Creates the drilldown and sets the model to the model to the model set in the controller 
+	 * @param controller The associated controller
+	 */
 	public SeveretyDrilldown(DrilldownController controller) {
 		super();
 		this.controller=controller;
 		drilldownModel=controller.getModel();
-		severeties = new String[5];
-		severeties[0]="Blocker";
-		severeties[1]="Critical";
-		severeties[2]="Major";
-		severeties[3]="Minor";
-		severeties[4]="Info";
 	}
 	
 	@Override
@@ -71,7 +73,19 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getColumnFormatter().setWidth(4, "70px");
 	}
 	
-	public void addMeasures(int row, int violations){
+	/**
+	 * Reloads the data from the model and rerenders the grid
+	 */
+	public void reload(){
+		for(int i=0;i<5;i++){
+			addMeasures(i, drilldownModel.getCount(severeties[i]));
+			addDrilldownAnchor(severeties[i], i);
+			addGraph(severeties[i], i);
+		}
+		render(getGrid());
+	}
+	
+	private void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
 	}
 
@@ -81,14 +95,14 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		return null;
 	}
 
-	public void addDrilldownAnchor(String name, int row){
+	private void addDrilldownAnchor(String name, int row){
 		Anchor a = new Anchor(name);
 		a.getElement().setId(name);
 		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
 	}
 	
-	public double getGraphWidth(String severety){
+	private double getGraphWidth(String severety){
 		Integer totalCount = drilldownModel.getCount("SeveretyTotal");
 		Integer severetyCount = drilldownModel.getCount(severety);
 		if(severetyCount!=null && totalCount!=null){
@@ -98,7 +112,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		}
 	}
 	
-	public void addGraph(String severety, int row){
+	private void addGraph(String severety, int row){
 		double width = getGraphWidth(severety);
 		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
 		getGrid().setWidget(row, 3, bar);
@@ -112,12 +126,5 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		controller.onSelectedItemChanged("severety");
 	}
 	
-	public void reload(){
-		for(int i=0;i<5;i++){
-			addMeasures(i, drilldownModel.getCount(severeties[i]));
-			addDrilldownAnchor(severeties[i], i);
-			addGraph(severeties[i], i);
-		}
-		render(getGrid());
-	}
+	
 }
