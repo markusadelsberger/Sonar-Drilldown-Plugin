@@ -27,6 +27,7 @@ public class BenchmarkViewerPanel extends Page {
 	private StructureDrilldownComponent structureComponent;
 	private Resource resource;
 	private DrilldownController drilldownController;
+	private DrilldownModel drilldownModel;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
@@ -42,15 +43,19 @@ public class BenchmarkViewerPanel extends Page {
 			rightPanel.setWidth("100%");
 			
 			drilldownController = new DrilldownController();
+			drilldownModel = new DrilldownModel();
+			drilldownController.setModel(drilldownModel);
+			
 			pathComponent = new PathComponent(drilldownController);
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
 			
+			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
-			drilldownController.setSeveretyDrilldown(severetyDrilldown);
 			drilldownController.setStructureDrilldown(structureComponent);
+			
 			
 			loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
@@ -115,41 +120,24 @@ public class BenchmarkViewerPanel extends Page {
 						infoCount+=measure.getIntValue();
 					}
 				}
-				severetyDrilldown.addMeasures(0, blockerCount);
-				severetyDrilldown.addDrilldownAnchor("Blocker", 0, blockerList);
 				
-				severetyDrilldown.addMeasures(1, criticalCount);
-				severetyDrilldown.addDrilldownAnchor("Critical", 1, criticalList);
+				drilldownModel.addList("Blocker", blockerList);
+				drilldownModel.addList("Critical", criticalList);
+				drilldownModel.addList("Major", majorList);
+				drilldownModel.addList("Minor", minorList);
+				drilldownModel.addList("Info", infoList);
 				
-				severetyDrilldown.addMeasures(2, majorCount);
-				severetyDrilldown.addDrilldownAnchor("Major", 2, majorList);
+				drilldownModel.addCount("Blocker", blockerCount);
+				drilldownModel.addCount("Critical", criticalCount);
+				drilldownModel.addCount("Major", majorCount);
+				drilldownModel.addCount("Minor", minorCount);
+				drilldownModel.addCount("Info", infoCount);
 				
-				severetyDrilldown.addMeasures(3, minorCount);
-				severetyDrilldown.addDrilldownAnchor("Minor", 3, minorList);
-				
-				severetyDrilldown.addMeasures(4, infoCount);
-				severetyDrilldown.addDrilldownAnchor("Info", 4, infoList);
-				
-				if(blockerCount>0){
-					drilldownComponentRuleList.addMeasures(blockerList);
-				}
-				if(criticalCount>0){
-					drilldownComponentRuleList.addMeasures(criticalList);
-				}
-				
-				if(majorCount>0){
-					drilldownComponentRuleList.addMeasures(majorList);
-				}
-				if(minorCount>0){
-					drilldownComponentRuleList.addMeasures(minorList);
-				}
-				
-				if(infoCount>0){
-					drilldownComponentRuleList.addMeasures(infoList);
-				}
-					
+				severetyDrilldown.reload();
 				severetyDrilldown.reloadFinished();
+				drilldownComponentRuleList.reload();
 				drilldownComponentRuleList.reloadFinished();
+				
 			}
 
 		});

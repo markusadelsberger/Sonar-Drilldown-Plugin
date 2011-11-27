@@ -1,14 +1,24 @@
 package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.sonar.gwt.Links;
+import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
+import org.sonar.wsclient.gwt.AbstractCallback;
+import org.sonar.wsclient.gwt.AbstractListCallback;
+import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
+import org.sonar.wsclient.services.Resource;
+import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> {
 
 	private DrilldownController controller;
+	private DrilldownModel drilldownModel;
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
 		super();
@@ -27,6 +38,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		Grid grid = new Grid(0, gridColumnCount());
 		grid.setStyleName("spaced");
 		setGrid(grid);
+		drilldownModel=controller.getModel();
 	}
 
 	@Override
@@ -36,15 +48,15 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public int gridColumnCount() {
-		return 3;
+		return 4;
 	}
 	
 	
 	@Override
 	public void renderRow(Measure item, int row) {
 		renderIconCells(item, row);
-		renderNameCell( item, row, 1);
-		renderValueCell( item, row, 2);
+		renderNameCell( item, row, 2);
+		renderValueCell( item, row, 3);
 		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
 	}
 
@@ -91,55 +103,61 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public String getItemIdentifier(Measure item) {
-		return item.getRuleKey();
+		return item.getMetricKey();
 	}
 
-/* 
 	@Override
 	public Measure getSelectedItem(){
-		return selectedItem;
+		return drilldownModel.getActiveMeasure();
 	}
-	
 
-	public void setSelectedItem(Measure item){
-		this.selectedItem=item;
-	}
-*/
-	public void addMeasures(List<Measure> measures){
+	protected void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
 		getGrid().resizeRows(row+measures.size());
-
-		Map<String, Integer> hashmap= new HashMap<String,Integer>();
 
 		for (Measure measure : measures)
 		{
 			renderRow(measure, row);
-			hashmap.put(getItemIdentifier(measure), new Integer(row));
 			row++;
 		}
-
-		this.setHashmap(hashmap);
-
-		if(containsSelectedItem())
-			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 	}
 	
 	protected void reloadBegin(){
 		getGrid().resizeRows(0);
 	}
-	
-	public void reloadFinished(){
+	protected void reloadFinished(){
 		render(getGrid());
 	}
 
+	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
 		if(selectedMeasure != null)
 		{
-			this.setSelectedItem(selectedMeasure);
+			drilldownModel.setActiveMeasure(selectedMeasure);
 			controller.onSelectedItemChanged("rule");
 		} 
+	}
+	
+	public void reload(){
+		String activeElement = drilldownModel.getActiveElement("Severety");
+		if(activeElement!=null){
+			List<Measure> measureList = drilldownModel.getList(activeElement);
+			reloadBegin();
+			addMeasures(measureList);
+			reloadFinished();
+		}else{
+			List<Measure> measureList = new LinkedList<Measure>();
+			measureList.addAll(drilldownModel.getList("Blocker"));
+			measureList.addAll(drilldownModel.getList("Critical"));
+			measureList.addAll(drilldownModel.getList("Major"));
+			measureList.addAll(drilldownModel.getList("Minor"));
+			measureList.addAll(drilldownModel.getList("Info"));
+			reloadBegin();
+			addMeasures(measureList);
+			reloadFinished();
+		}
 	}
 	
 }
