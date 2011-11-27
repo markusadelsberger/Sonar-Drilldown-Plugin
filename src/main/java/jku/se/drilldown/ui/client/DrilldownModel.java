@@ -19,27 +19,27 @@ public class DrilldownModel {
 	}
 	
 	public void addList(String name, List measureList){
-		measureMap.put(name, measureList);
+		measureMap.put(name.toLowerCase(), measureList);
 	}
 	
 	public List getList(String name){
-		return measureMap.get(name);
+		return measureMap.get(name.toLowerCase());
 	}
 	
 	public void setActiveElement(String listName, String elementName){
-		activeMap.put(listName, elementName);
+		activeMap.put(listName.toLowerCase(), elementName);
 	}
 	
 	public String getActiveElement(String listName){
-		return activeMap.get(listName);
+		return activeMap.get(listName.toLowerCase());
 	}
 	
 	public void addCount(String listName, Integer count){
-		countMap.put(listName, count);
+		countMap.put(listName.toLowerCase(), count);
 	}
 	
 	public Integer getCount(String listName){
-		return countMap.get(listName);
+		return countMap.get(listName.toLowerCase());
 	}
 	
 	public void setActiveMeasure(Measure measure){
