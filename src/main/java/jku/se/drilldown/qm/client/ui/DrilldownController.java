@@ -79,12 +79,12 @@ public class DrilldownController implements ComponentController{
 			ruleList.reloadBegin();
 			ruleList.addMeasures(severetyDrilldown.getSelectedItem());
 			ruleList.reloadFinished();
-			pathComponent.setElement(" ", 1, null);
+			pathComponent.setElement("Any severty >> ", 1, null);
 		} 
 		else if(element.equals("rule"))
 		{
 			ruleList.setSelectedItem(null);
-			structureDrilldown.setSelectedRule(null);
+			structureDrilldown.setSelectedRules(null);
 			pathComponent.setElement("Any rule >> ", 2, null);
 		} 
 		else if (element.equals("module"))
