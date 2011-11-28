@@ -5,6 +5,7 @@ import java.util.List;
 
 import jku.se.drilldown.qm.client.ui.DrilldownComponentRuleList;
 import jku.se.drilldown.qm.client.ui.DrilldownController;
+import jku.se.drilldown.qm.client.ui.DrilldownModel;
 import jku.se.drilldown.qm.client.ui.PathComponent;
 import jku.se.drilldown.qm.client.ui.SeveretyDrilldown;
 import jku.se.drilldown.qm.client.ui.StructureDrilldownComponent;
@@ -30,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */ 
 public class PagePanel extends Page{
-	
 	private HorizontalPanel mainPanel;
 	private Panel rightPanel;
 	private Panel leftPanel;
@@ -40,6 +40,7 @@ public class PagePanel extends Page{
 	private StructureDrilldownComponent structureComponent;
 	private Resource resource;
 	private DrilldownController drilldownController;
+	private DrilldownModel drilldownModel;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
@@ -51,126 +52,40 @@ public class PagePanel extends Page{
 			rightPanel=new HorizontalPanel();
 			leftPanel=new HorizontalPanel();
 			
-			leftPanel.setWidth("100px");
-			rightPanel.setWidth("100%");
-			
 			drilldownController = new DrilldownController();
+			drilldownModel = new DrilldownModel();
+			drilldownController.setModel(drilldownModel);
+			
 			pathComponent = new PathComponent(drilldownController);
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
-			
+			//structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
+			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.qm.QMDrilldownPage", drilldownController);
+						
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
-			drilldownController.setSeveretyDrilldown(severetyDrilldown);
 			drilldownController.setStructureDrilldown(structureComponent);
-			
-			loadRuleDataForMetric(Metrics.VIOLATIONS);
+			drilldownController.setResource(resource);
+			drilldownController.setSeveretyDrilldown(severetyDrilldown);
+			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(severetyDrilldown);
 			rightPanel.add(drilldownComponentRuleList);
 			
 			mainPanel.add(leftPanel);
 			mainPanel.add(rightPanel);
-			
+			mainPanel.setWidth("100%");
+			mainPanel.setCellWidth(leftPanel, "200px");
+			mainPanel.setCellWidth(rightPanel, "100%");
 			panel.add(mainPanel);
 			
 			panel.add(structureComponent);
 			panel.add(pathComponent);
+			panel.setWidth("100%");
 		}catch (Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}
 		
 		return panel;
-
-	}
-	
-	
-	
-	private void loadRuleDataForMetric(final String metric){
-		Sonar.getInstance().find(getQuery(metric), new AbstractCallback<Resource>() {
-
-			@Override
-			protected void doOnResponse(Resource resource) {
-				List<Measure>measureList = resource.getMeasures();
-				
-				List<Measure>blockerList = new LinkedList<Measure>();
-				int blockerCount=0;
-				
-				List<Measure>criticalList = new LinkedList<Measure>();
-				int criticalCount=0;
-				
-				List<Measure>majorList = new LinkedList<Measure>();
-				int majorCount=0;
-				
-				List<Measure>minorList = new LinkedList<Measure>();
-				int minorCount=0;
-				
-				List<Measure>infoList = new LinkedList<Measure>();
-				int infoCount=0;
-				
-				for(Measure measure : measureList){
-					String metric = measure.getRuleSeverity();
-					if(metric.compareTo("BLOCKER")==0){
-						blockerList.add(measure);
-						blockerCount+=measure.getIntValue();
-					}else if(metric.compareTo("CRITICAL")==0){
-						criticalList.add(measure);
-						criticalCount+=measure.getIntValue();
-					}else if(metric.compareTo("MAJOR")==0){
-						majorList.add(measure);
-						majorCount+=measure.getIntValue();
-					}else if(metric.compareTo("MINOR")==0){
-						minorList.add(measure);
-						minorCount+=measure.getIntValue();
-					}else if(metric.compareTo("INFO")==0){
-						infoList.add(measure);
-						infoCount+=measure.getIntValue();
-					}
-				}
-				severetyDrilldown.addMeasures(0, blockerCount);
-				severetyDrilldown.addDrilldownAnchor("Blocker", 0, blockerList);
-				
-				severetyDrilldown.addMeasures(1, criticalCount);
-				severetyDrilldown.addDrilldownAnchor("Critical", 1, criticalList);
-				
-				severetyDrilldown.addMeasures(2, majorCount);
-				severetyDrilldown.addDrilldownAnchor("Major", 2, majorList);
-				
-				severetyDrilldown.addMeasures(3, minorCount);
-				severetyDrilldown.addDrilldownAnchor("Minor", 3, minorList);
-				
-				severetyDrilldown.addMeasures(4, infoCount);
-				severetyDrilldown.addDrilldownAnchor("Info", 4, infoList);
-				
-				if(blockerCount>0){
-					drilldownComponentRuleList.addMeasures(blockerList);
-				}
-				if(criticalCount>0){
-					drilldownComponentRuleList.addMeasures(criticalList);
-				}
-				
-				if(majorCount>0){
-					drilldownComponentRuleList.addMeasures(majorList);
-				}
-				if(minorCount>0){
-					drilldownComponentRuleList.addMeasures(minorList);
-				}
-				
-				if(infoCount>0){
-					drilldownComponentRuleList.addMeasures(infoList);
-				}
-					
-				severetyDrilldown.reloadFinished();
-				drilldownComponentRuleList.reloadFinished();
-			}
-
-		});
-	}
-	
-	private ResourceQuery getQuery(String metric)
-	{
-		ResourceQuery query = ResourceQuery.createForResource(resource, metric).setDepth(0).setExcludeRules(false);
-		return query;
 	}
 }

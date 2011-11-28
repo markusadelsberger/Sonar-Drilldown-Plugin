@@ -85,7 +85,7 @@ public class QualityModelList extends DrilldownComponentList<Resource>{
 	}
 
 	private void renderUploadCell(Resource resource, int row, int column) {
-		if(QualityModelContainer.getInstance().findQualityModel(resource)== null)
+		/*if(QualityModelContainer.getInstance().findQualityModel(resource)== null)
 		{
 			getGrid().setWidget(row, column, new FileUpload());
 			getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
@@ -94,7 +94,7 @@ public class QualityModelList extends DrilldownComponentList<Resource>{
 		{
 			getGrid().setWidget(row, column, new Label("uploaded"));
 			getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
-		}
+		}*/
 		
 	}
 

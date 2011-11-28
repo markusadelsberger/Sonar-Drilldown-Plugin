@@ -1,9 +1,6 @@
 package jku.se.drilldown.qm.client.ui;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.services.Measure;
@@ -16,20 +13,24 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-
+/**
+ * @author markus
+ * Creates a graphical drilldown for given severeties
+ */
 public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
-	private ComponentController controller;
-	private List<Measure> selectedItem;
-	private String severety;
-	private HashMap<String, List<Measure>> hashmap;
+	private DrilldownController controller;
+	private DrilldownModel drilldownModel;
+	private String[] severeties = {"Blocker", "Critical", "Major", "Minor", "Info"};
 
-	public SeveretyDrilldown(ComponentController controller) {
+	/**
+	 * Creates the drilldown and sets the model to the model to the model set in the controller 
+	 * @param controller The associated controller
+	 */
+	public SeveretyDrilldown(DrilldownController controller) {
 		super();
 		this.controller=controller;
-		selectedItem=null;
-		severety=null;
-		hashmap = new HashMap<String, List<Measure>>();
+		drilldownModel=controller.getModel();
 	}
 	
 	@Override
@@ -67,14 +68,23 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getRowFormatter().setStyleName(3, getRowCssClass(3, false));
 		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
 		
+		getGrid().getColumnFormatter().setWidth(4, "70px");
+	}
+	
+	/**
+	 * Reloads the data from the model and rerenders the grid
+	 */
+	public void reload(){
+		for(int i=0;i<5;i++){
+			addMeasures(i, drilldownModel.getCount(severeties[i]));
+			addDrilldownAnchor(severeties[i], i);
+			addGraph(severeties[i], i);
+		}
+		render(getGrid());
 	}
 	
 	public void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
-	}
-	
-	public void reloadFinished(){
-		render(getGrid());
 	}
 
 	@Override
@@ -83,42 +93,35 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		return null;
 	}
 
-	public void addDrilldownAnchor(String name, int row, List<Measure> measures){
+	private void addDrilldownAnchor(String name, int row){
 		Anchor a = new Anchor(name);
 		a.getElement().setId(name);
 		a.addClickHandler(this);
 		getGrid().setWidget(row, 1, a);
-		hashmap.put(name, measures);
 	}
 	
-	@Override
-	public List<Measure> getSelectedItem(){
-		if(selectedItem!=null){
-			return selectedItem;
+	private double getGraphWidth(String severety){
+		Integer totalCount = drilldownModel.getCount("SeveretyTotal");
+		Integer severetyCount = drilldownModel.getCount(severety);
+		if(severetyCount!=null && totalCount!=null){
+			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
 		}else{
-			Set<String> keyset = hashmap.keySet();
-			List<Measure> measureList = new LinkedList<Measure>();
-			for(String s : keyset){
-				measureList.addAll(hashmap.get(s));
-			}
-			return measureList;
+			return -1D;
 		}
-		
 	}
 	
-	public void setSelectedItem(String name){
-		this.selectedItem=hashmap.get(name);
+	private void addGraph(String severety, int row){
+		double width = getGraphWidth(severety);
+		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
+		getGrid().setWidget(row, 3, bar);
 	}
 	
-	public String getSelectedSeverety(){
-		return severety;
-	}
-
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		severety = element.getInnerText();
-		setSelectedItem(element.getId());
+		String severety = element.getInnerText();
+		drilldownModel.setActiveElement("Severety", severety);
 		controller.onSelectedItemChanged("severety");
 	}
-
+	
+	
 }
