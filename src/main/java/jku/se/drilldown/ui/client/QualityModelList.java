@@ -2,7 +2,6 @@ package jku.se.drilldown.ui.client;
 
 import java.util.List;
 
-
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.gwt.AbstractListCallback;
 import org.sonar.wsclient.gwt.Sonar;
@@ -82,7 +81,6 @@ public class QualityModelList extends DrilldownComponentList<Resource>{
 		
 	}
 
-
 	private void renderUploadCell(Resource resource, int row, int column) {
 		/*if(QualityModelContainer.getInstance().findQualityModel(resource)== null)
 		{
@@ -96,7 +94,6 @@ public class QualityModelList extends DrilldownComponentList<Resource>{
 		}*/
 		
 	}
-	
 
 	private void renderNameCell(Resource resource, int row, int column) {
 		Anchor link = new Anchor(resource.getName());

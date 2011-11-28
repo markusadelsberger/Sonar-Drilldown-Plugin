@@ -1,8 +1,3 @@
-/**
- * @author markus
- * The model part of the MVC Principle of the Drilldown. Three kinds of Data can be saved, Measures, the Name of Active Elements
- * and the count of Measures. These are saved internally under a String.
- */
 package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
@@ -10,6 +5,11 @@ import java.util.List;
 
 import org.sonar.wsclient.services.Measure;
 
+/**
+ * @author markus
+ * The model part of the MVC Principle of the Drilldown. Three kinds of Data can be saved, Measures, the Name of Active Elements
+ * and the count of Measures. These are saved internally under a String.
+ */
 public class DrilldownModel {
 	private HashMap<String, List> measureMap;
 	private HashMap<String, String> activeMap;

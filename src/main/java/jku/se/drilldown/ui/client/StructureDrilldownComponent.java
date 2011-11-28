@@ -1,6 +1,5 @@
 package jku.se.drilldown.ui.client;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

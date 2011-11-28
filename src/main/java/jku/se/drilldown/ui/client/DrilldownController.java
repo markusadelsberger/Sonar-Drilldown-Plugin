@@ -48,7 +48,6 @@ public class DrilldownController implements ComponentController{
 		this.resource=resource;
 	}
 	
-	@Override
 	public void onSelectedItemChanged(String component) {
 		if (component.equals("rule"))
 		{
@@ -68,13 +67,23 @@ public class DrilldownController implements ComponentController{
 			
 			if (selectedPackage != null)
 			{
-				pathComponent.setElement(selectedPackage.getName(), 3, "package");
+				pathComponent.setElement(selectedPackage.getName(), 4, "package");
 			}
 		}
 		else if(component.equals("severety")){
 			String severety = drilldownModel.getActiveElement("Severety");
+			
 			pathComponent.setElement(severety, 1, "severety");
 			drilldownModel.setActiveElement("Severety", severety);
+			
+			//TODO: StructureDrilldown muss aktualisiert werden. 
+			/*
+			String activeElement = drilldownModel.getActiveElement("Severety");
+			if(activeElement!=null){
+				List<Measure> measureList = drilldownModel.getList(activeElement);
+				structureDrilldown.setSelectedRules(measureList);
+			}
+			*/
 			ruleList.reload();
 		}
 	}
@@ -108,7 +117,7 @@ public class DrilldownController implements ComponentController{
 			drilldownModel.setActiveElement("Severety", null);
 			structureDrilldown.setSelectedPackage(null);
 			ruleList.reload();
-			pathComponent.setElement(" ", 1, null);
+			pathComponent.setElement("Severety >> ", 1, null);
 		}
 	}
 	

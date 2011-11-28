@@ -2,7 +2,6 @@ package jku.se.drilldown.ui.client;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -178,14 +177,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		if((this.selectedMeasures!=null) && (this.selectedMeasures.size()>0))
 		{
-			String value="";
-			//TODO: Wert stimmt nicht, wenn man eine Liste von Measures hat. 
+			int sumOfValues=0;
+			
 			for(Measure measure : resource.getMeasures())
-			{
-				value=value+ " "+resource.getMeasureValue(measure.getMetricKey());
-			}
+				sumOfValues += Integer.parseInt(measure.getFormattedValue());
 
-			getGrid().setHTML(row, column, ""+value);
+			getGrid().setHTML(row, column, ""+sumOfValues);
 		}
 		else
 			getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());

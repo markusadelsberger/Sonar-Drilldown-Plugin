@@ -1,6 +1,3 @@
-/**
- * @author markus
- */
 package jku.se.drilldown.ui.client;
 
 import java.util.LinkedList;
@@ -20,6 +17,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author markus
+ */
 public class BenchmarkViewerPanel extends Page {
 	private HorizontalPanel mainPanel;
 	private Panel rightPanel;

@@ -118,9 +118,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		}
 	}
 	
+	
 	@Override
 	public String getItemIdentifier(Measure item) {
-		return item.getMetricKey();
+		return item.getRuleKey();
 	}
 
 	@Override
@@ -128,15 +129,23 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		return drilldownModel.getActiveMeasure();
 	}
 	
-	private void addMeasures(List<Measure> measures){
+	public void addMeasures(List<Measure> measures){
 		int row = getGrid().getRowCount();
 		getGrid().resizeRows(row+measures.size());
+
+		Map<String, Integer> hashmap= new HashMap<String,Integer>();
 
 		for (Measure measure : measures)
 		{
 			renderRow(measure, row);
+			hashmap.put(getItemIdentifier(measure), new Integer(row));
 			row++;
 		}
+
+		this.setHashmap(hashmap);
+
+		if(containsSelectedItem())
+			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 	}
 	
 	protected void reloadBegin(){
@@ -146,13 +155,13 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		render(getGrid());
 	}
 
-	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
 		if(selectedMeasure != null)
 		{
 			drilldownModel.setActiveMeasure(selectedMeasure);
+			//TODO: das interne selectedItem wird nicht mehr gesetzt
 			controller.onSelectedItemChanged("rule");
 		} 
 	}

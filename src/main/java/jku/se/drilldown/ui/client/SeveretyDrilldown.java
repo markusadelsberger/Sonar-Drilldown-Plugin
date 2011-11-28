@@ -1,9 +1,4 @@
-/**
- * @author markus
- * Creates a graphical drilldown for given severeties
- */
 package jku.se.drilldown.ui.client;
-
 
 import java.util.List;
 
@@ -18,7 +13,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-
+/**
+ * @author markus
+ * Creates a graphical drilldown for given severeties
+ */
 public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 
 	private DrilldownController controller;
@@ -85,7 +83,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		render(getGrid());
 	}
 	
-	private void addMeasures(int row, int violations){
+	public void addMeasures(int row, int violations){
 		getGrid().setText(row, 2, String.valueOf(violations));
 	}
 
@@ -118,7 +116,6 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().setWidget(row, 3, bar);
 	}
 	
-	@Override
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		String severety = element.getInnerText();
