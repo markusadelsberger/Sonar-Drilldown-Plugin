@@ -1,14 +1,15 @@
-package jku.se.drilldown.client;
+package jku.se.drilldown.client.ui;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import jku.se.drilldown.client.ui.DrilldownComponentRuleList;
-import jku.se.drilldown.client.ui.DrilldownController;
-import jku.se.drilldown.client.ui.DrilldownModel;
-import jku.se.drilldown.client.ui.PathComponent;
-import jku.se.drilldown.client.ui.SeveretyDrilldown;
-import jku.se.drilldown.client.ui.StructureDrilldownComponent;
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
+import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
+import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
+
 
 
 import org.sonar.gwt.Metrics;
@@ -30,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Johannes
  *
  */ 
-public class PagePanel extends Page{
+public class QMViewerPanel extends Page{
 	private HorizontalPanel mainPanel;
 	private Panel rightPanel;
 	private Panel leftPanel;

@@ -1,8 +1,10 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jku.se.drilldown.client.ui.controller.ComponentController;
 
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;

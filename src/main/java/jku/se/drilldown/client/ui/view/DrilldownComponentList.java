@@ -1,7 +1,8 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
 
 import java.util.List;
 import java.util.Map;
+
 
 
 import org.sonar.gwt.ui.Loading;

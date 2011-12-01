@@ -1,9 +1,6 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
 
 import java.util.List;
-
-import jku.se.drilldown.client.QualityModelContainer;
-
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.gwt.AbstractListCallback;

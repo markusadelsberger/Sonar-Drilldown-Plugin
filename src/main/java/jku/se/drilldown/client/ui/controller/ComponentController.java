@@ -1,4 +1,4 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.controller;
 
 /**
  * 

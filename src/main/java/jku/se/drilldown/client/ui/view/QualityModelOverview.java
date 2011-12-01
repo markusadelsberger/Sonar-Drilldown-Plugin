@@ -1,4 +1,5 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
+
 
 import org.sonar.gwt.ui.Loading;
 import org.spqr.base.core.resources.model.IQualityModel;

@@ -1,4 +1,5 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
+
 
 
 public class QuantilGraphic extends DrilldownComponent {

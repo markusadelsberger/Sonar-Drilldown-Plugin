@@ -1,4 +1,6 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
+
+import jku.se.drilldown.client.ui.controller.DrilldownController;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;

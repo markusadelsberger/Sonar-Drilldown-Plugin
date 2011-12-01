@@ -1,9 +1,12 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+import jku.se.drilldown.client.ui.model.DrilldownModel;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -151,7 +154,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	protected void reloadBegin(){
 		getGrid().resizeRows(0);
 	}
-	protected void reloadFinished(){
+	
+	public void reloadFinished(){
 		render(getGrid());
 	}
 

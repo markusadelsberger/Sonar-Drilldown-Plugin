@@ -1,7 +1,9 @@
-package jku.se.drilldown.client.ui;
+package jku.se.drilldown.client.ui.view;
 
 import java.util.HashMap;
 import java.util.List;
+
+import jku.se.drilldown.client.ui.controller.ComponentController;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
