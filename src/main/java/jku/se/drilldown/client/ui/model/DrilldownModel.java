@@ -1,4 +1,4 @@
-package jku.se.drilldown.ui.client;
+package jku.se.drilldown.client.ui.model;
 
 import java.util.HashMap;
 import java.util.List;

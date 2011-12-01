@@ -1,4 +1,4 @@
-package jku.se.drilldown.ui;
+package jku.se.drilldown.client;
 
 import org.sonar.api.web.GwtPage;
 import org.sonar.api.web.NavigationSection;
@@ -13,7 +13,7 @@ public class BenchmarkViewer extends GwtPage{
 
 	@Override
 	public String getGwtId() {
-		return "jku.se.drilldown.ui.BenchmarkViewer";
+		return "jku.se.drilldown.client.BenchmarkViewer";
 	}
 	
-}
+} 

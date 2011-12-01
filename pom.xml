@@ -84,7 +84,7 @@
 					<execution>
 						<configuration>
 							<modules>
-								<module>jku.se.drilldown.ui.BenchmarkViewer</module>
+								<module>jku.se.drilldown.client.BenchmarkViewer</module>
 							</modules>
 							<webappDirectory>${project.build.directory}/classes</webappDirectory>
 							<extraJvmArgs>-Xmx512m</extraJvmArgs>

@@ -1,6 +1,9 @@
-package jku.se.drilldown.ui.client;
+package jku.se.drilldown.client.ui.view;
 
 import java.util.List;
+
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+import jku.se.drilldown.client.ui.model.DrilldownModel;
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.services.Measure;

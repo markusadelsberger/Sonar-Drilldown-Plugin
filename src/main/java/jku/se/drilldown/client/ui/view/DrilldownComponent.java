@@ -1,4 +1,4 @@
-package jku.se.drilldown.ui.client;
+package jku.se.drilldown.client.ui.view;
 
 import com.google.gwt.user.client.ui.Composite;
 
