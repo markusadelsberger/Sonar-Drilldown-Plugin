@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm;
+package jku.se.drilldown;
 
 import org.sonar.api.web.GwtPage;
 import org.sonar.api.web.NavigationSection;
@@ -9,7 +9,7 @@ public class QMDrilldownPage extends GwtPage {
 	//public static final String GWT_ID = "jku.se.drilldown.qm.page.QMDrilldownPage";
 	
 	public String getGwtId() {
-	    return "jku.se.drilldown.qm.QMDrilldownPage";
+	    return "jku.se.drilldown.QMDrilldownPage";
 	}
 
 	public String getTitle() {

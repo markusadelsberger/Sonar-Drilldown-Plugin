@@ -70,7 +70,7 @@
         <version>1.1</version>
         <extensions>true</extensions>
         <configuration>
-          <pluginClass>jku.se.drilldown.qm.QMDrilldownPlugin</pluginClass>
+          <pluginClass>jku.se.drilldown.QMDrilldownPlugin</pluginClass>
         </configuration>
       </plugin>
       
@@ -82,8 +82,8 @@
           <execution>
             <configuration>
               <modules>
-                <module>jku.se.drilldown.qm.QMDrilldownPage</module>
-                <module>jku.se.drilldown.qm.QMDrilldownConfig</module>
+                <module>jku.se.drilldown.QMDrilldownPage</module>
+                <module>jku.se.drilldown.QMDrilldownConfig</module>
               </modules>
               <webappDirectory>${project.build.directory}/classes</webappDirectory>
               <extraJvmArgs>-Xmx512m</extraJvmArgs>

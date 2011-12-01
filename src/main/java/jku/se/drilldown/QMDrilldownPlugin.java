@@ -1,4 +1,4 @@
-package jku.se.drilldown.qm;
+package jku.se.drilldown;
 
 import java.util.List;
 

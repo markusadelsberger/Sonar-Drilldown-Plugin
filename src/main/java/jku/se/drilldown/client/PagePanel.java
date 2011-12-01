@@ -1,14 +1,14 @@
-package jku.se.drilldown.qm.client;
+package jku.se.drilldown.client;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import jku.se.drilldown.qm.client.ui.DrilldownComponentRuleList;
-import jku.se.drilldown.qm.client.ui.DrilldownController;
-import jku.se.drilldown.qm.client.ui.DrilldownModel;
-import jku.se.drilldown.qm.client.ui.PathComponent;
-import jku.se.drilldown.qm.client.ui.SeveretyDrilldown;
-import jku.se.drilldown.qm.client.ui.StructureDrilldownComponent;
+import jku.se.drilldown.client.ui.DrilldownComponentRuleList;
+import jku.se.drilldown.client.ui.DrilldownController;
+import jku.se.drilldown.client.ui.DrilldownModel;
+import jku.se.drilldown.client.ui.PathComponent;
+import jku.se.drilldown.client.ui.SeveretyDrilldown;
+import jku.se.drilldown.client.ui.StructureDrilldownComponent;
 
 
 import org.sonar.gwt.Metrics;

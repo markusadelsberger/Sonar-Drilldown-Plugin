@@ -3,7 +3,7 @@
  * Implements the Controller of the Drilldown MVC Principle
  * After the creation the setter methods must be called
  */
-package jku.se.drilldown.qm.client.ui;
+package jku.se.drilldown.client.ui;
 
 import java.util.LinkedList;
 import java.util.List;

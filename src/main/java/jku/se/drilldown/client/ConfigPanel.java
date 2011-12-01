@@ -1,7 +1,7 @@
-package jku.se.drilldown.qm.client;
+package jku.se.drilldown.client;
 
 
-import jku.se.drilldown.qm.client.ui.QualityModelList;
+import jku.se.drilldown.client.ui.QualityModelList;
 
 import org.sonar.gwt.ui.Page;
 

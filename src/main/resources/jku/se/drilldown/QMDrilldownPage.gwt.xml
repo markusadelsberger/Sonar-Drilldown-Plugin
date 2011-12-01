@@ -4,13 +4,13 @@
   <inherits name="com.google.gwt.json.JSON"/>
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="org.sonar.Sonar"/>
- 
-  <entry-point class='jku.se.drilldown.qm.client.ConfigPanel'/>
+  <!-- 
+  <inherits name="org.spqr.base.sqpr"/>
+ -->
+  <entry-point class='jku.se.drilldown.client.PagePanel'/>
 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="fr"/>
 
-<!--  
-  <servlet path='/greet' class='jku.se.drilldown.qm.server.GreetingServiceImpl'/> 
--->
 </module>
+ 
