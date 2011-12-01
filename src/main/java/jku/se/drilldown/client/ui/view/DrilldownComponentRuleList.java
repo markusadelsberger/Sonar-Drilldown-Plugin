@@ -8,20 +8,11 @@ import java.util.Map;
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 
-import org.sonar.gwt.Links;
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Icons;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.AbstractListCallback;
-import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -127,7 +118,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		return item.getRuleKey();
 	}
 
-	@Override
 	public Measure getSelectedItem(){
 		return drilldownModel.getActiveMeasure();
 	}
@@ -147,7 +137,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 		this.setHashmap(hashmap);
 
-		if(containsSelectedItem())
+		if(containsSelectedItem(drilldownModel.getActiveMeasure()))
 			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 	}
 	
@@ -165,7 +155,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		if(selectedMeasure != null)
 		{
 			drilldownModel.setActiveMeasure(selectedMeasure);
-			//TODO: das interne selectedItem wird nicht mehr gesetzt
+
 			controller.onSelectedItemChanged("rule");
 		} 
 	}

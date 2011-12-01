@@ -62,6 +62,11 @@ public class QualityModelOverview extends DrilldownComponent {
 		loadData();
 	}
 
+	public void reload()
+	{
+		loadData();
+	}
+	
 	protected void loadData() {
 		data.clear();
 		data.add(new Loading());

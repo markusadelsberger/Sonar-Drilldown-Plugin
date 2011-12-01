@@ -21,7 +21,7 @@ import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
 
-public class DrilldownController implements ComponentController{
+public class DrilldownController implements IComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
 	private DrilldownComponentRuleList ruleList;
@@ -55,43 +55,40 @@ public class DrilldownController implements ComponentController{
 	}
 	
 	public void onSelectedItemChanged(String component) {
-		if (component.equals("rule"))
+		
+		if(component.equals("severety")){
+			String activeElement = drilldownModel.getActiveElement("Severety");
+			
+			drilldownModel.setActiveMeasure(null);
+			
+			pathComponent.setElement("Any rule >> ", 2, null);
+			pathComponent.setElement(activeElement, 1, "severety");
+						
+			structureDrilldown.reload();
+			ruleList.reload();
+		} 
+		else if (component.equals("rule"))
 		{
-			Measure selectedMeasure = ruleList.getSelectedItem();
-			structureDrilldown.setSelectedRule(selectedMeasure);
+			Measure selectedMeasure = drilldownModel.getActiveMeasure();
+			
 			pathComponent.setElement(selectedMeasure.getRuleName(), 2, "rule");
+			
+			structureDrilldown.reload();
 		} 
 		else if(component.equals("structure"))
 		{
 			Resource selectedModule = structureDrilldown.getSelectedModule();
-			Resource selectedPackage = structureDrilldown.getSelectedPackage();
-			
 			if(selectedModule != null)
 			{
 				pathComponent.setElement(selectedModule.getName(), 3, "module");
 			}
 			
+			Resource selectedPackage = structureDrilldown.getSelectedPackage();
 			if (selectedPackage != null)
 			{
 				pathComponent.setElement(selectedPackage.getName(), 4, "package");
 			}
-		}
-		else if(component.equals("severety")){
-			String severety = drilldownModel.getActiveElement("Severety");
-			
-			pathComponent.setElement(severety, 1, "severety");
-			drilldownModel.setActiveElement("Severety", severety);
-			
-			//TODO: StructureDrilldown muss aktualisiert werden. 
-			/*
-			String activeElement = drilldownModel.getActiveElement("Severety");
-			if(activeElement!=null){
-				List<Measure> measureList = drilldownModel.getList(activeElement);
-				structureDrilldown.setSelectedRules(measureList);
-			}
-			*/
-			ruleList.reload();
-		}
+		}	
 	}
 	
 	/**
@@ -101,32 +98,34 @@ public class DrilldownController implements ComponentController{
 	 * @param element package: resets the package and deletes it from the pathcomponent
 	 * @param element severety: resets the severety, deletes it from the pathcomponent and reloads the ruleList
 	 */
+	
 	public void clearElement(String element){
-		if(element.equals("rule"))
+	
+ 		if (element.equals("severety"))
 		{
-			ruleList.setSelectedItem(null);
-			structureDrilldown.setSelectedRule(null);
+			drilldownModel.setActiveElement("Severety", null);
+			ruleList.reload();
+			structureDrilldown.reload();
+			pathComponent.setElement("Severety >> ", 1, null);
+		}
+		else if(element.equals("rule"))
+		{
+			drilldownModel.setActiveMeasure(null);
+			structureDrilldown.reload();
 			pathComponent.setElement("Any rule >> ", 2, null);
 		} 
 		else if (element.equals("module"))
 		{
-			structureDrilldown.setSelectedModule(null);
+			structureDrilldown.clearSelectedModule();
 			pathComponent.setElement(" ", 3, null);
 		}
 		else if (element.equals("package"))
 		{
-			structureDrilldown.setSelectedPackage(null);
+			structureDrilldown.clearSelectedPackage();
 			pathComponent.setElement(" ", 4, null);
 		}
-		else if (element.equals("severety"))
-		{
-			drilldownModel.setActiveElement("Severety", null);
-			structureDrilldown.setSelectedPackage(null);
-			ruleList.reload();
-			pathComponent.setElement("Severety >> ", 1, null);
-		}
 	}
-	
+
 	/**
 	 * Gets the used Model
 	 * @return The Model in use, if null is returned the method setModel(DrilldownModel drilldownModel) was not called correctly

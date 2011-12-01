@@ -125,6 +125,4 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		drilldownModel.setActiveElement("Severety", severety);
 		controller.onSelectedItemChanged("severety");
 	}
-	
-	
 }
