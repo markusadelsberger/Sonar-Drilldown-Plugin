@@ -5,7 +5,7 @@ package jku.se.drilldown.client.ui.controller;
  * @author Johannes
  *
  */
-public interface ComponentController {
+public interface IComponentController {
 	
 	/**
 	 * Method is invoked when something changed in a component. 

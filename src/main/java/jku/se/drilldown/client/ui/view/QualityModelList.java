@@ -10,7 +10,6 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -36,6 +35,11 @@ public class QualityModelList extends DrilldownComponentList<Resource>{
 		return new Label("Quality Models");
 	}
 
+	public void reload()
+	{
+		;
+	}
+	
 	@Override
 	public void doLoadData() {
 

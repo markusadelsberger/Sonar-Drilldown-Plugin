@@ -35,14 +35,12 @@ public class BenchmarkViewerPanel extends Page {
 	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
-	private Resource resource;
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
-		this.resource=resource;
 		
 		try{
 			mainPanel= new HorizontalPanel();
@@ -56,7 +54,7 @@ public class BenchmarkViewerPanel extends Page {
 			pathComponent = new PathComponent(drilldownController);
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-			structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
+			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.ui.BenchmarkViewer");
 			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);

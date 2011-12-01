@@ -3,7 +3,8 @@ package jku.se.drilldown.client.ui.view;
 import java.util.HashMap;
 import java.util.List;
 
-import jku.se.drilldown.client.ui.controller.ComponentController;
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+import jku.se.drilldown.client.ui.model.DrilldownModel;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 
 	private String pageID;
-	private Resource resource;
+
 	private String scope;
 	
 	private List<Measure> selectedMeasures;
@@ -44,12 +45,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	// parent list
 	private StructureDrilldownList prev;
 	
-	private ComponentController controller;
+	private DrilldownController controller;
+	private DrilldownModel model;
 
-	public StructureDrilldownList(Resource resource, String scope, String pageID, ComponentController controller) {
+	public StructureDrilldownList(DrilldownController controller, String scope, String pageID) {
 		super();
 		
-		this.resource=resource;
 		this.pageID = pageID;
 		this.scope=scope;
 		
@@ -58,6 +59,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		this.prev=null;
 		
 		this.controller=controller;
+		this.model=controller.getModel();
 	}
  
 	@Override
@@ -78,9 +80,15 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		renderValueCell( item, row, renderNameCell( item, row, renderIconCells(item, row, 0)));
 	}
 		
+	public void reload()
+	{
+		loadData();
+	}
+	
 	@Override
 	public void doLoadData() 
 	{
+		final Resource selectedItem = model.getSelectedItem(this);
 		
 		Sonar.getInstance().findAll(getQuery(), new AbstractListCallback<Resource>() {
 			
@@ -106,7 +114,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				setHashmap(hashmap);
 				
-				if(containsSelectedItem())
+				if(containsSelectedItem(selectedItem))
 					selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
 						
 				render(getGrid());	
@@ -197,11 +205,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		return item.getKey();
 	}
 	
-	@Override
 	public Resource getSelectedItem()
 	{
-		if(containsSelectedItem())
-			return super.getSelectedItem();
+		Resource selectedItem = model.getSelectedItem(this);
+		
+		if(containsSelectedItem(selectedItem))
+			return selectedItem;
 		else
 			return null;
 	}
@@ -245,7 +254,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	{
 		if(prev==null)
 		{
-			return resource;
+			return model.getResource();
 		} 
 		else if (prev.getSelectedItem()!= null)
 		{
@@ -281,17 +290,27 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		Element element = event.getRelativeElement();
 		
 		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
-		
 	
 		if(drillResource != null)
 		{		
 			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE)||drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{				
-				this.setSelectedItem(drillResource);
-				this.next.loadData();
+				deselectRow(model.getSelectedItem(this));
 				
-				this.controller.onSelectedItemChanged("structure");
+				model.setSelectedItem(this, drillResource);
+				
+				selectRow(getHashmap().get(getItemIdentifier(drillResource)));
+				
+				next.loadData();
+				
+				controller.onSelectedItemChanged("structure");
 			} 
 		}	
+	}
+
+	public void deselectRow(Resource selectedModule) {
+		
+		if(containsSelectedItem(model.getSelectedItem(this)))
+			deselectRow(getHashmap().get(getItemIdentifier(model.getSelectedItem(this))));
 	}
 }

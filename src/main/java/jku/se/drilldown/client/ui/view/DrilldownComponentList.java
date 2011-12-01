@@ -1,9 +1,6 @@
 package jku.se.drilldown.client.ui.view;
 
-import java.util.List;
 import java.util.Map;
-
-
 
 import org.sonar.gwt.ui.Loading;
 
@@ -23,20 +20,13 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 
 	private Panel listPanel;
 	private Panel data;
-
-	private List<T> itemList;
-
 	private Grid grid;
-	private T selectedItem;
 	
 	// map stores the id of an item as key and its row in the grid as value
 	// map contains current list items displayed by the user interface
 	private Map<String,Integer> hashmap;
 	
 	public DrilldownComponentList() {
-		this.setItemList(itemList);
-		this.selectedItem = null;
-		
 		listPanel = new VerticalPanel();
 		initWidget(listPanel);
 	}
@@ -68,7 +58,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	 * Method returns the unique identifier of an list item. 
 	 * The identifier is used as key value in the map. 
 	 */
-	public abstract String getItemIdentifier(T item);
+	public abstract String getItemIdentifier(T selectedItem);
 	
 	public abstract int gridColumnCount();
 	
@@ -105,32 +95,6 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		this.grid = grid;
 	}
 
-	public List<T> getItemList() {
-		return itemList;
-	}
-
-	public void setItemList (List<T> resourceList){
-		this.itemList=resourceList;
-	}
-		
-	/**
-	 * Changing the selected item includes a update of the user interface. 
-	 * In the case the selected item is not in the current list the row has not to be deselected. 
-	 * 
-	 * @param selectedItem The new selected item.
-	 */
-	public void setSelectedItem(T selectedItem)
-	{
-		if(this.selectedItem!=null)
-			if(hashmap.get(getItemIdentifier(this.selectedItem))!=null)
-				deselectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
-				
-		this.selectedItem=selectedItem;
-		
-		if(this.selectedItem!=null)
-			selectRow(hashmap.get(getItemIdentifier(this.selectedItem)));
-	}
-	
 	public void setHashmap(Map<String,Integer> hashmap)
 	{
 		this.hashmap= hashmap;
@@ -141,20 +105,16 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		return this.hashmap;
 	}
 	
-	public T getSelectedItem()
-	{
-		return this.selectedItem;
-	}
-	
 	/**
 	 * Checks if the selected item is in the current list which is presented as user interface. 
+	 * @param selectedItem 
 	 * 
 	 * @return
 	 */
-	public boolean containsSelectedItem()
+	public boolean containsSelectedItem(T selectedItem)
 	{
-		if(this.selectedItem!= null)
-			if(hashmap.get(getItemIdentifier(this.selectedItem))!=null)
+		if(selectedItem!= null)
+			if(hashmap.get(getItemIdentifier(selectedItem))!=null)
 				return true;
 		
 		return false;
