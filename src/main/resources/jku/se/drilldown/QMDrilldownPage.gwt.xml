@@ -7,7 +7,7 @@
 
   <inherits name="org.spqr.SPQR"/>
 
-  <entry-point class='jku.se.drilldown.client.ui.BenchmarkViewerPanel'/>
+  <entry-point class='jku.se.drilldown.client.ui.QMViewerPanel'/>
 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="fr"/>
