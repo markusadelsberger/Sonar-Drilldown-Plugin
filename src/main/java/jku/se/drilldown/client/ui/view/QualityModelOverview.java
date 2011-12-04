@@ -2,11 +2,13 @@ package jku.se.drilldown.client.ui.view;
 
 
 import org.sonar.gwt.ui.Loading;
+/*
 import org.spqr.base.core.resources.model.IQualityModel;
 import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
 import org.spqr.base.internal.core.providers.SimpleDomainProvider;
 import org.spqr.base.internal.core.providers.SimpleSupplementProvider;
 import org.spqr.base.internal.core.resources.QualityModelElementList;
+*/
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -80,7 +82,7 @@ public class QualityModelOverview extends DrilldownComponent {
 
 	private void doLoadData() {
 		tree = new Tree();
-
+/*
 		QualityModelElementList modelList = loadQualitymodels();
 		
 		for (IQualityModel qmmodel : modelList.getAllQualityModels() )
@@ -89,10 +91,11 @@ public class QualityModelOverview extends DrilldownComponent {
 			
 			tree.addItem(firstLevel);
 		}
-	
+	*/
         qmoverview.add(tree);
 	}
 
+	/*
 	private QualityModelElementList loadQualitymodels() {
 		
 		final QualityModelElementList modelList = new QualityModelElementList(SimpleDomainProvider.getInstance(), SimpleSupplementProvider.getInstance());
@@ -157,8 +160,7 @@ public class QualityModelOverview extends DrilldownComponent {
 		} finally {
 			// TODO Auto-generated catch block
 		}
-		*/
-
-		return modelList;
+				return modelList;
 	}
+	*/
 }
