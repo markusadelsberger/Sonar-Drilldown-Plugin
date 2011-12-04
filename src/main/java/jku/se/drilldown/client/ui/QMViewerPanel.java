@@ -4,6 +4,7 @@ import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.QualityModelOverview;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -75,6 +76,8 @@ public class QMViewerPanel extends Page{
 		}catch (Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}
+		
+		panel.add(new QualityModelOverview());
 		
 		return panel;
 	}

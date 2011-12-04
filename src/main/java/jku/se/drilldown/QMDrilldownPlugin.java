@@ -19,7 +19,7 @@ public class QMDrilldownPlugin extends SonarPlugin {
 		List extensions = Lists.newLinkedList();
 		  
 		extensions.add(QMDrilldownPage.class);
-		extensions.add(QMDrilldownConfig.class);
+	//	extensions.add(QMDrilldownConfig.class);
 
 		return extensions;
 	}

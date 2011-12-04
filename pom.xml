@@ -40,12 +40,12 @@
     </dependency>
  
 	<dependency>
-		<groupId>org.spqr.base</groupId>
+		<groupId>org.spqr</groupId>
 		<artifactId>spqr</artifactId>
 		<version>1.0</version>
-		<scope>compile</scope>
+		<scope>provided</scope>
 	</dependency> 
-
+ 
     <!-- unit tests -->
     <dependency>
       <groupId>org.codehaus.sonar</groupId>

@@ -2,18 +2,21 @@ package jku.se.drilldown.client.ui.view;
 
 
 import org.sonar.gwt.ui.Loading;
+/*
 import org.spqr.base.core.resources.model.IQualityModel;
 import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
 import org.spqr.base.internal.core.providers.SimpleDomainProvider;
 import org.spqr.base.internal.core.providers.SimpleSupplementProvider;
 import org.spqr.base.internal.core.resources.QualityModelElementList;
-
+*/
+   
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -40,7 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class QualityModelOverview extends DrilldownComponent {
 
-	
 	private Panel qmoverview;
 	private Panel data;
 	
@@ -81,6 +83,8 @@ public class QualityModelOverview extends DrilldownComponent {
 	private void doLoadData() {
 		tree = new Tree();
 
+		loadQualitymodels();
+		/*
 		QualityModelElementList modelList = loadQualitymodels();
 		
 		for (IQualityModel qmmodel : modelList.getAllQualityModels() )
@@ -89,13 +93,14 @@ public class QualityModelOverview extends DrilldownComponent {
 			
 			tree.addItem(firstLevel);
 		}
-	
+*/	
         qmoverview.add(tree);
 	}
 
-	private QualityModelElementList loadQualitymodels() {
+	// private QualityModelElementList loadQualitymodels() {
+	private void loadQualitymodels() {
 		
-		final QualityModelElementList modelList = new QualityModelElementList(SimpleDomainProvider.getInstance(), SimpleSupplementProvider.getInstance());
+		//final QualityModelElementList modelList = new QualityModelElementList(SimpleDomainProvider.getInstance(), SimpleSupplementProvider.getInstance());
 		
 		try {
 			RequestBuilder sendRequest = new RequestBuilder(RequestBuilder.GET, "http://localhost:9000/static/qualitymodel/qualitymodel.xml");
@@ -104,9 +109,9 @@ public class QualityModelOverview extends DrilldownComponent {
 
 				public void onResponseReceived(Request request, Response response) {
 					String result=response.getText();
-					
+					qmoverview.add(new Label(result));
 					try {
-						SpqrQualityModelFiles.loadQualityModel(result.toString(), modelList);
+			//			SpqrQualityModelFiles.loadQualityModel(result.toString(), modelList);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -157,8 +162,9 @@ public class QualityModelOverview extends DrilldownComponent {
 		} finally {
 			// TODO Auto-generated catch block
 		}
-		*/
-
+		
+		
 		return modelList;
+*/
 	}
 }
