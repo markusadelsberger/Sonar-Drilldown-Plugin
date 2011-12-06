@@ -70,8 +70,9 @@ public class DrilldownController implements IComponentController{
 			case FILELIST:
 			case MODULELIST: pathComponent.reload(); break;
 			case SEVERETYDRILLDOWN:
-				pathComponent.reload();
 				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
 				break;
 		}	
 	}

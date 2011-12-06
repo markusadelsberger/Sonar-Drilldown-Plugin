@@ -30,7 +30,11 @@ public class DrilldownModel implements IListModel{
 		measureMap=new HashMap<String, List>();
 		activeMap=new HashMap<String, String>();
 		countMap= new HashMap<String, Integer>();
+		selectedResource=new HashMap<DrilldownComponentList<Resource>, Resource>();
 		activeMeasure = null;
+		selectedModule=null;
+		selectedPackage=null;
+		
 	}
 	
 	/**

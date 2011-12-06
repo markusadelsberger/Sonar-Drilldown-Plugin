@@ -10,6 +10,7 @@ import jku.se.drilldown.client.ui.model.ViewComponents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -36,6 +37,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	public PathComponent(DrilldownController drilldownController)
 	{
 		this.drilldownController = drilldownController;
+		this.drilldownModel=drilldownController.getModel();
 		pathInformation = new Grid(1,5);
 		
 		initWidget(pathInformation);	

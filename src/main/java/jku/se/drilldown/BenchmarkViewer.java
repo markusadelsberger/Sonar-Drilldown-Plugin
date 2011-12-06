@@ -13,7 +13,7 @@ return "Benchmark Drilldown";
 
 @Override
 public String getGwtId() {
-return "jku.se.drilldown.ui.BenchmarkViewer";
+return "jku.se.drilldown.BenchmarkViewer";
 }
 
 }

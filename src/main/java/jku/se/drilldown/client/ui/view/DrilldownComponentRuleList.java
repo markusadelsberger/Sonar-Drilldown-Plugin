@@ -156,7 +156,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		if(selectedMeasure != null)
 		{
 			drilldownModel.setActiveMeasure(selectedMeasure);
-
 			controller.onSelectedItemChanged(ViewComponents.RULEDRILLDOWN);
 		} 
 	}

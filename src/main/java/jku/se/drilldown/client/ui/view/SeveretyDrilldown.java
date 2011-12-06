@@ -11,6 +11,7 @@ import org.sonar.wsclient.services.Measure;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -125,5 +126,6 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		String severety = element.getInnerText();
 		drilldownModel.setActiveElement("Severety", severety);
 		controller.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
+		
 	}
 }
