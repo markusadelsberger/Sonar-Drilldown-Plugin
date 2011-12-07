@@ -82,9 +82,23 @@
 				<version>1.2</version>
 				<executions>
 					<execution>
+						<id>Benchmark</id>
 						<configuration>
 							<modules>
 								<module>jku.se.drilldown.BenchmarkViewer</module>
+							</modules>
+							<webappDirectory>${project.build.directory}/classes</webappDirectory>
+							<extraJvmArgs>-Xmx512m</extraJvmArgs>
+						</configuration>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>XML</id>
+						<configuration>
+							<modules>
+								<module>jku.se.drilldown.XMLTest</module>
 							</modules>
 							<webappDirectory>${project.build.directory}/classes</webappDirectory>
 							<extraJvmArgs>-Xmx512m</extraJvmArgs>
