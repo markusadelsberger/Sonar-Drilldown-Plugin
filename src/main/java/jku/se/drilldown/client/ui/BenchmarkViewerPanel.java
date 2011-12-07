@@ -54,7 +54,8 @@ public class BenchmarkViewerPanel extends Page {
 			pathComponent = new PathComponent(drilldownController);
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.ui.BenchmarkViewer");
+			drilldownComponentRuleList.setWidth("100%");
+			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
 			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
@@ -65,6 +66,7 @@ public class BenchmarkViewerPanel extends Page {
 			
 			leftPanel.add(severetyDrilldown);
 			rightPanel.add(drilldownComponentRuleList);
+			rightPanel.setWidth("100%");
 			
 			mainPanel.add(leftPanel);
 			mainPanel.add(rightPanel);

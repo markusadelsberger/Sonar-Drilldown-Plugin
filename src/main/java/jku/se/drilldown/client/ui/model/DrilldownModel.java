@@ -20,18 +20,21 @@ public class DrilldownModel implements IListModel{
 	private HashMap<String, String> activeMap;
 	private HashMap<String, Integer> countMap;
 	private Measure activeMeasure;
-	
+	private Resource selectedModule;
+	private Resource selectedPackage;
 	private Resource resource;
 	private HashMap<DrilldownComponentList<Resource>,Resource> selectedResource;
+	
 	
 	public DrilldownModel(){
 		measureMap=new HashMap<String, List>();
 		activeMap=new HashMap<String, String>();
 		countMap= new HashMap<String, Integer>();
+		selectedResource=new HashMap<DrilldownComponentList<Resource>, Resource>();
 		activeMeasure = null;
+		selectedModule=null;
+		selectedPackage=null;
 		
-		resource = null;
-		selectedResource = new HashMap<DrilldownComponentList<Resource>,Resource>();
 	}
 	
 	/**
@@ -105,8 +108,21 @@ public class DrilldownModel implements IListModel{
 	}
 
 	
-	
-	
+	public Resource getSelectedModule() {
+		return selectedModule;
+	}
+
+	public void setSelectedModule(Resource selectedModule) {
+		this.selectedModule = selectedModule;
+	}
+
+	public Resource getSelectedPackage() {
+		return selectedPackage;
+	}
+
+	public void setSelectedPackage(Resource selectedPackage) {
+		this.selectedPackage = selectedPackage;
+	}
 	
 	public Resource getResource() {
 		return resource;
@@ -119,10 +135,11 @@ public class DrilldownModel implements IListModel{
 	public Resource getSelectedItem(StructureDrilldownList drilldownComponentList) {
 		return this.selectedResource.get(drilldownComponentList);
 	}
-	
+
 	public void setSelectedItem(StructureDrilldownList drilldownComponentList, Resource resource){
 		this.selectedResource.put(drilldownComponentList, resource);
 	}
+	
 	
 	
 	

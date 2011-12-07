@@ -5,6 +5,7 @@ import java.util.List;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import org.sonar.gwt.Links;
 import org.sonar.gwt.Metrics;
@@ -303,7 +304,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				next.loadData();
 				
-				controller.onSelectedItemChanged("structure");
+				controller.onSelectedItemChanged(ViewComponents.STRUCTURE);
 			} 
 		}	
 	}

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
@@ -54,75 +55,59 @@ public class DrilldownController implements IComponentController{
 		this.resource=resource;
 	}
 	
-	public void onSelectedItemChanged(String component) {
-		
-		if(component.equals("severety")){
-			String activeElement = drilldownModel.getActiveElement("Severety");
-			
-			drilldownModel.setActiveMeasure(null);
-			
-			pathComponent.setElement("Any rule >> ", 2, null);
-			pathComponent.setElement(activeElement, 1, "severety");
-						
-			structureDrilldown.reload();
-			ruleList.reload();
-		} 
-		else if (component.equals("rule"))
-		{
-			Measure selectedMeasure = drilldownModel.getActiveMeasure();
-			
-			pathComponent.setElement(selectedMeasure.getRuleName(), 2, "rule");
-			
-			structureDrilldown.reload();
-		} 
-		else if(component.equals("structure"))
-		{
-			Resource selectedModule = structureDrilldown.getSelectedModule();
-			if(selectedModule != null)
-			{
-				pathComponent.setElement(selectedModule.getName(), 3, "module");
-			}
-			
-			Resource selectedPackage = structureDrilldown.getSelectedPackage();
-			if (selectedPackage != null)
-			{
-				pathComponent.setElement(selectedPackage.getName(), 4, "package");
-			}
+	/**
+	 * Is used to notify the controller that the data in the model has changed and 
+	 * the views should be notified
+	 * @param component The component that called the method;
+	 */
+	public void onSelectedItemChanged(ViewComponents component) {
+		switch(component){
+			case RULEDRILLDOWN: 
+				structureDrilldown.reload();
+				pathComponent.reload();
+				break;
+			case PACKAGELIST:
+			case FILELIST:
+			case MODULELIST: pathComponent.reload(); break;
+			case SEVERETYDRILLDOWN:
+				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
 		}	
 	}
 	
 	/**
-	 * Resets the selected element, depending on the given String
-	 * @param element rule: resets the rule and deletes it from the pathcomponent
-	 * @param element module: resets the module and deletes it from the pathcomponent
-	 * @param element package: resets the package and deletes it from the pathcomponent
-	 * @param element severety: resets the severety, deletes it from the pathcomponent and reloads the ruleList
-	 */
+	 * Resets the selected element
+	 * @param component The component that called the method
+	*/
 	
-	public void clearElement(String element){
-	
- 		if (element.equals("severety"))
+	public void clearElement(ViewComponents component){
+		if(component==ViewComponents.RULEDRILLDOWN)
+		{
+			drilldownModel.setActiveMeasure(null);
+			structureDrilldown.reload();
+			ruleList.reload();
+			pathComponent.reload();
+		} 
+		else if (component==ViewComponents.MODULELIST)
+		{
+			drilldownModel.setSelectedModule(null);
+			structureDrilldown.reload();
+			pathComponent.reload();
+		}
+		else if (component==ViewComponents.PACKAGELIST)
+		{
+			drilldownModel.setSelectedPackage(null);
+			structureDrilldown.reload();
+			pathComponent.reload();
+		}
+		else if (component==ViewComponents.SEVERETYDRILLDOWN)
 		{
 			drilldownModel.setActiveElement("Severety", null);
 			ruleList.reload();
 			structureDrilldown.reload();
-			pathComponent.setElement("Severety >> ", 1, null);
-		}
-		else if(element.equals("rule"))
-		{
-			drilldownModel.setActiveMeasure(null);
-			structureDrilldown.reload();
-			pathComponent.setElement("Any rule >> ", 2, null);
-		} 
-		else if (element.equals("module"))
-		{
-			structureDrilldown.clearSelectedModule();
-			pathComponent.setElement(" ", 3, null);
-		}
-		else if (element.equals("package"))
-		{
-			structureDrilldown.clearSelectedPackage();
-			pathComponent.setElement(" ", 4, null);
+			pathComponent.reload();
 		}
 	}
 

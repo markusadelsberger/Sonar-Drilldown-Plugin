@@ -7,6 +7,7 @@ import java.util.Map;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.services.Measure;
@@ -155,8 +156,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		if(selectedMeasure != null)
 		{
 			drilldownModel.setActiveMeasure(selectedMeasure);
-
-			controller.onSelectedItemChanged("rule");
+			controller.onSelectedItemChanged(ViewComponents.RULEDRILLDOWN);
 		} 
 	}
 	/**
