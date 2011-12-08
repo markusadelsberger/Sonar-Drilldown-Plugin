@@ -1,5 +1,7 @@
 package jku.se.drilldown.client.ui.controller;
 
+import jku.se.drilldown.client.ui.model.ViewComponents;
+
 /**
  * 
  * @author Johannes
@@ -13,5 +15,5 @@ public interface IComponentController {
 	 * 
 	 * @param component Defines in which component the item changed. 
 	 */
-	public void onSelectedItemChanged(String component);
+	public void onSelectedItemChanged(ViewComponents component);
 }

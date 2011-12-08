@@ -4,6 +4,7 @@ import java.util.List;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import org.sonar.gwt.ui.Icons;
 import org.sonar.wsclient.services.Measure;
@@ -123,6 +124,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		Element element = event.getRelativeElement();
 		String severety = element.getInnerText();
 		drilldownModel.setActiveElement("Severety", severety);
-		controller.onSelectedItemChanged("severety");
+		controller.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
+		
 	}
 }

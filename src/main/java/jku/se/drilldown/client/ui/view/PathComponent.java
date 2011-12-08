@@ -1,6 +1,11 @@
 package jku.se.drilldown.client.ui.view;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
+import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
+
+import org.sonar.wsclient.services.Measure;
+import org.sonar.wsclient.services.Resource;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,10 +30,13 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	private Grid pathInformation;
 	
 	private DrilldownController drilldownController;
-	
+	private DrilldownModel drilldownModel;
+	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " "};
+
 	public PathComponent(DrilldownController drilldownController)
 	{
 		this.drilldownController = drilldownController;
+		this.drilldownModel=drilldownController.getModel();
 		pathInformation = new Grid(1,5);
 		
 		initWidget(pathInformation);	
@@ -41,28 +49,26 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	public void loadData()
 	{
-		pathInformation.setWidget(0, 0, new Label("Path: "));
-		pathInformation.setWidget(0, 1, new Label("Any severty >> "));
-		pathInformation.setWidget(0, 2, new Label("Any rule >> "));
-		pathInformation.setWidget(0, 3, new Label(" "));
-		pathInformation.setWidget(0, 4, new Label(" "));
+		for(int i =0;i<5;i++){
+			pathInformation.setWidget(0, i, new Label(labels[i]));
+		}
 	}
 	
 	public void onClick(ClickEvent event) {			
 		Element element = event.getRelativeElement();
 		
-		String clearItem = element.getAttribute("clearItem");
+		ViewComponents clearItem = (ViewComponents)element.getPropertyObject("clearItem");
 		
 		drilldownController.clearElement(clearItem);		
 	}
 
-	public void setElement(String label, int column, String category){
+	private void setElement(String label, int column, ViewComponents category){
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.add(new Label(label));
 		
 		if(category!=null){
 			Anchor link = new Anchor("Clear");
-			link.getElement().setAttribute("clearItem", category);
+			link.getElement().setPropertyObject("clearItem", category);
 			link.addClickHandler(this);
 			panel.add(link);
 		}
@@ -72,6 +78,32 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	public void reload()
 	{
-		;
+		String severety = drilldownModel.getActiveElement("Severety");
+		if(severety!=null){
+			this.setElement(severety, 1, ViewComponents.SEVERETYDRILLDOWN);
+		}else{
+			this.setElement(labels[1], 1, null);
+		}
+		
+		Measure activeMeasure = drilldownModel.getActiveMeasure();
+		if(activeMeasure!=null){
+			this.setElement(activeMeasure.getRuleName(), 2, ViewComponents.RULEDRILLDOWN);
+		}else{
+			this.setElement(labels[2], 2, null);
+		}
+		
+		Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
+		if(selectedModule!=null){
+			this.setElement(selectedModule.getName(), 3, ViewComponents.MODULELIST);
+		}else{
+			this.setElement(labels[3], 3, null);
+		}
+		
+		Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
+		if(selectedPackage!=null){
+			this.setElement(selectedPackage.getName(), 4, ViewComponents.PACKAGELIST);
+		}else{
+			this.setElement(labels[4], 4, null);
+		}
 	}
 }
