@@ -2,23 +2,9 @@ package jku.se.drilldown.client.ui.view;
 
 
 import org.sonar.gwt.ui.Loading;
-/*
-import org.spqr.base.core.resources.model.IQualityModel;
-import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
-import org.spqr.base.internal.core.providers.SimpleDomainProvider;
-import org.spqr.base.internal.core.providers.SimpleSupplementProvider;
-import org.spqr.base.internal.core.resources.QualityModelElementList;
-*/
 
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestBuilder.Method;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
  

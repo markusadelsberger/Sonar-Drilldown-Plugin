@@ -2,11 +2,11 @@ package jku.se.drilldown.client.ui.view;
 
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
@@ -77,14 +77,14 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		boolean parentExists= false;
 		
 		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
-			moduleList = new StructureDrilldownList(controller, STRUCTURE[0], pageID);
+			moduleList = new StructureDrilldownList(controller, STRUCTURE[0], pageID, ViewComponents.MODULELIST);
 			structurePanel.setWidget(0, 0, moduleList);
 			
 			parentExists =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || parentExists){
-			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID);
+			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID, ViewComponents.PACKAGELIST);
 			structurePanel.setWidget(0, 1, packageList);
 			
 			if(parentExists)
@@ -94,7 +94,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || parentExists){
-			fileList = new StructureDrilldownList(controller, STRUCTURE[2], pageID);
+			fileList = new StructureDrilldownList(controller, STRUCTURE[2], pageID, ViewComponents.FILELIST);
 			structurePanel.setWidget(0, 2, fileList);
 			
 			if(parentExists)
@@ -140,14 +140,14 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		
 		if(packageList!= null)
 		{
-			this.packageList.setSelectedMeasures(selectedMeasures);
+			packageList.setSelectedMeasures(selectedMeasures);
 			if(startReloadingComp==null)
 				startReloadingComp= packageList;
 		}
 	
 		if(fileList!= null)
 		{
-			this.fileList.setSelectedMeasures(selectedMeasures);
+			fileList.setSelectedMeasures(selectedMeasures);
 			if(startReloadingComp==null)
 				startReloadingComp= fileList;
 		}
@@ -156,28 +156,25 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			startReloadingComp.loadData();
 	}
 	
-	
-	public Resource getSelectedModule()
-	{
-		return model.getSelectedItem(moduleList);
+	public Resource getSelectedModule(){
+		return model.getSelectedItem(moduleList.getListType());
 	}
 	
 	public void clearSelectedModule() {
 		moduleList.deselectRow(getSelectedModule());
 			
-		model.setSelectedItem(moduleList, null);
+		model.setSelectedItem(moduleList.getListType(), null);
 		packageList.loadData();
 	}
 	
-	public Resource getSelectedPackage()
-	{
-		return model.getSelectedItem(packageList);
+	public Resource getSelectedPackage(){
+		return model.getSelectedItem(packageList.getListType());
 	}
 	
 	public void clearSelectedPackage() {
 		packageList.deselectRow(getSelectedPackage());
 		
-		model.setSelectedItem(packageList, null);
+		model.setSelectedItem(packageList.getListType(), null);
 		fileList.loadData();
 	}
 
@@ -185,16 +182,17 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		
 		Measure selectedMeasure = model.getActiveMeasure();
 		
-		if(selectedMeasure == null)
-		{
+		if(selectedMeasure == null) {
 			String activeElement = model.getActiveElement("Severety");
 			
 			if(activeElement!=null){
 				setSelectedRules(model.getList(activeElement));
 			}
+			else {
+				setSelectedRule(selectedMeasure);
+			}
 		}
-		else
-		{
+		else {
 			setSelectedRule(selectedMeasure);
 		}
 	}

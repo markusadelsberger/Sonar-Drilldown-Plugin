@@ -62,18 +62,22 @@ public class DrilldownController implements IComponentController{
 	 */
 	public void onSelectedItemChanged(ViewComponents component) {
 		switch(component){
-			case RULEDRILLDOWN: 
-				structureDrilldown.reload();
-				pathComponent.reload();
-				break;
-			case PACKAGELIST:
-			case FILELIST:
-			case MODULELIST: pathComponent.reload(); break;
 			case SEVERETYDRILLDOWN:
 				ruleList.reload();
 				pathComponent.reload();
 				structureDrilldown.reload();
 				break;
+			
+			case RULEDRILLDOWN: 
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
+			
+			case PACKAGELIST:
+			case FILELIST:
+			case MODULELIST: pathComponent.reload(); 
+				break;		
+
 		}	
 	}
 	
@@ -83,31 +87,37 @@ public class DrilldownController implements IComponentController{
 	*/
 	
 	public void clearElement(ViewComponents component){
-		if(component==ViewComponents.RULEDRILLDOWN)
-		{
-			drilldownModel.setActiveMeasure(null);
-			structureDrilldown.reload();
-			ruleList.reload();
-			pathComponent.reload();
-		} 
-		else if (component==ViewComponents.MODULELIST)
-		{
-			drilldownModel.setSelectedModule(null);
-			structureDrilldown.reload();
-			pathComponent.reload();
-		}
-		else if (component==ViewComponents.PACKAGELIST)
-		{
-			drilldownModel.setSelectedPackage(null);
-			structureDrilldown.reload();
-			pathComponent.reload();
-		}
-		else if (component==ViewComponents.SEVERETYDRILLDOWN)
-		{
-			drilldownModel.setActiveElement("Severety", null);
-			ruleList.reload();
-			structureDrilldown.reload();
-			pathComponent.reload();
+		
+		switch(component){
+			case SEVERETYDRILLDOWN:
+				drilldownModel.setActiveElement("Severety", null);
+				
+				ruleList.reload();
+				structureDrilldown.reload();
+				pathComponent.reload();
+			break;
+		
+			case RULEDRILLDOWN:
+				drilldownModel.setActiveMeasure(null);
+				
+				structureDrilldown.reload();
+				ruleList.reload();
+				pathComponent.reload();
+			break;
+		
+			case MODULELIST:
+				drilldownModel.setSelectedItem(ViewComponents.MODULELIST, null);
+				
+				structureDrilldown.reload();
+				pathComponent.reload();
+			break;
+			
+			case PACKAGELIST:
+				drilldownModel.setSelectedItem(ViewComponents.PACKAGELIST, null);
+				
+				structureDrilldown.reload();
+				pathComponent.reload();
+			break;
 		}
 	}
 

@@ -48,8 +48,10 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	
 	private DrilldownController controller;
 	private DrilldownModel model;
+	
+	private ViewComponents listType;
 
-	public StructureDrilldownList(DrilldownController controller, String scope, String pageID) {
+	public StructureDrilldownList(DrilldownController controller, String scope, String pageID, ViewComponents listType) {
 		super();
 		
 		this.pageID = pageID;
@@ -61,6 +63,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		this.controller=controller;
 		this.model=controller.getModel();
+		
+		this.listType = listType;
 	}
  
 	@Override
@@ -89,7 +93,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	@Override
 	public void doLoadData() 
 	{
-		final Resource selectedItem = model.getSelectedItem(this);
+		final Resource selectedItem = model.getSelectedItem(this.listType);
 		
 		Sonar.getInstance().findAll(getQuery(), new AbstractListCallback<Resource>() {
 			
@@ -208,7 +212,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	
 	public Resource getSelectedItem()
 	{
-		Resource selectedItem = model.getSelectedItem(this);
+		Resource selectedItem = model.getSelectedItem(this.listType);
 		
 		if(containsSelectedItem(selectedItem))
 			return selectedItem;
@@ -281,6 +285,14 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	{
 		this.prev=prev;
 	}
+	
+	public ViewComponents getListType() {
+		return listType;
+	}
+
+	public void setListType(ViewComponents listType) {
+		this.listType = listType;
+	}
 
 	/**
 	 *  Click handler to react on clicks from the list component.
@@ -296,22 +308,22 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		{		
 			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE)||drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
 			{				
-				deselectRow(model.getSelectedItem(this));
+				deselectRow(model.getSelectedItem(this.listType));
 				
-				model.setSelectedItem(this, drillResource);
+				model.setSelectedItem(this.listType, drillResource);
 				
 				selectRow(getHashmap().get(getItemIdentifier(drillResource)));
 				
 				next.loadData();
 				
-				controller.onSelectedItemChanged(ViewComponents.STRUCTURE);
+				controller.onSelectedItemChanged(this.listType);
 			} 
 		}	
 	}
 
 	public void deselectRow(Resource selectedModule) {
 		
-		if(containsSelectedItem(model.getSelectedItem(this)))
-			deselectRow(getHashmap().get(getItemIdentifier(model.getSelectedItem(this))));
+		if(containsSelectedItem(model.getSelectedItem(this.listType)))
+			deselectRow(getHashmap().get(getItemIdentifier(model.getSelectedItem(this.listType))));
 	}
 }

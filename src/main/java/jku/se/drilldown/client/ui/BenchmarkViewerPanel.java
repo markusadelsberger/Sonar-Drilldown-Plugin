@@ -1,8 +1,5 @@
 package jku.se.drilldown.client.ui;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
@@ -12,11 +9,7 @@ import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
-import org.sonar.wsclient.gwt.AbstractCallback;
-import org.sonar.wsclient.gwt.Sonar;
-import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
-import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;

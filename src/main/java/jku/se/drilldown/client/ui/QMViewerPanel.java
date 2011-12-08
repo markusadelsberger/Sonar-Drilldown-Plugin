@@ -50,7 +50,7 @@ public class QMViewerPanel extends Page{
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			//structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
-			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.qm.QMDrilldownPage");
+			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
 						
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
