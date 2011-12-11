@@ -1,16 +1,15 @@
 package jku.se.drilldown.client.ui.view;
 
-import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
 
+import org.sonar.wsclient.services.Measure;
+import org.sonar.wsclient.services.Resource;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -93,16 +92,15 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 			this.setElement(labels[2], 2, null);
 		}
 		
-		//TODO: Setter in Model müssen von StructureDrilldownComponent verwendet werden
-		Resource selectedModule = drilldownModel.getSelectedModule();
+		Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
 		if(selectedModule!=null){
 			this.setElement(selectedModule.getName(), 3, ViewComponents.MODULELIST);
 		}else{
 			this.setElement(labels[3], 3, null);
 		}
 		
-		Resource selectedPackage = drilldownModel.getSelectedPackage();
-		if(selectedModule!=null){
+		Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
+		if(selectedPackage!=null){
 			this.setElement(selectedPackage.getName(), 4, ViewComponents.PACKAGELIST);
 		}else{
 			this.setElement(labels[4], 4, null);
