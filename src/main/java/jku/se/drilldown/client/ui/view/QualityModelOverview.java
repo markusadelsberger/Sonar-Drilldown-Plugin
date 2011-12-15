@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
@@ -240,7 +241,7 @@ public class QualityModelOverview extends DrilldownComponent implements Selectio
 		selectedItem.setStyleName("even selected");
 		
 		Node modelNode = (Node) item.getUserObject();
-		List<Node> leaves = modelNode.getLeaves();
+		Set<Node> leaves = modelNode.getLeaves();
 		
 		List<Measure> selectedMeasures = new ArrayList<Measure>();
 		
