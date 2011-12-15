@@ -62,6 +62,12 @@ public class DrilldownController implements IComponentController{
 	 */
 	public void onSelectedItemChanged(ViewComponents component) {
 		switch(component){
+			case QMTREE:
+				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
+		
 			case SEVERETYDRILLDOWN:
 				ruleList.reload();
 				pathComponent.reload();
@@ -85,7 +91,6 @@ public class DrilldownController implements IComponentController{
 	 * Resets the selected element
 	 * @param component The component that called the method
 	*/
-	
 	public void clearElement(ViewComponents component){
 		
 		switch(component){

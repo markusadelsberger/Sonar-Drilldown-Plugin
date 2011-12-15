@@ -73,6 +73,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
 		
 		getGrid().getColumnFormatter().setWidth(4, "70px");
+		getGrid().setStyleName("spaced");
 	}
 	
 	/**

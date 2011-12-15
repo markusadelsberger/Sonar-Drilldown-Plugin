@@ -163,13 +163,20 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	 * Reloads the rules from the model and rerenders the grid
 	 */
 	public void reload(){
-		String activeElement = drilldownModel.getActiveElement("Severety");
-		if(activeElement!=null){
-			List<Measure> measureList = drilldownModel.getList(activeElement);
+		
+		if(drilldownModel.getActiveElement("Severety")!=null){
+			List<Measure> measureList = drilldownModel.getList(drilldownModel.getActiveElement("Severety"));
 			reloadBegin();
 			addMeasures(measureList);
 			reloadFinished();
-		}else{
+		}
+		else if(drilldownModel.getList("qmtreeList")!=null){
+			List<Measure> measureList = drilldownModel.getList("qmtreeList");
+			reloadBegin();
+			addMeasures(measureList);
+			reloadFinished();
+		} 
+		else {
 			List<Measure> measureList = new LinkedList<Measure>();
 			measureList.addAll(drilldownModel.getList("Blocker"));
 			measureList.addAll(drilldownModel.getList("Critical"));
