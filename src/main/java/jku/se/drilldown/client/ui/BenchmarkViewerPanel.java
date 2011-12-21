@@ -1,7 +1,11 @@
 package jku.se.drilldown.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
@@ -44,7 +48,13 @@ public class BenchmarkViewerPanel extends Page {
 			drilldownModel = new DrilldownModel();
 			drilldownController.setModel(drilldownModel);
 			
-			pathComponent = new PathComponent(drilldownController);
+			List<ViewComponents> components = new ArrayList<ViewComponents>();
+			components.add(ViewComponents.SEVERETYDRILLDOWN);
+			components.add(ViewComponents.RULEDRILLDOWN);
+			components.add(ViewComponents.MODULELIST);
+			components.add(ViewComponents.PACKAGELIST);
+			components.add(ViewComponents.QMTREE);
+			pathComponent = new PathComponent(drilldownController,components);
 			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");

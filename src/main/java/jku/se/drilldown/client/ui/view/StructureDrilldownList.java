@@ -172,10 +172,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
     	{
     		link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	if(selectedMeasures != null)
-                		Links.openMeasurePopup(resource.getKey(), selectedMeasures.get(0).getRuleKey());
-                	else
-                		Links.openResourcePopup(resource.getKey());
+                	Links.openResourcePopup(resource.getKey());
                 }
               });
     	}

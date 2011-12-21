@@ -1,9 +1,14 @@
 package jku.se.drilldown.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.QualityModelComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -32,46 +37,59 @@ public class QMViewerPanel extends Page{
 	private StructureDrilldownComponent structureComponent;
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
+	private QualityModelComponent qmComponent;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
 		
 		try{
-			mainPanel= new HorizontalPanel();
-			rightPanel=new HorizontalPanel();
-			leftPanel=new HorizontalPanel();
-			
-			drilldownController = new DrilldownController();
-			drilldownModel = new DrilldownModel();
-			drilldownController.setModel(drilldownModel);
-			
-			pathComponent = new PathComponent(drilldownController);
-			severetyDrilldown=new SeveretyDrilldown(drilldownController);
-			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-			//structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
-			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
-						
-			drilldownController.setPathComponent(pathComponent);
-			drilldownController.setRuleList(drilldownComponentRuleList);
-			drilldownController.setStructureDrilldown(structureComponent);
-			drilldownController.setResource(resource);
-			drilldownController.setSeveretyDrilldown(severetyDrilldown);
-			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
-			
-			leftPanel.add(severetyDrilldown);
-			rightPanel.add(drilldownComponentRuleList);
-			
-			mainPanel.add(leftPanel);
-			mainPanel.add(rightPanel);
-			mainPanel.setWidth("100%");
-			mainPanel.setCellWidth(leftPanel, "200px");
-			mainPanel.setCellWidth(rightPanel, "100%");
-			panel.add(mainPanel);
-			
-			panel.add(structureComponent);
-			panel.add(pathComponent);
-			panel.setWidth("100%");
+		mainPanel= new HorizontalPanel();
+		rightPanel=new HorizontalPanel();
+		leftPanel=new HorizontalPanel();
+		
+		drilldownController = new DrilldownController();
+		drilldownModel = new DrilldownModel();
+		drilldownController.setModel(drilldownModel);
+		
+		List<ViewComponents> components = new ArrayList<ViewComponents>();
+		components.add(ViewComponents.RULEDRILLDOWN);
+		components.add(ViewComponents.MODULELIST);
+		components.add(ViewComponents.PACKAGELIST);
+		components.add(ViewComponents.QMTREE);
+		pathComponent = new PathComponent(drilldownController,components);
+
+		severetyDrilldown=new SeveretyDrilldown(drilldownController);
+		qmComponent = new QualityModelComponent(drilldownController, resource);
+		drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+
+		structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
+					
+		drilldownController.setPathComponent(pathComponent);
+		drilldownController.setRuleList(drilldownComponentRuleList);
+		drilldownController.setStructureDrilldown(structureComponent);
+		drilldownController.setQMComponent(qmComponent);
+		drilldownController.setResource(resource);
+		drilldownController.setSeveretyDrilldown(severetyDrilldown);
+		drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
+		
+		leftPanel.add(severetyDrilldown);
+		leftPanel.add(qmComponent);
+		
+		rightPanel.add(drilldownComponentRuleList);
+		
+		mainPanel.add(leftPanel);
+		mainPanel.add(rightPanel);
+		mainPanel.setWidth("100%");
+		mainPanel.setCellWidth(leftPanel, "400px");
+		mainPanel.setCellWidth(rightPanel, "100%");
+		panel.add(mainPanel);
+		
+		panel.add(structureComponent);
+		panel.add(pathComponent);
+		panel.setWidth("100%");
+
+		
 		}catch (Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}

@@ -12,6 +12,7 @@ import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.QualityModelComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -29,7 +30,13 @@ public class DrilldownController implements IComponentController{
 	private PathComponent pathComponent;
 	private DrilldownModel drilldownModel;
 	private SeveretyDrilldown severetyDrilldown;
+	private QualityModelComponent qmComponent;
+	
 	private Resource resource;
+	
+	public void setQMComponent(QualityModelComponent qmComponent) {
+		this.qmComponent = qmComponent;
+	}
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
 		this.structureDrilldown = structureDrilldown;
@@ -62,6 +69,12 @@ public class DrilldownController implements IComponentController{
 	 */
 	public void onSelectedItemChanged(ViewComponents component) {
 		switch(component){
+			case QMTREE:
+				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
+		
 			case SEVERETYDRILLDOWN:
 				ruleList.reload();
 				pathComponent.reload();
@@ -85,12 +98,12 @@ public class DrilldownController implements IComponentController{
 	 * Resets the selected element
 	 * @param component The component that called the method
 	*/
-	
 	public void clearElement(ViewComponents component){
 		
 		switch(component){
 			case SEVERETYDRILLDOWN:
 				drilldownModel.setActiveElement("Severety", null);
+				drilldownModel.setActiveMeasures(null);
 				
 				ruleList.reload();
 				structureDrilldown.reload();
@@ -117,6 +130,16 @@ public class DrilldownController implements IComponentController{
 				
 				structureDrilldown.reload();
 				pathComponent.reload();
+			break;
+			
+			case QMTREE:
+				drilldownModel.setActiveElement("qmtreeNode", null);
+				drilldownModel.setActiveMeasures(null);
+				
+				qmComponent.reload();
+				ruleList.reload();
+				structureDrilldown.reload();
+				pathComponent.reload();	
 			break;
 		}
 	}
