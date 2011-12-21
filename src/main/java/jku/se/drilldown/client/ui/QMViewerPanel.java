@@ -1,10 +1,14 @@
 package jku.se.drilldown.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
-import jku.se.drilldown.client.ui.view.QualityModelOverview;
+import jku.se.drilldown.client.ui.view.QualityModelComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -33,6 +37,7 @@ public class QMViewerPanel extends Page{
 	private StructureDrilldownComponent structureComponent;
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
+	private QualityModelComponent qmComponent;
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
@@ -47,21 +52,29 @@ public class QMViewerPanel extends Page{
 		drilldownModel = new DrilldownModel();
 		drilldownController.setModel(drilldownModel);
 		
-		pathComponent = new PathComponent(drilldownController);
+		List<ViewComponents> components = new ArrayList<ViewComponents>();
+		components.add(ViewComponents.RULEDRILLDOWN);
+		components.add(ViewComponents.MODULELIST);
+		components.add(ViewComponents.PACKAGELIST);
+		components.add(ViewComponents.QMTREE);
+		pathComponent = new PathComponent(drilldownController,components);
+
 		severetyDrilldown=new SeveretyDrilldown(drilldownController);
+		qmComponent = new QualityModelComponent(drilldownController, resource);
 		drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-		//structureComponent= new StructureDrilldownComponent(resource, "jku.se.drilldown.ui.BenchmarkViewer", drilldownController);
+
 		structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
 					
 		drilldownController.setPathComponent(pathComponent);
 		drilldownController.setRuleList(drilldownComponentRuleList);
 		drilldownController.setStructureDrilldown(structureComponent);
+		drilldownController.setQMComponent(qmComponent);
 		drilldownController.setResource(resource);
 		drilldownController.setSeveretyDrilldown(severetyDrilldown);
 		drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 		
 		leftPanel.add(severetyDrilldown);
-		leftPanel.add(new QualityModelOverview(drilldownController, resource));
+		leftPanel.add(qmComponent);
 		
 		rightPanel.add(drilldownComponentRuleList);
 		

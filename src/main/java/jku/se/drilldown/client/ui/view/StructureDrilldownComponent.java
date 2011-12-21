@@ -183,12 +183,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		Measure selectedMeasure = model.getActiveMeasure();
 		
 		if(selectedMeasure == null) {
-			if(model.getActiveElement("Severety")!=null){
-				setSelectedRules(model.getList(model.getActiveElement("Severety")));
-			}
-			else if(model.getList("qmtreeList")!=null){
-				setSelectedRules(model.getList("qmtreeList"));
-			}
+			setSelectedRules(model.getActiveMeasures());
 		}
 		else {
 			setSelectedRule(selectedMeasure);

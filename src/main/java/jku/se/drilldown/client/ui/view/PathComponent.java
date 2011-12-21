@@ -1,5 +1,7 @@
 package jku.se.drilldown.client.ui.view;
 
+import java.util.List;
+
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
@@ -31,13 +33,17 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
-	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " "};
+	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " ","Any QM Node >>"};
+	
+	private List<ViewComponents> viewComponents;
 
-	public PathComponent(DrilldownController drilldownController)
+	public PathComponent(DrilldownController drilldownController, List<ViewComponents> viewComponents)
 	{
 		this.drilldownController = drilldownController;
 		this.drilldownModel=drilldownController.getModel();
 		pathInformation = new Grid(1,5);
+		
+		this.viewComponents=viewComponents;
 		
 		initWidget(pathInformation);	
 	}
@@ -49,9 +55,9 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	public void loadData()
 	{
-		for(int i =0;i<5;i++){
-			pathInformation.setWidget(0, i, new Label(labels[i]));
-		}
+		pathInformation.setWidget(0, 0, new Label(labels[0]));
+		
+		reload();
 	}
 	
 	public void onClick(ClickEvent event) {			
@@ -62,13 +68,14 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		drilldownController.clearElement(clearItem);		
 	}
 
-	private void setElement(String label, int column, ViewComponents category){
+	private void setElement(String label, int column, ViewComponents viewComponent){
+		
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.add(new Label(label));
 		
-		if(category!=null){
+		if(viewComponent!=null){
 			Anchor link = new Anchor("Clear");
-			link.getElement().setPropertyObject("clearItem", category);
+			link.getElement().setPropertyObject("clearItem", viewComponent);
 			link.addClickHandler(this);
 			panel.add(link);
 		}
@@ -78,32 +85,67 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	public void reload()
 	{
-		String severety = drilldownModel.getActiveElement("Severety");
-		if(severety!=null){
-			this.setElement(severety, 1, ViewComponents.SEVERETYDRILLDOWN);
-		}else{
-			this.setElement(labels[1], 1, null);
-		}
-		
-		Measure activeMeasure = drilldownModel.getActiveMeasure();
-		if(activeMeasure!=null){
-			this.setElement(activeMeasure.getRuleName(), 2, ViewComponents.RULEDRILLDOWN);
-		}else{
-			this.setElement(labels[2], 2, null);
-		}
-		
-		Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
-		if(selectedModule!=null){
-			this.setElement(selectedModule.getName(), 3, ViewComponents.MODULELIST);
-		}else{
-			this.setElement(labels[3], 3, null);
-		}
-		
-		Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
-		if(selectedPackage!=null){
-			this.setElement(selectedPackage.getName(), 4, ViewComponents.PACKAGELIST);
-		}else{
-			this.setElement(labels[4], 4, null);
+		for(ViewComponents component: viewComponents)
+		{
+			int position = 0;
+			int label=0;
+			String pattern = null;
+			
+			switch(component)
+			{
+				case SEVERETYDRILLDOWN:
+					position=1;
+					label=1;
+					String severety = drilldownModel.getActiveElement("Severety");
+					
+					if(severety!=null)
+						pattern= severety;
+				break;
+				
+				case RULEDRILLDOWN: 
+					position=2;
+					label=2;
+					Measure activeMeasure = drilldownModel.getActiveMeasure();
+				
+					if(activeMeasure!=null)
+						pattern=activeMeasure.getRuleName();
+				break;
+				
+				case MODULELIST: 
+					position=3;
+					label=3;
+					Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
+				
+					if(selectedModule!=null)
+						pattern=selectedModule.getName();
+				break;
+				
+				case PACKAGELIST: 
+					position=4;
+					label=4;
+					Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
+				
+					if(selectedPackage!=null)
+						pattern=selectedPackage.getName();
+				break;
+					
+				case QMTREE: 
+					position=1;
+					label=5;
+					
+					String qmtreeNodeName = drilldownModel.getActiveElement("qmtreeNode");
+					
+					if(qmtreeNodeName!=null)
+						pattern= qmtreeNodeName;
+					
+				break;
+			}
+			
+			if(pattern!=null)
+				setElement(pattern, position, component);
+			else
+				setElement(labels[label], position, null);
+
 		}
 	}
 }

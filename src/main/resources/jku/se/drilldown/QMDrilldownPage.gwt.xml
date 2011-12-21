@@ -5,10 +5,9 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="org.sonar.Sonar"/>
 
-<!-- 
-  <inherits name="org.spqr.SPQR"/>
- -->
   <entry-point class='jku.se.drilldown.client.ui.QMViewerPanel'/>
+
+  <stylesheet src="drilldownComponents.css"/>
 
   <extend-property name="locale" values="en"/>
   <extend-property name="locale" values="fr"/>

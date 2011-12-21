@@ -125,6 +125,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		Element element = event.getRelativeElement();
 		String severety = element.getInnerText();
 		drilldownModel.setActiveElement("Severety", severety);
+		drilldownModel.setActiveMeasures(drilldownModel.getList(severety));
 		controller.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
 		
 	}
