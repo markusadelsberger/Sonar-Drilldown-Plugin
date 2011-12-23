@@ -10,6 +10,7 @@
 
   <properties>
     <sonar.buildVersion>2.11</sonar.buildVersion>
+    <spqr.buildVersion>1.0</spqr.buildVersion>
   </properties>
 
   <dependencies>
@@ -39,14 +40,17 @@
       <scope>provided</scope>
     </dependency>
    
-    <!-- 
     <dependency>
-	  <groupId>com.extjs</groupId>
-	  <artifactId>gxt</artifactId>
-	  <version>2.0.1</version>
-	  <scope>provided</scope>
-    </dependency>
-    -->
+		<groupId>org.spqr</groupId>
+		<artifactId>spqr</artifactId>
+		<version>${spqr.buildVersion}</version>
+	</dependency> 
+
+    <dependency>
+		<groupId>org.json</groupId>
+		<artifactId>json</artifactId>
+		<version>20090211</version>
+	</dependency>
 
     <!-- unit tests -->
     <dependency>
@@ -55,12 +59,14 @@
       <version>${sonar.buildVersion}</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version> 
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
 
   <build>

@@ -1,21 +1,24 @@
 package jku.se.drilldown;
 
+import java.util.Arrays;
 import java.util.List;
 
+import jku.se.drilldown.batch.DrilldownMetrics;
+import jku.se.drilldown.batch.QMDrilldownSensor;
+
 import org.sonar.api.SonarPlugin;
-import org.sonar.wsclient.services.Plugin;
-
-import com.google.common.collect.Lists;
-
 
 public class QMDrilldownPlugin extends SonarPlugin {
 	
 	public List getExtensions() {
-		List extensions = Lists.newLinkedList();
-		  
-		extensions.add(QMDrilldownPage.class);
-	//	extensions.add(QMDrilldownConfig.class);
+		return Arrays.asList(	
+			// Definitions
+		    DrilldownMetrics.class,
 
-		return extensions;
+		    // Batch
+		    QMDrilldownSensor.class,
+
+		    // UI
+		    QMDrilldownPage.class);
 	}
 }
