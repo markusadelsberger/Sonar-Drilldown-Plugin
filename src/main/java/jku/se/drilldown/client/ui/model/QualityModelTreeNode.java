@@ -7,20 +7,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Node {
+public class QualityModelTreeNode {
 
 	private String nodeName;
 	private int value;
 	
-	private List<Node> childs;
+	private List<QualityModelTreeNode> childs;
 	
 	private boolean calculatedChildsValue;
 	
-	
-	public Node (String nodeName)
+	public QualityModelTreeNode (String nodeName)
 	{
 		this.nodeName=nodeName;
-		childs=new ArrayList<Node>();
+		childs=new ArrayList<QualityModelTreeNode>();
 		calculatedChildsValue=false;
 	}
 	
@@ -40,21 +39,21 @@ public class Node {
 		this.value = value;
 	}
 
-	public List<Node> getChilds() {
+	public List<QualityModelTreeNode> getChilds() {
 		return childs;
 	}
 
-	public void addChild(Node child) {
+	public void addChild(QualityModelTreeNode child) {
 		this.childs.add(child);
 	}
 	
-	public Set<Node> getLeaves() {
+	public Set<QualityModelTreeNode> getLeaves() {
 		
-		List<Node> leaves = getLeavesFromNode(this);
+		List<QualityModelTreeNode> leaves = getLeavesFromNode(this);
 		
-		Collections.sort(leaves, new Comparator<Node>() {
+		Collections.sort(leaves, new Comparator<QualityModelTreeNode>() {
 		    
-			public int compare(Node o1, Node o2) {
+			public int compare(QualityModelTreeNode o1, QualityModelTreeNode o2) {
 		        return o1.getNodeName().compareToIgnoreCase(o2.getNodeName());
 		    }
 		
@@ -62,10 +61,10 @@ public class Node {
 		
 		if(leaves.size()>0)
 		{
-			Node curr = leaves.get(0);
+			QualityModelTreeNode curr = leaves.get(0);
 			for (int i =1; i<leaves.size(); i++)
 			{
-				Node next =leaves.get(i);
+				QualityModelTreeNode next =leaves.get(i);
 				
 				if(curr.equals(next))
 				{
@@ -78,18 +77,18 @@ public class Node {
 				
 		}
 		
-		return new HashSet<Node>(leaves);
+		return new HashSet<QualityModelTreeNode>(leaves);
 	
 	}
 
-	private List<Node> getLeavesFromNode(Node node ) {
+	private List<QualityModelTreeNode> getLeavesFromNode(QualityModelTreeNode node ) {
 		
-		List<Node> leaves = new ArrayList<Node>();
+		List<QualityModelTreeNode> leaves = new ArrayList<QualityModelTreeNode>();
 		
 		if(node.childs.size()==0){
 			leaves.add(node);
 		} else {
-			for(Node child : node.childs){	
+			for(QualityModelTreeNode child : node.childs){	
 				leaves.addAll(getLeavesFromNode(child));
 			}
 		}
@@ -108,9 +107,9 @@ public class Node {
 	@Override
 	public boolean equals(Object o){
 		
-		if ( !(o instanceof Node) ) return false;
+		if ( !(o instanceof QualityModelTreeNode) ) return false;
 		
-		Node node = (Node)o;
+		QualityModelTreeNode node = (QualityModelTreeNode)o;
 		
 		if(this.getNodeName().equalsIgnoreCase(node.getNodeName()))
 			return true;
@@ -118,5 +117,4 @@ public class Node {
 			return false;
 
 	}
-
 }

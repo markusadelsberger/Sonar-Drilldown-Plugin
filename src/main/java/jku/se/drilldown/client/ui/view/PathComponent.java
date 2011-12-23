@@ -42,6 +42,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		this.drilldownController = drilldownController;
 		this.drilldownModel=drilldownController.getModel();
 		pathInformation = new Grid(1,5);
+		//pathInformation.setStyleName("spaced");
 		
 		this.viewComponents=viewComponents;
 		
@@ -81,8 +82,10 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		}
 		
     	pathInformation.setWidget(0, column, panel);
+		pathInformation.getCellFormatter().setStyleName(0, column, "even");
 	}
 	
+	@Override
 	public void reload()
 	{
 		for(ViewComponents component: viewComponents)

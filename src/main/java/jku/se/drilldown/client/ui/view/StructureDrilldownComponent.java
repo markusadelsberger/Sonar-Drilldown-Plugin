@@ -36,8 +36,8 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	
 	private DrilldownController controller;
 	private DrilldownModel model;
+	
 	/**
-	 * 
 	 * @param resource The selected resource object on the sonar platform. 
 	 * @param pageID The gwtID of the page that contains this element. for example "jku.se.drilldown.qm.page.QMDrilldownPage" 
 	 */
@@ -45,22 +45,23 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		this.pageID= pageID;
 		
 		this.controller=controller;
+		
 		model=controller.getModel();
 		model.setResource(resource);
 		
 		moduleList = null;
 		packageList = null;
 		fileList = null;
-				
+					
 		verticalPanel = new VerticalPanel();
 		initWidget(verticalPanel);	
 	}
 		
 	@Override
 	public void onLoad() {
-		structurePanel = new Grid(1,3);
-		verticalPanel.add(structurePanel);
 		loadData();
+
+		verticalPanel.add(structurePanel);
 	}
 	
 	/**
@@ -70,35 +71,52 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	 * Additionally the method interlinks the list components together.
 	 */
 	private void loadData() {
-		structurePanel.clear();
 	
 		Resource resource = model.getResource();
 		
 		boolean parentExists= false;
 		
+		int listPosition=0;
+		
 		if(resource.getQualifier().equals(Resource.QUALIFIER_PROJECT)){
 			moduleList = new StructureDrilldownList(controller, STRUCTURE[0], pageID, ViewComponents.MODULELIST);
-			structurePanel.setWidget(0, 0, moduleList);
 			
+			structurePanel = new Grid(1,3);
+			structurePanel.setWidget(0, listPosition, moduleList);
+			
+			listPosition++;
 			parentExists =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || parentExists){
 			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID, ViewComponents.PACKAGELIST);
-			structurePanel.setWidget(0, 1, packageList);
 			
-			if(parentExists)
+			if(parentExists){
 				packageList.setPrev(moduleList);
+				structurePanel.setWidget(0, listPosition, packageList);
+			}
+			else
+			{
+				structurePanel = new Grid(1,2);
+				structurePanel.setWidget(0, listPosition, packageList);
+			}
 			
+			listPosition++;
 			parentExists =true;
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || parentExists){
 			fileList = new StructureDrilldownList(controller, STRUCTURE[2], pageID, ViewComponents.FILELIST);
-			structurePanel.setWidget(0, 2, fileList);
-			
-			if(parentExists)
+
+			if(parentExists){
 				fileList.setPrev(packageList);	
+				structurePanel.setWidget(0, listPosition, fileList);
+			}
+			else
+			{
+				structurePanel = new Grid(1,1);
+				structurePanel.setWidget(0, listPosition, fileList);
+			}
 		}
 		
 		if(packageList!=null)

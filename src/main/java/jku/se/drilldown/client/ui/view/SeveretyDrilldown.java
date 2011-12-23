@@ -108,6 +108,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	private double getGraphWidth(String severety){
 		Integer totalCount = drilldownModel.getCount("SeveretyTotal");
 		Integer severetyCount = drilldownModel.getCount(severety);
+		
 		if(severetyCount!=null && totalCount!=null){
 			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
 		}else{

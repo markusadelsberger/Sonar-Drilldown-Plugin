@@ -82,7 +82,13 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 
 	@Override
 	public void renderRow(Resource item, int row) {
-		renderValueCell( item, row, renderNameCell( item, row, renderIconCells(item, row, 0)));
+		int column = 0;
+		
+		column= renderIconCells(item, row, column);
+	
+		column=renderNameCell( item, row, column);
+
+		renderValueCell( item, row, column);
 	}
 		
 	public void reload()
@@ -153,7 +159,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		column++;
 		
-		return column;
+		return column; 
 	}
 
 	private int renderNameCell(final Resource resource, int row, int column) {
@@ -182,7 +188,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		column++;
 		
-		return column;
+		return column; 
 	}
 
 	private void renderValueCell(Resource resource, int row, int column) {
