@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.google.gwt.user.client.ui.Label;
 
 public class QualityModelTreeNode {
 
@@ -47,7 +50,9 @@ public class QualityModelTreeNode {
 		this.childs.add(child);
 	}
 	
-	public Set<QualityModelTreeNode> getLeaves() {
+	public Set<QualityModelTreeNode> getLeaves(Label label) {
+		
+		String output="";
 		
 		List<QualityModelTreeNode> leaves = getLeavesFromNode(this);
 		
@@ -59,23 +64,23 @@ public class QualityModelTreeNode {
 		
 		});
 		
+
 		if(leaves.size()>0)
 		{
-			QualityModelTreeNode curr = leaves.get(0);
-			for (int i =1; i<leaves.size(); i++)
-			{
-				QualityModelTreeNode next =leaves.get(i);
-				
-				if(curr.equals(next))
-				{
-					leaves.remove(i);
-					i++;
-				}
-				else
-					curr = next;
+			Set<String> set = new HashSet<String>();
+			List<QualityModelTreeNode> newList = new ArrayList<QualityModelTreeNode>();
+			
+			for (Iterator<QualityModelTreeNode> iter = leaves.iterator();    iter.hasNext(); ) {
+				QualityModelTreeNode element = iter.next();
+				if (set.add(element.getNodeName()))
+					newList.add(element);
 			}
-				
+			    
+			leaves.clear();
+			leaves.addAll(newList);
 		}
+		
+		label.setText(output);
 		
 		return new HashSet<QualityModelTreeNode>(leaves);
 	
@@ -111,7 +116,7 @@ public class QualityModelTreeNode {
 		
 		QualityModelTreeNode node = (QualityModelTreeNode)o;
 		
-		if(this.getNodeName().equalsIgnoreCase(node.getNodeName()))
+		if(getNodeName().equalsIgnoreCase(node.getNodeName()))
 			return true;
 		else
 			return false;

@@ -156,7 +156,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		selectNode((Grid)selectedItem.getWidget());
 		
 		QualityModelTreeNode modelNode = (QualityModelTreeNode) item.getUserObject();
-		Set<QualityModelTreeNode> leaves = modelNode.getLeaves();
+		Set<QualityModelTreeNode> leaves = modelNode.getLeaves(label);
 		
 		List<Measure> selectedMeasures = new ArrayList<Measure>();
 		
@@ -217,7 +217,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		QualityModelTreeNode modelNode = (QualityModelTreeNode)treeNode.getUserObject();
 		
 		int sumOfViolations = 0;
-		for(QualityModelTreeNode leaf : modelNode.getLeaves())
+		for(QualityModelTreeNode leaf : modelNode.getLeaves(label))
 		{
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
