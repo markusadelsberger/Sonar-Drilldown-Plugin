@@ -32,7 +32,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	 * @param controller The associated controller
 	 */
 	public SeveretyDrilldown(DrilldownController controller) {
-		super();
+		super(controller);
 		this.controller=controller;
 		drilldownModel=controller.getModel();
 	}

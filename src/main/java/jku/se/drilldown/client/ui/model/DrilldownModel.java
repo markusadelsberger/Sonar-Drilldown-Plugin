@@ -3,6 +3,7 @@ package jku.se.drilldown.client.ui.model;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 
@@ -19,6 +20,7 @@ public class DrilldownModel {
 	private Measure activeMeasure;
 	private Resource resource;
 	private HashMap<ViewComponents,Resource> selectedResource;
+	private BenchmarkData benchmarkData;
 	
 	
 	public DrilldownModel(){
@@ -113,5 +115,13 @@ public class DrilldownModel {
 
 	public void setSelectedItem(ViewComponents componentList, Resource resource){
 		this.selectedResource.put(componentList, resource);
+	}
+
+	public BenchmarkData getBenchmarkData() {
+		return benchmarkData;
+	}
+
+	public void setBenchmarkData(BenchmarkData benchmarkData) {
+		this.benchmarkData = benchmarkData;
 	}
 }

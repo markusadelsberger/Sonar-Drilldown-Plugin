@@ -27,7 +27,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	private DrilldownModel drilldownModel;
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
-		super();
+		super(controller);
 		this.controller=controller;
 		controller.setRuleList(this);
 		Grid grid = new Grid(0, gridColumnCount());

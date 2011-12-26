@@ -2,6 +2,8 @@ package jku.se.drilldown.client.ui.view;
 
 import java.util.Map;
 
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+
 import org.sonar.gwt.ui.Loading;
 
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,14 +23,16 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	private Panel listPanel;
 	private Panel data;
 	private Grid grid;
+	private DrilldownController drilldownController;
 	
 	// map stores the id of an item as key and its row in the grid as value
 	// map contains current list items displayed by the user interface
 	private Map<String,Integer> hashmap;
 	
-	public DrilldownComponentList() {
+	public DrilldownComponentList(DrilldownController drilldownController) {
 		listPanel = new VerticalPanel();
 		initWidget(listPanel);
+		this.drilldownController = drilldownController;
 	}
 
 	@Override
@@ -118,5 +122,9 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 				return true;
 		
 		return false;
+	}
+	
+	public DrilldownController getController(){
+		return drilldownController;
 	}
 }

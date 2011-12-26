@@ -1,4 +1,4 @@
-package jku.se.drilldown.client;
+package jku.se.drilldown.client.ui.model;
 
 import java.util.LinkedList;
 import java.util.List;
