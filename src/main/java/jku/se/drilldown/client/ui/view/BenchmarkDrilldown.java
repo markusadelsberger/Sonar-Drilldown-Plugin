@@ -150,7 +150,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 							for(Distribution distribution : benchmarkTool.getDistribution()){
 								if(distribution.getName().compareToIgnoreCase(rule)==0){
 									//The correct rule for a certain tool was found
-									float measureValue = measure.getIntValue()/linesOfCode;
+									float measureValue = (float)measure.getIntValue()/(float)linesOfCode;
 									if(measureValue<distribution.getMin()){
 										q0.add(measure);
 									}else if(measureValue<distribution.getQ25()){

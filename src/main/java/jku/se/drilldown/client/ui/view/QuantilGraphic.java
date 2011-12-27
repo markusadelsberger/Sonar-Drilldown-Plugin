@@ -65,7 +65,7 @@ public class QuantilGraphic extends DrilldownComponent {
 				grid.setText(5, 1, String.valueOf(distribution.getMax()));
 				
 				int linesOfCode = drilldownModel.getCount("loc");
-				grid.setText(0, 1, String.valueOf(drilldownModel.getActiveMeasure().getIntValue()/linesOfCode));
+				grid.setText(0, 1, String.valueOf((float)drilldownModel.getActiveMeasure().getIntValue()/(float)linesOfCode));
 			}else{
 				grid.setText(0, 1, "Distribution was null, RuleKey was "+drilldownModel.getActiveMeasure().getRuleKey());
 			}
