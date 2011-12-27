@@ -153,23 +153,31 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
+		
 		if(selectedMeasure != null)
 		{
+			if(containsSelectedItem(getSelectedItem()))
+				deselectRow(getHashmap().get(getItemIdentifier(getSelectedItem())));
+			
+			selectRow(getHashmap().get(getItemIdentifier(selectedMeasure)));
+			
 			drilldownModel.setActiveMeasure(selectedMeasure);
 			controller.onSelectedItemChanged(ViewComponents.RULEDRILLDOWN);
 		} 
 	}
+	
 	/**
 	 * Reloads the rules from the model and rerenders the grid
 	 */
 	public void reload(){
-		String activeElement = drilldownModel.getActiveElement("Severety");
-		if(activeElement!=null){
-			List<Measure> measureList = drilldownModel.getList(activeElement);
+		
+		if(drilldownModel.getActiveMeasures()!=null) {
+			List<Measure> measureList = drilldownModel.getActiveMeasures();
 			reloadBegin();
 			addMeasures(measureList);
 			reloadFinished();
-		}else{
+		}
+		else {
 			List<Measure> measureList = new LinkedList<Measure>();
 			measureList.addAll(drilldownModel.getList("Blocker"));
 			measureList.addAll(drilldownModel.getList("Critical"));

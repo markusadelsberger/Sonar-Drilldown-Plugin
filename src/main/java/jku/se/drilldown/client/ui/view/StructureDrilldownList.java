@@ -82,12 +82,18 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 
 	@Override
 	public void renderRow(Resource item, int row) {
-		renderValueCell( item, row, renderNameCell( item, row, renderIconCells(item, row, 0)));
+		int column = 0;
+		
+		column= renderIconCells(item, row, column);
+	
+		column=renderNameCell( item, row, column);
+
+		renderValueCell( item, row, column);
 	}
 		
 	public void reload()
 	{
-		loadData();
+		doLoadData();
 	}
 	
 	@Override
@@ -125,7 +131,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				render(getGrid());	
 				
 				if(next!=null)
-					next.loadData();	
+					next.reload();	
 			}
 
 		});
@@ -153,7 +159,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		column++;
 		
-		return column;
+		return column; 
 	}
 
 	private int renderNameCell(final Resource resource, int row, int column) {
@@ -172,10 +178,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
     	{
     		link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	if(selectedMeasures != null)
-                		Links.openMeasurePopup(resource.getKey(), selectedMeasures.get(0).getRuleKey());
-                	else
-                		Links.openResourcePopup(resource.getKey());
+                	Links.openResourcePopup(resource.getKey());
                 }
               });
     	}
@@ -185,7 +188,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		column++;
 		
-		return column;
+		return column; 
 	}
 
 	private void renderValueCell(Resource resource, int row, int column) {
@@ -314,7 +317,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				selectRow(getHashmap().get(getItemIdentifier(drillResource)));
 				
-				next.loadData();
+				next.reload();
 				
 				controller.onSelectedItemChanged(this.listType);
 			} 

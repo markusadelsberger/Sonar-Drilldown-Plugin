@@ -38,31 +38,45 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
 		listPanel.add(data);
-		loadData();
-	}
-
-	public abstract Widget createHeader();
-
-	/**
-	 * Method is entry point to reload component.
-	 * During the creation of the component a loading icon shows that the component is under work.  
-	 */
-	protected void loadData() {
+		
 		data.clear();
 		data.add(new Loading());
 		doLoadData();
 	}
+
+	/**
+	 * Defines the header of the component. 
+	 * @return
+	 */
+	public abstract Widget createHeader();
 	
+	/**
+	 * Initial loading of the list component. 
+	 */
 	public abstract void doLoadData();
 
 	/**
 	 * Method returns the unique identifier of an list item. 
 	 * The identifier is used as key value in the map. 
+	 * 
+	 * @param item Item from which the identifier will be returned.  
+	 * @return Unique identifier of the item
 	 */
-	public abstract String getItemIdentifier(T selectedItem);
+	public abstract String getItemIdentifier(T item);
 	
+	/**
+	 * Defines the number of columns in the grid. 
+	 * 
+	 * @return Number of columns
+	 */
 	public abstract int gridColumnCount();
 	
+	/**
+	 * Displays the item's values in a grid's row. 
+	 * 
+	 * @param item Item to present
+	 * @param row Defines the row of the grid. 
+	 */
 	public abstract void renderRow(T item, int row);
 	
 	public void selectRow(int row){
@@ -96,24 +110,21 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		this.grid = grid;
 	}
 
-	public void setHashmap(Map<String,Integer> hashmap)
-	{
+	public void setHashmap(Map<String,Integer> hashmap){
 		this.hashmap= hashmap;
 	}
 	
-	public Map<String,Integer> getHashmap()
-	{
+	public Map<String,Integer> getHashmap(){
 		return this.hashmap;
 	}
 	
 	/**
-	 * Checks if the selected item is in the current list which is presented as user interface. 
-	 * @param selectedItem 
+	 * Checks if the selected item is in the current list which is presented in the user interface. 
 	 * 
+	 * @param selectedItem 
 	 * @return
 	 */
-	public boolean containsSelectedItem(T selectedItem)
-	{
+	public boolean containsSelectedItem(T selectedItem){
 		if(selectedItem!= null)
 			if(hashmap.get(getItemIdentifier(selectedItem))!=null)
 				return true;

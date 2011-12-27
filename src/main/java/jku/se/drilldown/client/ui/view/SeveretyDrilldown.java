@@ -73,6 +73,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		getGrid().getRowFormatter().setStyleName(4, getRowCssClass(4, false));
 		
 		getGrid().getColumnFormatter().setWidth(4, "70px");
+		getGrid().setStyleName("spaced");
 	}
 	
 	/**
@@ -107,6 +108,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	private double getGraphWidth(String severety){
 		Integer totalCount = drilldownModel.getCount("SeveretyTotal");
 		Integer severetyCount = drilldownModel.getCount(severety);
+		
 		if(severetyCount!=null && totalCount!=null){
 			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
 		}else{
@@ -124,6 +126,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		Element element = event.getRelativeElement();
 		String severety = element.getInnerText();
 		drilldownModel.setActiveElement("Severety", severety);
+		drilldownModel.setActiveMeasures(drilldownModel.getList(severety));
 		controller.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
 	}
 }

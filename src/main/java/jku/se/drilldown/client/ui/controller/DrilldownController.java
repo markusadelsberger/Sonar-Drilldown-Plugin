@@ -1,8 +1,3 @@
-/**
- * @author markus
- * Implements the Controller of the Drilldown MVC Principle
- * After the creation the setter methods must be called
- */
 package jku.se.drilldown.client.ui.controller;
 
 import java.util.LinkedList;
@@ -13,7 +8,7 @@ import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
-import jku.se.drilldown.client.ui.view.QuantilGraphic;
+import jku.se.drilldown.client.ui.view.QualityModelComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -23,8 +18,11 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-
-
+/**
+ * @author markus
+ * Implements the Controller of the Drilldown MVC Principle
+ * After the creation the setter methods must be called
+ */
 public class DrilldownController implements IComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
@@ -32,9 +30,13 @@ public class DrilldownController implements IComponentController{
 	private PathComponent pathComponent;
 	private DrilldownModel drilldownModel;
 	private SeveretyDrilldown severetyDrilldown;
+	private QualityModelComponent qmComponent;
+	
 	private Resource resource;
-	private BenchmarkDrilldown benchmarkDrilldown;
-	private QuantilGraphic quantilGraphic;
+	
+	public void setQMComponent(QualityModelComponent qmComponent) {
+		this.qmComponent = qmComponent;
+	}
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
 		this.structureDrilldown = structureDrilldown;
@@ -75,17 +77,21 @@ public class DrilldownController implements IComponentController{
 	 */
 	public void onSelectedItemChanged(ViewComponents component) {
 		switch(component){
+			case QMTREE:
+				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
+		
 			case SEVERETYDRILLDOWN:
 				ruleList.reload();
 				pathComponent.reload();
 				structureDrilldown.reload();
-				quantilGraphic.reload();
 				break;
 			
 			case RULEDRILLDOWN: 
 				pathComponent.reload();
 				structureDrilldown.reload();
-				quantilGraphic.reload();
 				break;
 			
 			case PACKAGELIST:
@@ -100,12 +106,12 @@ public class DrilldownController implements IComponentController{
 	 * Resets the selected element
 	 * @param component The component that called the method
 	*/
-	
 	public void clearElement(ViewComponents component){
 		
 		switch(component){
 			case SEVERETYDRILLDOWN:
 				drilldownModel.setActiveElement("Severety", null);
+				drilldownModel.setActiveMeasures(null);
 				
 				ruleList.reload();
 				structureDrilldown.reload();
@@ -132,6 +138,16 @@ public class DrilldownController implements IComponentController{
 				
 				structureDrilldown.reload();
 				pathComponent.reload();
+			break;
+			
+			case QMTREE:
+				drilldownModel.setActiveElement("qmtreeNode", null);
+				drilldownModel.setActiveMeasures(null);
+				
+				qmComponent.reload();
+				ruleList.reload();
+				structureDrilldown.reload();
+				pathComponent.reload();	
 			break;
 		}
 	}
