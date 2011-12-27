@@ -13,6 +13,7 @@ import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.QuantilGraphic;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -33,6 +34,7 @@ public class DrilldownController implements IComponentController{
 	private SeveretyDrilldown severetyDrilldown;
 	private Resource resource;
 	private BenchmarkDrilldown benchmarkDrilldown;
+	private QuantilGraphic quantilGraphic;
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
 		this.structureDrilldown = structureDrilldown;
@@ -62,6 +64,10 @@ public class DrilldownController implements IComponentController{
 		this.benchmarkDrilldown = benchmarkDrilldown;
 	}
 	
+	public void setQuantilGraphic(QuantilGraphic quantilGraphic){
+		this.quantilGraphic=quantilGraphic;
+	}
+	
 	/**
 	 * Is used to notify the controller that the data in the model has changed and 
 	 * the views should be notified
@@ -73,11 +79,13 @@ public class DrilldownController implements IComponentController{
 				ruleList.reload();
 				pathComponent.reload();
 				structureDrilldown.reload();
+				quantilGraphic.reload();
 				break;
 			
 			case RULEDRILLDOWN: 
 				pathComponent.reload();
 				structureDrilldown.reload();
+				quantilGraphic.reload();
 				break;
 			
 			case PACKAGELIST:

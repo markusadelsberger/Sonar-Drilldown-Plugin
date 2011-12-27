@@ -5,6 +5,7 @@ import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.QuantilGraphic;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.gwt.Metrics;
@@ -28,17 +29,17 @@ public class XMLTestPanel extends Page{
 	private PathComponent pathComponent;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
+	private QuantilGraphic quantilGraphic;
 	
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
-		long start = System.currentTimeMillis();
 		VerticalPanel panel = new VerticalPanel();
 		
 		
 		try{
 			mainPanel= new HorizontalPanel();
-			rightPanel=new HorizontalPanel();
+			rightPanel=new VerticalPanel();
 			leftPanel=new HorizontalPanel();
 			
 			drilldownController = new DrilldownController();
@@ -51,17 +52,21 @@ public class XMLTestPanel extends Page{
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
 			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
+			quantilGraphic = new QuantilGraphic(drilldownController);
 			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
 			drilldownController.setStructureDrilldown(structureComponent);
 			drilldownController.setResource(resource);
 			drilldownController.setBenchmarkDrilldown(benchmarkDrilldown);
+			drilldownController.setQuantilGraphic(quantilGraphic);
+			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(benchmarkDrilldown);
 			leftPanel.setWidth("200px");
 			rightPanel.add(drilldownComponentRuleList);
+			rightPanel.add(quantilGraphic);
 			rightPanel.setWidth("100%");
 			
 			mainPanel.add(leftPanel);
@@ -76,10 +81,7 @@ public class XMLTestPanel extends Page{
 			panel.setWidth("100%");
 		}catch(Exception e){
 			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
-		}
-		long end = System.currentTimeMillis();
-		Window.alert("Time: "+(end-start));
-		
+		}		
 		return panel;
 	}
 	
