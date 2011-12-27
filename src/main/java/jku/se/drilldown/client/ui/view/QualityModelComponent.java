@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
-import jku.se.drilldown.client.ui.model.Node;
+import jku.se.drilldown.client.ui.model.QualityModelTreeNode;
 import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import org.sonar.gwt.Metrics;
@@ -27,7 +26,9 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -44,7 +45,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class QualityModelComponent extends DrilldownComponent implements SelectionHandler<TreeItem>, OpenHandler<TreeItem> {
 
-	
 	private Panel qmoverview;
 	private Panel data;
 	
@@ -70,6 +70,12 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
         doLoadData();
 	}
 
+	protected void loadData() {
+		data.clear();
+		data.add(new Loading());
+		doLoadData();
+	}
+	
 	@Override
 	public void onLoad() {
 		qmoverview.add(createHeader());
@@ -84,20 +90,15 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		loadData();
 	}
 
+	@Override
 	public void reload(){
 		if(selectedItem!=null && model.getActiveElement("qmtreeNode")==null)
 		{
-			selectedItem.setStyleName("");
+			deselectNode((Grid)selectedItem.getWidget());
 			selectedItem = null;
 		}
 	}
 	
-	protected void loadData() {
-		data.clear();
-		data.add(new Loading());
-		doLoadData();
-	}
-
 	private Widget createHeader() {
 		return new Label("QM-Models");
 	}
@@ -108,8 +109,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
-	    
-	    
+ 
 	    ResourceQuery r_query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
 	    	.setDepth(0)
 	    	.setExcludeRules(false);
@@ -126,7 +126,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
     		  		for (Measure item : resource.getMeasures())
     		  		{
-    		  		 
     		  			String key = item.getRuleKey();
     		  			
     		  			if(key.indexOf(":")>0)
@@ -136,6 +135,25 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		   		}
     			}
     			   			
+    			
+    			/*MetricQuery resource_query = MetricQuery.byKey("qmtree");
+    			
+    			Sonar.getInstance().findAll(resource_query, new AbstractListCallback<Metric>() {
+
+					@Override
+					protected void doOnResponse(List<Metric> result) {
+						
+						String output = "";
+						
+						for(Metric m : result)
+							output+=m.getName();
+						
+						label.setText(output);
+					}
+
+						    
+    			});*/
+    			
     			ResourceQuery query = ResourceQuery.createForResource(resource, "qmtree");
     			Sonar.getInstance().find(query, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
     	
@@ -149,17 +167,17 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		TreeItem item = event.getSelectedItem();
 		    
 		if(selectedItem!=null)
-			selectedItem.setStyleName("");
+			deselectNode((Grid)selectedItem.getWidget());
 
 		selectedItem = item;
-		selectedItem.setStyleName("even selected");
+		selectNode((Grid)selectedItem.getWidget());
 		
-		Node modelNode = (Node) item.getUserObject();
-		Set<Node> leaves = modelNode.getLeaves();
+		QualityModelTreeNode modelNode = (QualityModelTreeNode) item.getUserObject();
+		List<QualityModelTreeNode> leaves = modelNode.getLeaves();
 		
 		List<Measure> selectedMeasures = new ArrayList<Measure>();
 		
-		for(Node leaf : leaves){
+		for(QualityModelTreeNode leaf : leaves){
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
 			if(violation != null)
@@ -177,7 +195,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	public void onOpen(OpenEvent<TreeItem> event) {
 		TreeItem item = event.getTarget();
 
-		if(!((Node)item.getUserObject()).isCalculatedChildsValue())
+		if(!((QualityModelTreeNode)item.getUserObject()).isCalculatedChildsValue())
 		{
 			for(int i=0; i<item.getChildCount(); i++)
 			{
@@ -186,27 +204,47 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 				calculateViolations(child);
 			}
 			
-			((Node)item.getUserObject()).setCalculatedChildsValue(true);	
+			((QualityModelTreeNode)item.getUserObject()).setCalculatedChildsValue(true);	
 		}
 
 	}// onOpen
 	
-	private void calculateViolations(TreeItem treeNode) {
-		Node modelNode = (Node)treeNode.getUserObject();
+	private void renderTreeNode (TreeItem treeNode, String text, String value){
+		Grid grid = new Grid(1, 2);
+		grid.setStyleName("spaced");
 		
-		int sumOfViolations = 0;
-		for(Node leaf : modelNode.getLeaves())
+		Anchor link = new Anchor(text);			
+		grid.setWidget(0, 0, link);
+		grid.setWidget(0,1,new Label(value));
+		
+		treeNode.setWidget(grid);
+	}
+	
+	private void selectNode(Grid grid){
+		for(int i=0; i<grid.getCellCount(0); i++)
+			grid.getCellFormatter().setStyleName(0, i, "odd selected");
+	}
+	
+	private void deselectNode(Grid grid){
+		for(int i=0; i<grid.getCellCount(0); i++)
+			grid.getCellFormatter().setStyleName(0, i, "odd");
+	}
+	
+	private void calculateViolations(TreeItem treeNode) {
+		QualityModelTreeNode modelNode = (QualityModelTreeNode)treeNode.getUserObject();
+		
+		int violationCount = 0;
+		for(QualityModelTreeNode leaf : modelNode.getLeaves())
 		{
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
 			if(violation!= null)
-				sumOfViolations+=violation.getIntValue();
+				violationCount+=violation.getIntValue();
 		}
 		
-		modelNode.setValue(sumOfViolations);
+		modelNode.setViolationCount(violationCount);
 		
-		treeNode.setText(treeNode.getText()+" "+sumOfViolations);
-		
+		renderTreeNode(treeNode, modelNode.getNodeName(),String.valueOf(violationCount));
 	}// calculateViolations
 
 	private class QMTreeCallbackHandler extends AbstractCallback<Resource>{
@@ -214,6 +252,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		private TabPanel tabPanel;
 		private SelectionHandler<TreeItem> selectionHandler;
 		private OpenHandler<TreeItem> openHandler;
+
 		
 		public QMTreeCallbackHandler(TabPanel tabPanel,
 				SelectionHandler<TreeItem> selectionHandler,
@@ -222,24 +261,34 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 			this.tabPanel=tabPanel;
 			this.selectionHandler=selectionHandler;
 			this.openHandler=openHandler;
+
 			
 		}
 
 		@Override
+		protected void doOnError(int errorCode, String errorMessage)
+		{
+			data.clear(); 
+    	    data.add(new Label("For the project is no quality model available."));
+		}
+		
+		@Override
 		protected void doOnResponse(Resource result) {
-			Measure measure = result.getMeasure("qmtree");
-    		
-    		if (measure==null || measure.getData()==null) {
-    			;
+						
+    		if (result==null) {
+    			data.clear(); 
+        	    data.add(new Label("For the project is no quality model available."));
     		} 
     		else 
-    		{
+    		{    	 
+    			Measure measure = result.getMeasure("qmtree");
+    			
     			JSONArray items = JSONParser.parse(measure.getData()).isArray(); 
           
     			for(int i=0; i<items.size(); i++)
     			{
     				JSONObject jsonObj = items.get(i).isObject();
-    				Node modelNode = new Node(jsonObj.get("name").isString().stringValue());
+    				QualityModelTreeNode modelNode = new QualityModelTreeNode(jsonObj.get("name").isString().stringValue());
     					        	  
     				JSONArray jsonChilds = jsonObj.get("childs").isArray();
     			
@@ -250,10 +299,11 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     					for(int j=0; j<jsonChilds.size(); j++)
     					{
     						JSONObject jsonChild = jsonChilds.get(j).isObject();
-    						Node modelChild = new Node(jsonChild.get("name").isString().stringValue());
+    						QualityModelTreeNode modelChild = new QualityModelTreeNode(jsonChild.get("name").isString().stringValue());
     						modelNode.addChild(modelChild);
     						
-    						TreeItem treeNode = new TreeItem(jsonChild.get("name").isString().stringValue());
+    						TreeItem treeNode = new TreeItem();
+    						renderTreeNode(treeNode, jsonChild.get("name").isString().stringValue(),"");
     						treeNode.setUserObject(modelChild);
   	        		  
     						addNodesToTreeAndModel(jsonChild, modelChild, treeNode);
@@ -268,24 +318,16 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     						flowpanel.add(tree);
     					}
     				}
-    				
-    				//TabItem tabItem = new TabItem();
-    			    //tabItem.setToolTip(new ToolTipConfig("Information", "Prints the current document"));
-    				
-    			    //tabItem.setTitle(QMshortName(jsonObj.get("name").isString().stringValue()));
-    			    //tabItem.add(flowpanel);
-    			    
-    			    //tabPanel.add(tabItem);
-    			    
+    				 			    
     				tabPanel.add(flowpanel, QMshortName(jsonObj.get("name").isString().stringValue()));
     				
     			}// for
+    		
+        	    data.clear(); 
+        	    data.add(tabPanel);
     			
     		}// if - else
-    		
-    	    data.clear(); 
-    	    data.add(tabPanel);
-	    
+    			    
 		}// doOnResponse
 
 		private String QMshortName(String stringValue) {
@@ -294,7 +336,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		}
 
 		private void addNodesToTreeAndModel(JSONObject jsonObj,
-				Node modelNode, TreeItem rootNode) {
+				QualityModelTreeNode modelNode, TreeItem rootNode) {
 			
 			JSONArray childs = jsonObj.get("childs").isArray();
         	  
@@ -303,18 +345,18 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	        	for(int j=0; j<childs.size(); j++)
 	        	{
 	        		  JSONObject jsonChild = childs.get(j).isObject();
-	        		  Node modelChild = new Node(jsonChild.get("name").isString().stringValue());
+	        		  QualityModelTreeNode modelChild = new QualityModelTreeNode(jsonChild.get("name").isString().stringValue());
 	        		  modelNode.addChild(modelChild);
 	        		  
-	        		  TreeItem treeNode = new TreeItem(jsonChild.get("name").isString().stringValue());
+	        		  TreeItem treeNode = new TreeItem();
+	        		  renderTreeNode(treeNode, jsonChild.get("name").isString().stringValue(),"");
 	        		  treeNode.setUserObject(modelChild);
 	        		  
 	        		  addNodesToTreeAndModel(jsonChild, modelChild, treeNode);
 	        		  
 	        		  rootNode.addItem(treeNode);
 	        	}
-			}
-			
+			}	
 		}// addNodesToTreeAndModel
 	}
 }

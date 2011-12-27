@@ -21,7 +21,6 @@ public class DrilldownModel {
 	private List<Measure> activeMeasures;
 	private Resource resource;
 	private HashMap<ViewComponents,Resource> selectedResource;
-
 	
 	public DrilldownModel(){
 		measureMap=new HashMap<String, List<Measure>>();

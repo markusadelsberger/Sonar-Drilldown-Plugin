@@ -4,9 +4,9 @@ import com.google.gwt.user.client.ui.Composite;
 
 public abstract class DrilldownComponent extends Composite{
 	
-	 /**
-	 * Should be used to reload the data from the model and rerender it in the view.
-	 * Will be called by the Controller if the Data has changed.
+	/**
+	 * Method is entry point to reload component which means to reload the data from the model and rerender it in the view.
+	 * During the creation of the component a loading icon shows that the component is under work.  
 	 */
 	public abstract void reload();
 	

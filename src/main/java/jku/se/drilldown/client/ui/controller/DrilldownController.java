@@ -1,8 +1,3 @@
-/**
- * @author markus
- * Implements the Controller of the Drilldown MVC Principle
- * After the creation the setter methods must be called
- */
 package jku.se.drilldown.client.ui.controller;
 
 import java.util.LinkedList;
@@ -22,7 +17,11 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-
+/**
+ * @author markus
+ * Implements the Controller of the Drilldown MVC Principle
+ * After the creation the setter methods must be called
+ */
 public class DrilldownController implements IComponentController{
 
 	private StructureDrilldownComponent structureDrilldown;
