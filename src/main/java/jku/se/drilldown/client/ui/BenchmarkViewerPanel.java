@@ -2,7 +2,6 @@ package jku.se.drilldown.client.ui;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
-import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;

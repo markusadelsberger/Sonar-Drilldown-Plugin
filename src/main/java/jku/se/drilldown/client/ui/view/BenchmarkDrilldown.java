@@ -230,9 +230,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			getGrid().setWidget(row, 2, bar);
 		}
 	}
-	
-	
-	
+		
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
 		String severety = element.getInnerText();

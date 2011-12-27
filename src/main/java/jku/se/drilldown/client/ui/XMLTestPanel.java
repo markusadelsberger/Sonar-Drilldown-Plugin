@@ -53,6 +53,7 @@ public class XMLTestPanel extends Page{
 			drilldownComponentRuleList.setWidth("100%");
 			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
 			quantilGraphic = new QuantilGraphic(drilldownController);
+			quantilGraphic.setWidth("100%");
 			
 			drilldownController.setPathComponent(pathComponent);
 			drilldownController.setRuleList(drilldownComponentRuleList);
@@ -64,7 +65,7 @@ public class XMLTestPanel extends Page{
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(benchmarkDrilldown);
-			leftPanel.setWidth("200px");
+			leftPanel.setWidth("175px");
 			rightPanel.add(drilldownComponentRuleList);
 			rightPanel.add(quantilGraphic);
 			rightPanel.setWidth("100%");
