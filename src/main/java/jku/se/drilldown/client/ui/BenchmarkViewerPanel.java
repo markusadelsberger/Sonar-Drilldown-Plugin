@@ -5,6 +5,7 @@ import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.gwt.Metrics;
@@ -25,7 +26,7 @@ public class BenchmarkViewerPanel extends Page {
 	private Panel rightPanel;
 	private Panel leftPanel;
 	private PathComponent pathComponent;
-	private BenchmarkDrilldown severetyDrilldown;
+	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
 	private DrilldownController drilldownController;
@@ -45,7 +46,7 @@ public class BenchmarkViewerPanel extends Page {
 			drilldownController.setModel(drilldownModel);
 			
 			pathComponent = new PathComponent(drilldownController);
-			severetyDrilldown=new BenchmarkDrilldown(drilldownController);
+			severetyDrilldown=new SeveretyDrilldown(drilldownController);
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
 			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
@@ -54,7 +55,7 @@ public class BenchmarkViewerPanel extends Page {
 			drilldownController.setRuleList(drilldownComponentRuleList);
 			drilldownController.setStructureDrilldown(structureComponent);
 			drilldownController.setResource(resource);
-			drilldownController.setBenchmarkDrilldown(severetyDrilldown);
+			drilldownController.setSeveretyDrilldown(severetyDrilldown);
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(severetyDrilldown);

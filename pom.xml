@@ -81,7 +81,7 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>1.2</version>
 				<executions>
-					<execution>
+					<!-- <execution>
 						<id>Benchmark</id>
 						<configuration>
 							<modules>
@@ -93,7 +93,7 @@
 						<goals>
 							<goal>compile</goal>
 						</goals>
-					</execution>
+					</execution> -->
 					<execution>
 						<id>XML</id>
 						<configuration>

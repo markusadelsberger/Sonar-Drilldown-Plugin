@@ -3,38 +3,84 @@ package jku.se.drilldown.client.ui;
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
+import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
+import jku.se.drilldown.client.ui.view.PathComponent;
+import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class XMLTestPanel extends Page{
 	DrilldownController drilldownController;
 	DrilldownModel drilldownModel;
-	BenchmarkDrilldown benchmarkDrilldown;
+	private BenchmarkDrilldown benchmarkDrilldown;
+	private HorizontalPanel mainPanel;
+	private Panel rightPanel;
+	private Panel leftPanel;
+	private PathComponent pathComponent;
+	private DrilldownComponentRuleList drilldownComponentRuleList;
+	private StructureDrilldownComponent structureComponent;
+	
 	
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
-		VerticalPanel verticalPanel = new VerticalPanel();
+		long start = System.currentTimeMillis();
+		VerticalPanel panel = new VerticalPanel();
+		
+		
 		try{
+			mainPanel= new HorizontalPanel();
+			rightPanel=new HorizontalPanel();
+			leftPanel=new HorizontalPanel();
+			
 			drilldownController = new DrilldownController();
 			drilldownModel = new DrilldownModel();
-			drilldownModel.setResource(resource);
 			drilldownController.setModel(drilldownModel);
 			drilldownController.setResource(resource);
-			benchmarkDrilldown = new BenchmarkDrilldown(drilldownController);
+			
+			pathComponent = new PathComponent(drilldownController);
+			benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
+			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			drilldownComponentRuleList.setWidth("100%");
+			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
+			
+			drilldownController.setPathComponent(pathComponent);
+			drilldownController.setRuleList(drilldownComponentRuleList);
+			drilldownController.setStructureDrilldown(structureComponent);
+			drilldownController.setResource(resource);
 			drilldownController.setBenchmarkDrilldown(benchmarkDrilldown);
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
-
-			verticalPanel.add(benchmarkDrilldown);
+			
+			leftPanel.add(benchmarkDrilldown);
+			leftPanel.setWidth("200px");
+			rightPanel.add(drilldownComponentRuleList);
+			rightPanel.setWidth("100%");
+			
+			mainPanel.add(leftPanel);
+			mainPanel.add(rightPanel);
+			mainPanel.setWidth("100%");
+			mainPanel.setCellWidth(leftPanel, "200px");
+			mainPanel.setCellWidth(rightPanel, "100%");
+			panel.add(mainPanel);
+			
+			panel.add(structureComponent);
+			panel.add(pathComponent);
+			panel.setWidth("100%");
 		}catch(Exception e){
-			verticalPanel.add(new Label(e.toString()));
+			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
 		}
-		return verticalPanel;
+		long end = System.currentTimeMillis();
+		Window.alert("Time: "+(end-start));
+		
+		return panel;
 	}
 	
 	

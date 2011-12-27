@@ -200,9 +200,7 @@ public class DrilldownController implements IComponentController{
 				
 				benchmarkDrilldown.loadBenchmarkData();
 				//severetyDrilldown.reload();
-				//ruleList.reload();
-				//ruleList.reloadFinished();
-				
+				ruleList.reload();
 			}
 
 		});

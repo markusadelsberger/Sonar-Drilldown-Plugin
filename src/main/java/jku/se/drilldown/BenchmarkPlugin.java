@@ -15,14 +15,16 @@ public final class BenchmarkPlugin extends SonarPlugin{
 		return Arrays.asList(
 				//UI
 				XMLTest.class, 
-				BenchmarkViewer.class,
+				//BenchmarkViewer.class,
 				
 				
 				//Metric
-				DrilldownMetrics.class,  
+				DrilldownMetrics.class//,  
 				
 				//Batch
-				BenchmarkSensor.class);
+				//BenchmarkSensor.class
+				
+			);
 	}
 
 }

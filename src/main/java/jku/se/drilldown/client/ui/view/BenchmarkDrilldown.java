@@ -61,6 +61,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	@Override
 	public void doLoadData(){
 		this.setGrid(new Grid(6, 4));
+		getGrid().setStyleName("spaced");
 		for(int i=0;i<=5;i++){
 			addDrilldownAnchor("Q"+i, i);
 		}
@@ -77,15 +78,11 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	
 	@Override
 	public void reload() {
-		try{
-			for(int i = 0; i<=5; i++){
-				addMeasures(i, drilldownModel.getCount("q"+i));
-				addGraph("q"+i, i);
-			}
-			render(getGrid());
-		}catch(Exception e){
-			Window.alert("Reload, outer catch loop: "+e.getMessage());
+		for(int i = 0; i<=5; i++){
+			addMeasures(i, drilldownModel.getCount("q"+i));
+			addGraph("q"+i, i);
 		}
+		render(getGrid());
 	}
 	
 	public void loadBenchmarkData(){
@@ -123,20 +120,11 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			//Load the Rules
 			//Window.alert("CombineData");
 			List<Measure> measureList = new ArrayList();
-			try{
-				measureList.addAll(drilldownModel.getList("Blocker"));
-				measureList.addAll(drilldownModel.getList("Critical"));
-				measureList.addAll(drilldownModel.getList("Major"));
-				measureList.addAll(drilldownModel.getList("Minor"));
-				measureList.addAll(drilldownModel.getList("Info"));
-			}catch(Exception e){
-				Window.alert("Listen waren null: "+e.toString());
-			}
-			
-			//Window.alert("benchmarkData: "+benchmarkData.getTools().isEmpty());
-			//Window.alert("ncloc: "+linesOfCode);
-			
-			long start = System.currentTimeMillis();
+			measureList.addAll(drilldownModel.getList("Blocker"));
+			measureList.addAll(drilldownModel.getList("Critical"));
+			measureList.addAll(drilldownModel.getList("Major"));
+			measureList.addAll(drilldownModel.getList("Minor"));
+			measureList.addAll(drilldownModel.getList("Info"));
 			
 			BenchmarkData benchmarkData = drilldownModel.getBenchmarkData();
 			int linesOfCode = drilldownModel.getCount("loc");
@@ -200,8 +188,6 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			drilldownModel.addList("q3", q3);
 			drilldownModel.addList("q4", q4);
 			drilldownModel.addList("q5", q5);
-			long end = System.currentTimeMillis();
-			Window.alert("Time: "+(end-start));
 		}catch(Exception e){
 			Window.alert("CombineData: "+e.toString());
 		}
