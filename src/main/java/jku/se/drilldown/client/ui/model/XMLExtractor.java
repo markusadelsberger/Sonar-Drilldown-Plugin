@@ -10,8 +10,8 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
 public class XMLExtractor {
-	public static BenchmarkData extract (BenchmarkData data, String xml){
-		BenchmarkData benchmarkData = data;
+	public static BenchmarkData extract (String xml){
+		BenchmarkData benchmarkData = new BenchmarkData();
 		try{			
 			//Parse the XML into a DOM
 			Document benchmarkDom = XMLParser.parse(xml);

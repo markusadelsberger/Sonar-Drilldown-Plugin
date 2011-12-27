@@ -12,7 +12,7 @@ public final class BenchmarkPlugin extends SonarPlugin{
 
 	@Override
 	public List getExtensions() {
-		return Arrays.asList(BenchmarkViewer.class, XMLTest.class, DrilldownMetrics.class, BenchmarkSensor.class);
+		return Arrays.asList(XMLTest.class, DrilldownMetrics.class); //BenchmarkViewer.class, , , BenchmarkSensor.class);
 	}
 	
 	

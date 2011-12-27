@@ -8,18 +8,24 @@ package jku.se.drilldown.client.ui.controller;
 import java.util.LinkedList;
 import java.util.List;
 
+import jku.se.drilldown.client.ui.model.BenchmarkData;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
+import jku.se.drilldown.client.ui.model.XMLExtractor;
+import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
+import org.sonar.gwt.Metrics;
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
+
+import com.google.gwt.user.client.Window;
 
 
 public class DrilldownController implements IComponentController{
@@ -30,6 +36,7 @@ public class DrilldownController implements IComponentController{
 	private DrilldownModel drilldownModel;
 	private SeveretyDrilldown severetyDrilldown;
 	private Resource resource;
+	private BenchmarkDrilldown benchmarkDrilldown;
 	
 	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
 		this.structureDrilldown = structureDrilldown;
@@ -53,6 +60,10 @@ public class DrilldownController implements IComponentController{
 	
 	public void setResource(Resource resource){
 		this.resource=resource;
+	}
+	
+	public void setBenchmarkDrilldown(BenchmarkDrilldown benchmarkDrilldown) {
+		this.benchmarkDrilldown = benchmarkDrilldown;
 	}
 	
 	/**
@@ -133,13 +144,14 @@ public class DrilldownController implements IComponentController{
 	 * Loads the Ruledata for a given String and saves it into the Model; after loading the Severety List and the Rule List are reloaded
 	 * @param metric The Metric Name from the org.sonar.gwt.Metrics Interface
 	 */
-	public void loadRuleDataForMetric(final String metric){
-		Sonar.getInstance().find(getQuery(metric), new AbstractCallback<Resource>() {
+	public void loadRuleDataForMetric(String... metric){
+		ResourceQuery query = ResourceQuery.createForResource(resource, metric).setDepth(0).setExcludeRules(false);
+		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 
 			@Override
 			protected void doOnResponse(Resource resource) {
 				List<Measure>measureList = resource.getMeasures();
-				
+
 				List<Measure>blockerList = new LinkedList<Measure>();
 				int blockerCount=0;
 				
@@ -154,6 +166,7 @@ public class DrilldownController implements IComponentController{
 				
 				List<Measure>infoList = new LinkedList<Measure>();
 				int infoCount=0;
+				
 				
 				for(Measure measure : measureList){
 					String metric = measure.getRuleSeverity();
@@ -174,6 +187,7 @@ public class DrilldownController implements IComponentController{
 						infoCount+=measure.getIntValue();
 					}
 				}
+					
 				
 				drilldownModel.addList("Blocker", blockerList);
 				drilldownModel.addList("Critical", criticalList);
@@ -188,16 +202,17 @@ public class DrilldownController implements IComponentController{
 				drilldownModel.addCount("Info", infoCount);
 				drilldownModel.addCount("SeveretyTotal", blockerCount+criticalCount+majorCount+minorCount+infoCount);
 				
-				severetyDrilldown.reload();
-				ruleList.reload();
-				ruleList.reloadFinished();
+				benchmarkDrilldown.loadBenchmarkData();
+				//severetyDrilldown.reload();
+				//ruleList.reload();
+				//ruleList.reloadFinished();
 				
 			}
 
 		});
 	}
 		
-	private ResourceQuery getQuery(String metric)
+	private ResourceQuery getQuery(String... metric)
 	{
 		ResourceQuery query = ResourceQuery.createForResource(resource, metric).setDepth(0).setExcludeRules(false);
 		return query;
