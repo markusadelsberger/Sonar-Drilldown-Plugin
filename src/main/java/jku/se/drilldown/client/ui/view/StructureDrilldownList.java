@@ -52,7 +52,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	private ViewComponents listType;
 
 	public StructureDrilldownList(DrilldownController controller, String scope, String pageID, ViewComponents listType) {
-		super(controller);
+		super();
 		
 		this.pageID = pageID;
 		this.scope=scope;

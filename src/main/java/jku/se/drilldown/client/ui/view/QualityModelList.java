@@ -24,10 +24,6 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class QualityModelList extends DrilldownComponentList<Resource>{
-	
-	public QualityModelList(){
-		super(null);
-	}
 
 	public void onClick(ClickEvent event) {
 		// TODO Auto-generated method stub

@@ -32,7 +32,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	 * @param controller The associated controller
 	 */
 	public SeveretyDrilldown(DrilldownController controller) {
-		super(controller);
+		super();
 		this.controller=controller;
 		drilldownModel=controller.getModel();
 	}
@@ -125,6 +125,5 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		String severety = element.getInnerText();
 		drilldownModel.setActiveElement("Severety", severety);
 		controller.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
-		
 	}
 }

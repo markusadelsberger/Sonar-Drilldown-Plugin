@@ -46,9 +46,8 @@ public class XMLTestPanel extends Page{
 			drilldownController.setResource(resource);
 			benchmarkDrilldown = new BenchmarkDrilldown(drilldownController);
 			drilldownController.setBenchmarkDrilldown(benchmarkDrilldown);
-			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS, "benchmark", "ncloc");
-			
-			
+			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
+
 			verticalPanel.add(benchmarkDrilldown);
 		}catch(Exception e){
 			verticalPanel.add(new Label(e.toString()));
