@@ -8,24 +8,20 @@ package jku.se.drilldown.client.ui.controller;
 import java.util.LinkedList;
 import java.util.List;
 
-import jku.se.drilldown.client.ui.model.BenchmarkData;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
-import jku.se.drilldown.client.ui.model.XMLExtractor;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
-import org.sonar.gwt.Metrics;
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-import com.google.gwt.user.client.Window;
 
 
 public class DrilldownController implements IComponentController{

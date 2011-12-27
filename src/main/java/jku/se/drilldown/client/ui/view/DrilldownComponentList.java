@@ -2,12 +2,10 @@ package jku.se.drilldown.client.ui.view;
 
 import java.util.Map;
 
-import jku.se.drilldown.client.ui.controller.DrilldownController;
 
 import org.sonar.gwt.ui.Loading;
 
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
