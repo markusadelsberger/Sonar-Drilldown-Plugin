@@ -171,7 +171,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		}
 		
 		if(startReloadingComp != null)
-			startReloadingComp.loadData();
+			startReloadingComp.reload();
 	}
 	
 	public Resource getSelectedModule(){
@@ -182,7 +182,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		moduleList.deselectRow(getSelectedModule());
 			
 		model.setSelectedItem(moduleList.getListType(), null);
-		packageList.loadData();
+		packageList.reload();
 	}
 	
 	public Resource getSelectedPackage(){
@@ -193,7 +193,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		packageList.deselectRow(getSelectedPackage());
 		
 		model.setSelectedItem(packageList.getListType(), null);
-		fileList.loadData();
+		fileList.reload();
 	}
 
 	public void reload() {

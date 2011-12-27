@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
@@ -110,8 +109,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
-	    
-	    
+ 
 	    ResourceQuery r_query = ResourceQuery.createForResource(resource, Metrics.VIOLATIONS)
 	    	.setDepth(0)
 	    	.setExcludeRules(false);
@@ -137,6 +135,25 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		   		}
     			}
     			   			
+    			
+    			/*MetricQuery resource_query = MetricQuery.byKey("qmtree");
+    			
+    			Sonar.getInstance().findAll(resource_query, new AbstractListCallback<Metric>() {
+
+					@Override
+					protected void doOnResponse(List<Metric> result) {
+						
+						String output = "";
+						
+						for(Metric m : result)
+							output+=m.getName();
+						
+						label.setText(output);
+					}
+
+						    
+    			});*/
+    			
     			ResourceQuery query = ResourceQuery.createForResource(resource, "qmtree");
     			Sonar.getInstance().find(query, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
     	
@@ -156,7 +173,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		selectNode((Grid)selectedItem.getWidget());
 		
 		QualityModelTreeNode modelNode = (QualityModelTreeNode) item.getUserObject();
-		Set<QualityModelTreeNode> leaves = modelNode.getLeaves(label);
+		List<QualityModelTreeNode> leaves = modelNode.getLeaves();
 		
 		List<Measure> selectedMeasures = new ArrayList<Measure>();
 		
@@ -216,20 +233,18 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	private void calculateViolations(TreeItem treeNode) {
 		QualityModelTreeNode modelNode = (QualityModelTreeNode)treeNode.getUserObject();
 		
-		int sumOfViolations = 0;
-		for(QualityModelTreeNode leaf : modelNode.getLeaves(label))
+		int violationCount = 0;
+		for(QualityModelTreeNode leaf : modelNode.getLeaves())
 		{
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
 			if(violation!= null)
-				sumOfViolations+=violation.getIntValue();
+				violationCount+=violation.getIntValue();
 		}
 		
-		modelNode.setValue(sumOfViolations);
+		modelNode.setViolationCount(violationCount);
 		
-		//treeNode.setText(treeNode.getText()+" "+sumOfViolations);
-		//((Label)treeNode.getWidget()).setText(treeNode.getText()+" "+sumOfViolations);
-		renderTreeNode(treeNode, modelNode.getNodeName(),String.valueOf(sumOfViolations));
+		renderTreeNode(treeNode, modelNode.getNodeName(),String.valueOf(violationCount));
 	}// calculateViolations
 
 	private class QMTreeCallbackHandler extends AbstractCallback<Resource>{
@@ -237,6 +252,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		private TabPanel tabPanel;
 		private SelectionHandler<TreeItem> selectionHandler;
 		private OpenHandler<TreeItem> openHandler;
+
 		
 		public QMTreeCallbackHandler(TabPanel tabPanel,
 				SelectionHandler<TreeItem> selectionHandler,
@@ -245,19 +261,28 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 			this.tabPanel=tabPanel;
 			this.selectionHandler=selectionHandler;
 			this.openHandler=openHandler;
+
 			
 		}
 
 		@Override
+		protected void doOnError(int errorCode, String errorMessage)
+		{
+			data.clear(); 
+    	    data.add(new Label("For the project is no quality model available."));
+		}
+		
+		@Override
 		protected void doOnResponse(Resource result) {
-			Measure measure = result.getMeasure("qmtree");
-    		
-    		if (measure==null || measure.getData()==null) {
+						
+    		if (result==null) {
     			data.clear(); 
         	    data.add(new Label("For the project is no quality model available."));
     		} 
     		else 
-    		{
+    		{    	 
+    			Measure measure = result.getMeasure("qmtree");
+    			
     			JSONArray items = JSONParser.parse(measure.getData()).isArray(); 
           
     			for(int i=0; i<items.size(); i++)

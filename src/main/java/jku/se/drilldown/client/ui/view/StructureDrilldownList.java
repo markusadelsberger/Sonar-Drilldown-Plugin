@@ -93,7 +93,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 	public void reload()
 	{
-		loadData();
+		doLoadData();
 	}
 	
 	@Override
@@ -131,7 +131,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				render(getGrid());	
 				
 				if(next!=null)
-					next.loadData();	
+					next.reload();	
 			}
 
 		});
@@ -317,7 +317,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				selectRow(getHashmap().get(getItemIdentifier(drillResource)));
 				
-				next.loadData();
+				next.reload();
 				
 				controller.onSelectedItemChanged(this.listType);
 			} 

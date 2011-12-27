@@ -8,21 +8,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.ui.Label;
-
+/**
+ * Model represents a node element in a tree. Therefore it stores a list of further QualityModelTreeNodes.
+ * 
+ * @author Johannes
+ *
+ */
 public class QualityModelTreeNode {
 
 	private String nodeName;
-	private int value;
+	private int violationCount;
 	
-	private List<QualityModelTreeNode> childs;
+	//list of further nodes, to create the tree structure
+	private List<QualityModelTreeNode> children;
 	
 	private boolean calculatedChildsValue;
 	
-	public QualityModelTreeNode (String nodeName)
-	{
+	public QualityModelTreeNode (String nodeName) {
 		this.nodeName=nodeName;
-		childs=new ArrayList<QualityModelTreeNode>();
+		
+		children=new ArrayList<QualityModelTreeNode>();
 		calculatedChildsValue=false;
 	}
 	
@@ -34,28 +39,41 @@ public class QualityModelTreeNode {
 		this.nodeName = nodeName;
 	}
 
-	public int getValue() {
-		return value;
+	public int getViolationCount() {
+		return violationCount;
 	}
 
-	public void setValue(int value) {
-		this.value = value;
+	public void setViolationCount(int violationCount) {
+		this.violationCount = violationCount;
 	}
 
 	public List<QualityModelTreeNode> getChilds() {
-		return childs;
+		return children;
 	}
 
-	public void addChild(QualityModelTreeNode child) {
-		this.childs.add(child);
+	public boolean isCalculatedChildsValue() {
+		return calculatedChildsValue;
+	}
+
+	public void setCalculatedChildsValue(boolean calculatedChildsValue) {
+		this.calculatedChildsValue = calculatedChildsValue;
 	}
 	
-	public Set<QualityModelTreeNode> getLeaves(Label label) {
+	public void addChild(QualityModelTreeNode child) {
+		this.children.add(child);
+	}
+	
+	/**
+	 * Method returns nodes at the lowest level based on the current object.  
+	 * This means it provides all nodes which have no element in the children list. 
+	 * 
+	 * @return List of nodes, that has no further nodes. 
+	 */
+	public List<QualityModelTreeNode> getLeaves() {
 		
-		String output="";
+		List<QualityModelTreeNode> leaves = getLeavesFromNodeRekursive(this);
 		
-		List<QualityModelTreeNode> leaves = getLeavesFromNode(this);
-		
+		// sorts list by node name
 		Collections.sort(leaves, new Comparator<QualityModelTreeNode>() {
 		    
 			public int compare(QualityModelTreeNode o1, QualityModelTreeNode o2) {
@@ -64,7 +82,7 @@ public class QualityModelTreeNode {
 		
 		});
 		
-
+		// removes duplicate nodes
 		if(leaves.size()>0)
 		{
 			Set<String> set = new HashSet<String>();
@@ -80,33 +98,30 @@ public class QualityModelTreeNode {
 			leaves.addAll(newList);
 		}
 		
-		label.setText(output);
-		
-		return new HashSet<QualityModelTreeNode>(leaves);
-	
+		return leaves;
 	}
 
-	private List<QualityModelTreeNode> getLeavesFromNode(QualityModelTreeNode node ) {
+	/**
+	 * Method iterates thru the tree by creating sub trees. Therefore a recursive algorithm is used. 
+	 * It provides all leaves based on a node element. 
+	 * A leaf is a node without further nodes. 
+	 *  
+	 * @param node The root element of a tree or rather subtree. 
+	 * @return List of leaves from the node. 
+	 */
+	private List<QualityModelTreeNode> getLeavesFromNodeRekursive(QualityModelTreeNode node ) {
 		
 		List<QualityModelTreeNode> leaves = new ArrayList<QualityModelTreeNode>();
 		
-		if(node.childs.size()==0){
+		if(node.children.size()==0){
 			leaves.add(node);
 		} else {
-			for(QualityModelTreeNode child : node.childs){	
-				leaves.addAll(getLeavesFromNode(child));
+			for(QualityModelTreeNode child : node.children){	
+				leaves.addAll(getLeavesFromNodeRekursive(child));
 			}
 		}
 
 		return leaves;
-	}
-	
-	public boolean isCalculatedChildsValue() {
-		return calculatedChildsValue;
-	}
-
-	public void setCalculatedChildsValue(boolean calculatedChildsValue) {
-		this.calculatedChildsValue = calculatedChildsValue;
 	}
 	
 	@Override
