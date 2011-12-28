@@ -31,7 +31,8 @@ public class QuantilGraphic extends DrilldownComponent {
 	private Panel data;
 	private Grid grid;
 	private HorizontalPanel horizontalPanel;
-	private VerticalPanel verticalPanel;
+	private VerticalPanel leftPanel;
+	private VerticalPanel rightPanel;
 	
 	public QuantilGraphic(DrilldownController drilldownController){
 		super();
@@ -69,11 +70,13 @@ public class QuantilGraphic extends DrilldownComponent {
 		grid.setWidth("200px");
 		
 		horizontalPanel=new HorizontalPanel();
-		verticalPanel=new VerticalPanel();
+		leftPanel=new VerticalPanel();
+		rightPanel=new VerticalPanel();
 		
-		verticalPanel.add(grid);
+		leftPanel.add(grid);
 		
-		horizontalPanel.add(verticalPanel);
+		horizontalPanel.add(leftPanel);
+		horizontalPanel.add(rightPanel);
 		render(horizontalPanel);
 	}
 	
@@ -81,7 +84,8 @@ public class QuantilGraphic extends DrilldownComponent {
 	public void reload()
 	{
 		horizontalPanel=new HorizontalPanel();
-		verticalPanel=new VerticalPanel();
+		leftPanel=new VerticalPanel();
+		rightPanel=new VerticalPanel();
 		if(drilldownModel.getActiveMeasure()!=null){
 			Distribution distribution = loadBenchmarkData(drilldownModel.getActiveMeasure().getRuleKey());
 			
@@ -97,7 +101,6 @@ public class QuantilGraphic extends DrilldownComponent {
 				
 				//get the position of the line on the scale
 				int pos = getLinePos(min, q25, median, q75, max, value);
-				//Window.alert(String.valueOf(pos));
 				
 				NumberFormat format = NumberFormat.getScientificFormat();
 
@@ -109,11 +112,17 @@ public class QuantilGraphic extends DrilldownComponent {
 				grid.setText(4, 1, String.valueOf(format.format(q75)));
 				grid.setText(5, 1, String.valueOf(format.format(max)));
 				
-				verticalPanel.add(grid);
 				
-				horizontalPanel.add(verticalPanel);
-				horizontalPanel.add(getScale(pos));
 				
+				rightPanel.add(new Label(drilldownModel.getActiveMeasure().getRuleName()));
+				rightPanel.add(getScale(pos, min, q25, median, q75, max, value));
+			}else{
+				grid.setText(0, 1, "");
+				grid.setText(1, 1, "");
+				grid.setText(2, 1, "");
+				grid.setText(3, 1, "");
+				grid.setText(4, 1, "");
+				grid.setText(5, 1, "");
 			}
 		}else{
 			grid.setText(0, 1, "");
@@ -122,14 +131,12 @@ public class QuantilGraphic extends DrilldownComponent {
 			grid.setText(3, 1, "");
 			grid.setText(4, 1, "");
 			grid.setText(5, 1, "");
-			
-			verticalPanel.add(new Label(drilldownModel.getActiveMeasure().getRuleName()));
-			verticalPanel.add(grid);
-			
-			horizontalPanel.add(verticalPanel);
-			horizontalPanel.add(getScale(null));
 		}
-
+		
+		
+		leftPanel.add(grid);
+		horizontalPanel.add(leftPanel);
+		horizontalPanel.add(rightPanel);
 		render(horizontalPanel);
 		
 	}
@@ -156,27 +163,39 @@ public class QuantilGraphic extends DrilldownComponent {
 		data.add(widget);
 	}
 	
-	private HTML getScale(Integer value){
+	private HTML getScale(Integer position, float min, float q25, float median, float q75, float max, float value){
+		int x = 30;
+		int y1 = 20;
+		int y2 = 100;
+		
 		String blackLines = 
 				"<!-- min line -->"+
-				"<line x1=\"10\" y1=\"10\" x2=\"10\" y2=\"90\" style=\"stroke-width=10; stroke: black;\"/>" +
+				"<line x1=\""+(x)+"\" y1=\""+y1+"\" x2=\""+x+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- q25 line -->"+
-				"<line x1=\"110\" y1=\"10\" x2=\"110\" y2=\"90\" style=\"stroke-width=10; stroke: black;\"/>" +
+				"<line x1=\""+(x+100)+"\" y1=\""+y1+"\" x2=\""+(x+100)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- median line -->"+
-				"<line x1=\"210\" y1=\"10\" x2=\"210\" y2=\"90\" style=\"stroke-width=10; stroke: black;\"/>" +
+				"<line x1=\""+(x+200)+"\" y1=\""+y1+"\" x2=\""+(x+200)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- q75 line -->"+
-				"<line x1=\"310\" y1=\"10\" x2=\"310\" y2=\"90\" style=\"stroke-width=10; stroke: black;\"/>" +
+				"<line x1=\""+(x+300)+"\" y1=\""+y1+"\" x2=\""+(x+300)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- maximum line -->"+
-				"<line x1=\"410\" y1=\"10\" x2=\"410\" y2=\"90\" style=\"stroke-width=10; stroke: black;\"/>" +
+				"<line x1=\""+(x+400)+"\" y1=\""+y1+"\" x2=\""+(x+400)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- vertical -->"+
-				"<line x1=\"10\" y1=\"50\" x2=\"410\" y2=\"50\" style=\"stroke-width=10; stroke: black;\"/>";
+				"<line x1=\"30\" y1=\""+((y1+y2)/2)+"\" x2=\"430\" y2=\""+((y1+y2)/2)+"\" style=\"stroke-width=10; stroke: black;\"/>";
 		String svg = "";
-		if(value!=null){
+		if(position!=null){
+			NumberFormat format = NumberFormat.getScientificFormat();
+
 			svg = 
-					"<svg width=\"520px\" height=\"100px\" viewBox=\"0 0 520 100\">" +
+					"<svg width=\"520px\" height=\"140px\" viewBox=\"0 0 520 140\">" +
 							blackLines +
 							"<!-- value line -->"+
-							"<line x1=\""+value+"\" y1=\"10\" x2=\""+value+"\" y2=\"90\" style=\"stroke-width=10; stroke: green;\"/>" +
+							"<line x1=\""+position+"\" y1=\""+y1+"\" x2=\""+position+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: green;\"/>" +
+							"<text x=\""+(x)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(min).toString()+"</text>"+
+							"<text x=\""+(x+100)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q25).toString()+"</text>"+
+							"<text x=\""+(x+200)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(median).toString()+"</text>"+
+							"<text x=\""+(x+300)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q75).toString()+"</text>"+
+							"<text x=\""+(x+400)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(max).toString()+"</text>"+
+							"<text x=\""+(position)+"\" y=\"15\"  style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>"+
 					"</svg>";
 		}else{
 			svg = 

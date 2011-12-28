@@ -19,6 +19,8 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
+import com.google.gwt.user.client.Window;
+
 /**
  * @author markus
  * Implements the Controller of the Drilldown MVC Principle
@@ -136,6 +138,7 @@ public class DrilldownController implements IComponentController{
 				structureDrilldown.reload();
 				ruleList.reload();
 				pathComponent.reload();
+				quantilGraphic.reload();
 			break;
 		
 			case MODULELIST:
@@ -160,6 +163,15 @@ public class DrilldownController implements IComponentController{
 				ruleList.reload();
 				structureDrilldown.reload();
 				pathComponent.reload();	
+			break;
+			
+			case BENCHMARKDRILLDOWN:
+				drilldownModel.setActiveElement("Benchmark", null);
+				drilldownModel.setActiveMeasures(null);
+				
+				ruleList.reload();
+				structureDrilldown.reload();
+				pathComponent.reload();
 			break;
 		}
 	}
