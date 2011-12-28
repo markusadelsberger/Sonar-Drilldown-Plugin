@@ -41,7 +41,7 @@ public class QuantilGraphic extends DrilldownComponent {
 		initWidget(listPanel);
 		listPanel.add(new Label("Benchmark Quantil Graphic"));
 		data = new ScrollPanel();
-	
+		data.setStyleName("scrollable");
 		listPanel.add(data);
 		
 		doOnLoad();

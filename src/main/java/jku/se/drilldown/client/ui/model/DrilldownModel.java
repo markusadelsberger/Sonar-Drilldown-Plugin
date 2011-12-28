@@ -13,7 +13,7 @@ import org.sonar.wsclient.services.Resource;
  */
 public class DrilldownModel {
 	
-	private HashMap<String, List> measureMap;
+	private HashMap<String, List<Measure>> measureMap;
 	private HashMap<String, String> activeMap;
 	private HashMap<String, Integer> countMap;
 	
@@ -131,4 +131,5 @@ public class DrilldownModel {
 	
 	public List<Measure> getActiveMeasures() {
 		return this.activeMeasures;
+	}
 }

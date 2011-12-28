@@ -142,6 +142,15 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 						pattern= qmtreeNodeName;
 					
 				break;
+				
+				case BENCHMARKDRILLDOWN:
+					position=1;
+					label=5;
+					
+					String benchmarkQuantil = drilldownModel.getActiveElement("benchmark");
+					
+					if(benchmarkQuantil!=null)
+						pattern=benchmarkQuantil;
 			}
 			
 			if(pattern!=null)

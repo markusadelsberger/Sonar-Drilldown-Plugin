@@ -233,9 +233,10 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		
 	public void onClick(ClickEvent event) {
 		Element element = event.getRelativeElement();
-		String severety = element.getInnerText();
-		drilldownModel.setActiveElement("Severety", severety);
-		drilldownController.onSelectedItemChanged(ViewComponents.SEVERETYDRILLDOWN);
+		String benchmark = element.getInnerText();
+		drilldownModel.setActiveElement("Benchmark", benchmark);
+		drilldownModel.setActiveMeasures(drilldownModel.getList(benchmark));
+		drilldownController.onSelectedItemChanged(ViewComponents.BENCHMARKDRILLDOWN);
 	}
 
 }

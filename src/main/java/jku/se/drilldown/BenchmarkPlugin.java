@@ -19,10 +19,10 @@ public final class BenchmarkPlugin extends SonarPlugin{
 				
 				
 				//Metric
-				DrilldownMetrics.class//,  
+				DrilldownMetrics.class,  
 				
 				//Batch
-				//BenchmarkSensor.class
+				BenchmarkSensor.class
 				
 			);
 	}

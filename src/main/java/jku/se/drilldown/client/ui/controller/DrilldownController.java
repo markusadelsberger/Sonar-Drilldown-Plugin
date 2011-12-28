@@ -9,6 +9,7 @@ import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.QualityModelComponent;
+import jku.se.drilldown.client.ui.view.QuantilGraphic;
 import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
@@ -31,8 +32,12 @@ public class DrilldownController implements IComponentController{
 	private DrilldownModel drilldownModel;
 	private SeveretyDrilldown severetyDrilldown;
 	private QualityModelComponent qmComponent;
+	private BenchmarkDrilldown benchmarkDrilldown;
+	private QuantilGraphic quantilGraphic;
 	
 	private Resource resource;
+	
+	
 	
 	public void setQMComponent(QualityModelComponent qmComponent) {
 		this.qmComponent = qmComponent;
@@ -82,7 +87,13 @@ public class DrilldownController implements IComponentController{
 				pathComponent.reload();
 				structureDrilldown.reload();
 				break;
-		
+			
+			case BENCHMARKDRILLDOWN:
+				ruleList.reload();
+				pathComponent.reload();
+				structureDrilldown.reload();
+				break;
+				
 			case SEVERETYDRILLDOWN:
 				ruleList.reload();
 				pathComponent.reload();
@@ -92,6 +103,7 @@ public class DrilldownController implements IComponentController{
 			case RULEDRILLDOWN: 
 				pathComponent.reload();
 				structureDrilldown.reload();
+				quantilGraphic.reload();
 				break;
 			
 			case PACKAGELIST:

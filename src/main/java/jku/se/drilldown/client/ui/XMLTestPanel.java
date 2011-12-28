@@ -1,7 +1,11 @@
 package jku.se.drilldown.client.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
@@ -47,11 +51,23 @@ public class XMLTestPanel extends Page{
 			drilldownController.setModel(drilldownModel);
 			drilldownController.setResource(resource);
 			
-			pathComponent = new PathComponent(drilldownController);
+			List<ViewComponents> components = new ArrayList<ViewComponents>();
+			components.add(ViewComponents.RULEDRILLDOWN);
+			components.add(ViewComponents.MODULELIST);
+			components.add(ViewComponents.PACKAGELIST);
+			components.add(ViewComponents.BENCHMARKDRILLDOWN);
+			
+			
+			pathComponent = new PathComponent(drilldownController, components);
+			
 			benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
+			benchmarkDrilldown.setWidth("175px");
+			
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
+			
 			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
+			
 			quantilGraphic = new QuantilGraphic(drilldownController);
 			quantilGraphic.setWidth("100%");
 			
@@ -63,6 +79,7 @@ public class XMLTestPanel extends Page{
 			drilldownController.setQuantilGraphic(quantilGraphic);
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
+			
 			
 			leftPanel.add(benchmarkDrilldown);
 			leftPanel.setWidth("175px");
@@ -76,7 +93,7 @@ public class XMLTestPanel extends Page{
 			mainPanel.setCellWidth(leftPanel, "200px");
 			mainPanel.setCellWidth(rightPanel, "100%");
 			panel.add(mainPanel);
-			
+
 			panel.add(structureComponent);
 			panel.add(pathComponent);
 			panel.setWidth("100%");
