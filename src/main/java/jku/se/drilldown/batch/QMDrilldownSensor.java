@@ -27,18 +27,7 @@ public class QMDrilldownSensor implements Sensor {
 	 */
 	public boolean shouldExecuteOnProject(Project project) {
 		
-		String baseDir = project.getFileSystem().getBasedir().toString();
-		File file = new File(baseDir+"\\qualitymodel.xml");
-		
-		if(file.exists()){
-			// logger.info(logMarker+" scan ..."); 
-			return true;
-		}
-		else{
-			logger.info(logMarker+": qualitymodel.xml not available"); 
-			logger.warn(logMarker+" not executed");
-			return false;
-		}
+		return BatchUtility.checkQMFileExist(project, logger, logMarker);
 	}
 
 	public void analyse(Project project, SensorContext context) {

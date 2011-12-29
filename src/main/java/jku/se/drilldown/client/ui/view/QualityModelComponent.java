@@ -134,29 +134,28 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		  			hashmap.put(key, item);
     		   		}
     			}
-    			   			
     			
-    			/*MetricQuery resource_query = MetricQuery.byKey("qmtree");
-    			
-    			Sonar.getInstance().findAll(resource_query, new AbstractListCallback<Metric>() {
+    			ResourceQuery query = ResourceQuery.createForMetrics(resource.getKey(), "projectkey");
+    			Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 
 					@Override
-					protected void doOnResponse(List<Metric> result) {
-						
-						String output = "";
-						
-						for(Metric m : result)
-							output+=m.getName();
-						
-						label.setText(output);
+					protected void doOnResponse(Resource result) {
+						if (result==null) {
+			    			data.clear(); 
+			        	    data.add(new Label("For the project is no quality model available."));
+			    		} 
+			    		else 
+			    		{    	 
+			    			Measure measure = result.getMeasure("projectkey");
+			    			
+			    			ResourceQuery qmtreeQuery = ResourceQuery.createForMetrics(measure.getData(), "qmtree");
+			    			
+			    			Sonar.getInstance().find(qmtreeQuery, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
+			    		}
 					}
+    				
+    			});
 
-						    
-    			});*/
-    			
-    			ResourceQuery query = ResourceQuery.createForResource(resource, "qmtree");
-    			Sonar.getInstance().find(query, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
-    	
     		}
 	    			
 	    });// Sonar.getInstance().find
@@ -252,7 +251,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		private TabPanel tabPanel;
 		private SelectionHandler<TreeItem> selectionHandler;
 		private OpenHandler<TreeItem> openHandler;
-
 		
 		public QMTreeCallbackHandler(TabPanel tabPanel,
 				SelectionHandler<TreeItem> selectionHandler,
@@ -260,9 +258,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
 			this.tabPanel=tabPanel;
 			this.selectionHandler=selectionHandler;
-			this.openHandler=openHandler;
-
-			
+			this.openHandler=openHandler;		
 		}
 
 		@Override
@@ -323,6 +319,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     				
     			}// for
     		
+    			tabPanel.selectTab(0);
+    			
         	    data.clear(); 
         	    data.add(tabPanel);
     			

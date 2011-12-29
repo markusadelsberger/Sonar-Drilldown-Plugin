@@ -15,8 +15,15 @@ public final class DrilldownMetrics implements Metrics {
 		.setQualitative(false)
 		.setDomain(CoreMetrics.DOMAIN_GENERAL)
 		.create();
+	
+	public static final Metric QMTREE_PROJECTKEY = new Metric.Builder("projectkey", "ProjectKey", Metric.ValueType.STRING)
+		.setDescription("Key indicates the resource object that holds the QMTree.")
+		.setDirection(Metric.DIRECTION_BETTER)
+		.setQualitative(false)
+		.setDomain(CoreMetrics.DOMAIN_GENERAL)
+		.create();
 
   	public List<Metric> getMetrics() {
-  		return Arrays.asList(QMTREE);
+  		return Arrays.asList(QMTREE, QMTREE_PROJECTKEY);
   	}
 }

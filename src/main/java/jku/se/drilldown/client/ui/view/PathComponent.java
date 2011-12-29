@@ -110,8 +110,9 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 					label=2;
 					Measure activeMeasure = drilldownModel.getActiveMeasure();
 				
-					if(activeMeasure!=null)
+					if(activeMeasure!=null){
 						pattern=activeMeasure.getRuleName();
+					}
 				break;
 				
 				case MODULELIST: 
@@ -119,8 +120,9 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 					label=3;
 					Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
 				
-					if(selectedModule!=null)
+					if(selectedModule!=null) {
 						pattern=selectedModule.getName();
+					}
 				break;
 				
 				case PACKAGELIST: 

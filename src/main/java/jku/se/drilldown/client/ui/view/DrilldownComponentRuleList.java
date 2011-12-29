@@ -106,6 +106,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	private double getGraphWidth(String severety, Measure item){
 		Integer severetyCount = drilldownModel.getCount(severety);
 		Integer measureCount = item.getIntValue();
+		
 		if(severetyCount!=null && measureCount!=null){
 			return (measureCount.doubleValue()/severetyCount.doubleValue())*100;
 		}else{
