@@ -1,15 +1,12 @@
 package jku.se.drilldown.client.ui.view;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -18,105 +15,105 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	private int visibleTabs; 
 	private List<Widget> widgetList;
 	private List<String> tabTextList;
-	private int tabIndex;
 	private int startListIndex;
 	
+	private int selectedTabIndex;
 	private TabPanel tabPanel; 
 	
 	private Label first = new Label("first");
 	private Label last = new Label("last");
 	
-	private Label label;
-	
-	public LimitedTabPanel (int visibleTabs, Label label){
+	public LimitedTabPanel (int visibleTabs){
 		super();
 		
-		this.label=label;
-		this.visibleTabs=visibleTabs;
+		if(visibleTabs>1)
+			this.visibleTabs=visibleTabs;
+		else
+			this.visibleTabs=1;
 		
 		widgetList = new ArrayList<Widget>();
 		tabTextList = new ArrayList<String>();
 		
-		tabIndex=1;
+		selectedTabIndex=0;
 		startListIndex=0;
 		
 		tabPanel= new TabPanel();
-		tabPanel.add(first, "<<");
-		tabPanel.add(last, ">>");
-
 		tabPanel.addSelectionHandler(this);
 		
 		initWidget(tabPanel);
 	}
 	
-
 	public void add(Widget widget, String tabText){
 		widgetList.add(widget);
 		tabTextList.add(tabText);
 		
-		
-		if(widgetList.size() <= visibleTabs)
-			rebuildTabPanel(startListIndex,widgetList.size());
+		if(widgetList.size() > visibleTabs)
+		{
+			rebuildTabPanel(startListIndex, visibleTabs);
+		}
+		else
+			tabPanel.add(widget, tabText);
 		 
 	}
 
 	private void rebuildTabPanel(int startIndex, int count) {
 		
-		label.setText(startIndex+" "+count+" "+ widgetList.size());
-		
 		tabPanel.clear();
 		
-		//for(int i=0; i<tabPanel.getDeckPanel().getWidgetCount(); i++)
-		//	tabPanel.remove(i);
-				
-		tabPanel.add(first, "<<");	
+		//if(startIndex!=0)
+			tabPanel.add(first, "("+startIndex+") <<");	
 				
 		for(int i =startIndex; i<startIndex+count; i++)
 			tabPanel.add(widgetList.get(i), tabTextList.get(i));	
 		
-		tabPanel.add(last, ">>");
+		//if((widgetList.size()-startIndex-count)!=0)
+			tabPanel.add(last, ">> ("+(widgetList.size()-startIndex-count)+")");
 	
-		
 	}
 
 	public void onSelection(SelectionEvent<Integer> event) {
 		
-		//first tab
-		if(event.getSelectedItem()==0)
+		if(tabPanel.getWidget(event.getSelectedItem())==first)
 		{
-			if(tabIndex == 1 && startListIndex>0)
+			if(selectedTabIndex == 1 && startListIndex>0)
 			{
 				startListIndex--;
 				rebuildTabPanel(startListIndex,visibleTabs);
 			}
-			else if(tabIndex>1)
-				tabIndex--;
+			else if(selectedTabIndex > 1)
+				selectedTabIndex--;
 	
 		} 
-		//last tab
-		else if (event.getSelectedItem() == (visibleTabs +1))
+		else if (tabPanel.getWidget(event.getSelectedItem())==last)
 		{
 			
-			if(tabIndex == visibleTabs && (widgetList.size()-(startListIndex+1))>visibleTabs)
+			if(selectedTabIndex == visibleTabs && (widgetList.size()-startListIndex-visibleTabs)>0)
 			{
 				startListIndex++;
 				rebuildTabPanel(startListIndex,visibleTabs);
-			} else if(tabIndex<(visibleTabs))
-				tabIndex++;
+			} 
+			else if(selectedTabIndex < visibleTabs)
+				selectedTabIndex++;
 		}
-			
-		tabPanel.selectTab(tabIndex);
+		else
+			selectedTabIndex = event.getSelectedItem();
+		
+		tabPanel.selectTab(selectedTabIndex);
 		
 	}
+	
+	public void selectTab(int index) {
 
-
-	public void selectTab(int i) {
-		/*
-		if(tabCount>0)
-		{		
-			tabIndex= i+1;
-			tabPanel.selectTab(tabIndex);
+		if(index>=0 && index<widgetList.size()){
+		
+			if(widgetList.size() > visibleTabs)
+			{		
+				selectedTabIndex= index+1;
+			}
+			else
+				selectedTabIndex=index;
+			
+			tabPanel.selectTab(selectedTabIndex);
 		}
-		*/
 	}
 }

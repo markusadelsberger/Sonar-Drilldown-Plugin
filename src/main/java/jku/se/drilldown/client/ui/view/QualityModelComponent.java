@@ -27,13 +27,11 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -106,7 +104,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
 	private void doLoadData() {
 		
-	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3, this.label);
+	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3);
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
@@ -154,11 +152,9 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 			    			Sonar.getInstance().find(qmtreeQuery, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
 			    		}
 					}	
-    			});
-    		}
-	    			
-	    });// Sonar.getInstance().find
-	
+    			});// Sonar.getInstance().find	
+    		}			
+	    });// Sonar.getInstance().find	
 	}
 
 	public void onSelection(SelectionEvent<TreeItem> event) {
@@ -318,14 +314,14 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 				
     			}// for
     		
-    			tabPanel.add(new Label("test"), "001");
-    			tabPanel.add(new Label("test1"), "002");
-    			tabPanel.add(new Label("test2"), "003");
-	
-    			tabPanel.selectTab(0);
+    			tabPanel.add(new Label("test1"), "001");
+    			tabPanel.add(new Label("test2"), "002");
+    			tabPanel.add(new Label("test3"), "003");
 
         	    data.clear(); 
         	    data.add(tabPanel);
+        	    
+    			tabPanel.selectTab(0);
     			
     		}// if - else
     			    
