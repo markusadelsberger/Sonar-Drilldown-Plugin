@@ -27,6 +27,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
@@ -104,8 +105,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 
 	private void doLoadData() {
-      
-	    final TabPanel tabPanel = new TabPanel();
+		
+	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3, this.label);
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
@@ -152,10 +153,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 			    			
 			    			Sonar.getInstance().find(qmtreeQuery, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
 			    		}
-					}
-    				
+					}	
     			});
-
     		}
 	    			
 	    });// Sonar.getInstance().find
@@ -248,11 +247,11 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
 	private class QMTreeCallbackHandler extends AbstractCallback<Resource>{
 
-		private TabPanel tabPanel;
+		private LimitedTabPanel tabPanel;
 		private SelectionHandler<TreeItem> selectionHandler;
 		private OpenHandler<TreeItem> openHandler;
 		
-		public QMTreeCallbackHandler(TabPanel tabPanel,
+		public QMTreeCallbackHandler(LimitedTabPanel tabPanel,
 				SelectionHandler<TreeItem> selectionHandler,
 				OpenHandler<TreeItem> openHandler) {
 
@@ -280,7 +279,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     			Measure measure = result.getMeasure("qmtree");
     			
     			JSONArray items = JSONParser.parse(measure.getData()).isArray(); 
-          
+    			
     			for(int i=0; i<items.size(); i++)
     			{
     				JSONObject jsonObj = items.get(i).isObject();
@@ -314,13 +313,17 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     						flowpanel.add(tree);
     					}
     				}
-    				 			    
+    				 		   				
     				tabPanel.add(flowpanel, QMshortName(jsonObj.get("name").isString().stringValue()));
-    				
+				
     			}// for
     		
+    			tabPanel.add(new Label("test"), "001");
+    			tabPanel.add(new Label("test1"), "002");
+    			tabPanel.add(new Label("test2"), "003");
+	
     			tabPanel.selectTab(0);
-    			
+
         	    data.clear(); 
         	    data.add(tabPanel);
     			
