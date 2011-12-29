@@ -5,6 +5,8 @@ import java.io.File;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
@@ -16,16 +18,37 @@ import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
 
 public class QMDrilldownSensor implements Sensor {
 
+	private static Logger logger = LoggerFactory.getLogger("QMDrilldownSensorLogger"); 
+	private static String logMarker = "QMDrilldownSensor";
+	
+	/**
+	 * Methods checks if the project has a qualitymodel.xml. 
+	 * If the project does not have one the sensor will not be executed. 
+	 */
 	public boolean shouldExecuteOnProject(Project project) {
-		// This sensor is executed on any type of projects
-		return true;
+		
+		String baseDir = project.getFileSystem().getBasedir().toString();
+		File file = new File(baseDir+"\\qualitymodel.xml");
+		
+		if(file.exists()){
+			// logger.info(logMarker+" scan ..."); 
+			return true;
+		}
+		else{
+			logger.info(logMarker+": qualitymodel.xml not available"); 
+			logger.warn(logMarker+" not executed");
+			return false;
+		}
 	}
 
 	public void analyse(Project project, SensorContext context) {
-  
-		JSONArray jArray = new JSONArray();
-
-	    File file = new File("c:\\qualitymodel.xml");
+		
+		//Calendar starttime = Calendar.getInstance();
+ 	
+	    JSONArray jArray = new JSONArray();
+		
+		String baseDir = project.getFileSystem().getBasedir().toString();
+	    File file = new File(baseDir+"\\qualitymodel.xml");
 	    
 	    try {
 			
@@ -36,38 +59,45 @@ public class QMDrilldownSensor implements Sensor {
 				
 				JSONObject node = new JSONObject();
 				node.put("name", model.getBaseModelName());
-				node.put("childs", structureQMModel(model));
+				node.put("childs", iterateQMTreeRekursive(model));
 				
 				jArray.put(node);
 			}
 				    
 	    } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	    	 logger.info(logMarker+" sqpr.jar caused exception");
+	    	 logger.error(logMarker+" Exception: "+e.getMessage());
 	    }
 	    
 	    Measure measure = new Measure(DrilldownMetrics.QMTREE, jArray.toString());
 	    context.saveMeasure(measure);
 	    
-	    System.out.println("save qmtree for project: "+project.getName());
+	    //Calendar endtime = Calendar.getInstance();
+	    	        
+	    //logger.info(logMarker+" done: "+ (endtime.getTimeInMillis() - starttime.getTimeInMillis() )+" ms"); 
 
 	}
 
-	private JSONArray structureQMModel(IQualityModelElement modelElement) throws JSONException {
+	/**
+	 * Method iterates thru the quality model tree. 
+	 * Therefore a recursive algorithm is used. 
+	 * 
+	 * @param modelElement The current tree node
+	 * @return A JSON array which includes the name of the current node and its child nodes. 
+	 * @throws JSONException
+	 */
+	private JSONArray iterateQMTreeRekursive(IQualityModelElement treeNode) throws JSONException {
 			
 		JSONArray jArray = new JSONArray();
 
-		for (IQualityModelElement child : modelElement.getChildren() )
-		{
+		for (IQualityModelElement child : treeNode.getChildren() ) {
 			JSONObject node = new JSONObject();
 			
-			if(child.getChildren().length>0)
-			{
+			if(child.getChildren().length>0) {
 				node.put("name", child.getFullName());
-				node.put("childs", structureQMModel(child));
+				node.put("childs", iterateQMTreeRekursive(child));
 			}
-			else
-			{
+			else {
 				node.put("name", child.getName());
 				node.put("childs", new JSONArray());
 			}

@@ -10,7 +10,7 @@ import java.util.List;
 public final class DrilldownMetrics implements Metrics {
 
 	public static final Metric QMTREE = new Metric.Builder("qmtree", "QMTree", Metric.ValueType.DATA)
-		.setDescription("QMTree")
+		.setDescription("QMTree is a metric which is used by the QMDrilldown Plugin.")
 		.setDirection(Metric.DIRECTION_BETTER)
 		.setQualitative(false)
 		.setDomain(CoreMetrics.DOMAIN_GENERAL)
