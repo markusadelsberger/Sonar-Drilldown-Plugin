@@ -99,7 +99,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 	
 	private Widget createHeader() {
-		return new Label("QM-Models");
+		return new Label("Qualtiy Models");
 	}
 
 	private void doLoadData() {
@@ -315,6 +315,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 				
     			}// for
     		
+    			//TODO: remove
     			tabPanel.add(new Label("test1"), "001","Toolttip");
     			tabPanel.add(new Label("test2"), "002","Toolttip");
     			tabPanel.add(new Label("test3"), "003","Toolttip");
