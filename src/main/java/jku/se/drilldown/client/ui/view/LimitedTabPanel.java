@@ -13,8 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class LimitedTabPanel extends Composite implements SelectionHandler<Integer>{
 	
 	private int visibleTabs; 
-	private List<Widget> widgetList;
-	private List<String> tabTextList;
+	private List<TabItem> tabItemList;
 	private int startListIndex;
 	
 	private int selectedTabIndex;
@@ -23,16 +22,16 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	private Label first = new Label("first");
 	private Label last = new Label("last");
 	
-	public LimitedTabPanel (int visibleTabs){
+	public LimitedTabPanel (int visibleTabs, Label label){
 		super();
+	
 		
 		if(visibleTabs>1)
 			this.visibleTabs=visibleTabs;
 		else
 			this.visibleTabs=1;
 		
-		widgetList = new ArrayList<Widget>();
-		tabTextList = new ArrayList<String>();
+		tabItemList = new ArrayList<TabItem>();
 		
 		selectedTabIndex=0;
 		startListIndex=0;
@@ -43,31 +42,41 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		initWidget(tabPanel);
 	}
 	
-	public void add(Widget widget, String tabText){
-		widgetList.add(widget);
-		tabTextList.add(tabText);
+	public void add(Widget widget, String tabText, String toolTip){
+		tabItemList.add(new TabItem(widget,tabText,toolTip));
 		
-		if(widgetList.size() > visibleTabs)
+		if(tabItemList.size() > visibleTabs)
 		{
 			rebuildTabPanel(startListIndex, visibleTabs);
 		}
 		else
-			tabPanel.add(widget, tabText);
-		 
+			addTabToTabPanel(widget, tabText, toolTip);
 	}
 
+	private void addTabToTabPanel(Widget content, String tabText, String toolTip)
+	{
+		Label label = new Label(tabText);
+		
+		MouseHandlerForTooltip mouseHandler = new MouseHandlerForTooltip(toolTip,5000);
+		
+		label.addMouseOverHandler(mouseHandler);
+		label.addMouseOutHandler(mouseHandler);
+
+		tabPanel.add(content,label);
+	}
+	
 	private void rebuildTabPanel(int startIndex, int count) {
 		
 		tabPanel.clear();
 		
 		//if(startIndex!=0)
-			tabPanel.add(first, "("+startIndex+") <<");	
+			addTabToTabPanel(first, "("+startIndex+") <<","previous Quality Model");	
 				
 		for(int i =startIndex; i<startIndex+count; i++)
-			tabPanel.add(widgetList.get(i), tabTextList.get(i));	
+			addTabToTabPanel(tabItemList.get(i).getWidget(), tabItemList.get(i).getText(),tabItemList.get(i).getToolTip());	
 		
 		//if((widgetList.size()-startIndex-count)!=0)
-			tabPanel.add(last, ">> ("+(widgetList.size()-startIndex-count)+")");
+			addTabToTabPanel(last, ">> ("+(tabItemList.size()-startIndex-count)+")","next Quality Model");
 	
 	}
 
@@ -87,7 +96,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		else if (tabPanel.getWidget(event.getSelectedItem())==last)
 		{
 			
-			if(selectedTabIndex == visibleTabs && (widgetList.size()-startListIndex-visibleTabs)>0)
+			if(selectedTabIndex == visibleTabs && (tabItemList.size()-startListIndex-visibleTabs)>0)
 			{
 				startListIndex++;
 				rebuildTabPanel(startListIndex,visibleTabs);
@@ -104,9 +113,9 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	
 	public void selectTab(int index) {
 
-		if(index>=0 && index<widgetList.size()){
+		if(index>=0 && index<tabItemList.size()){
 		
-			if(widgetList.size() > visibleTabs)
+			if(tabItemList.size() > visibleTabs)
 			{		
 				selectedTabIndex= index+1;
 			}
@@ -114,6 +123,30 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 				selectedTabIndex=index;
 			
 			tabPanel.selectTab(selectedTabIndex);
+		}
+	}
+	
+	private class TabItem{
+		private Widget widget;
+		private String text;
+		private String toolTip;
+		
+		public TabItem(Widget widget, String text, String toolTip){
+			this.widget=widget;
+			this.text=text;
+			this.toolTip=toolTip;
+		}
+		
+		public Widget getWidget() {
+			return widget;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public String getToolTip() {
+			return toolTip;
 		}
 	}
 }

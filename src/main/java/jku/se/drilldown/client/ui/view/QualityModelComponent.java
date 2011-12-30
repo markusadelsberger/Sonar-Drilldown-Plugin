@@ -104,7 +104,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
 	private void doLoadData() {
 		
-	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3);
+	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3, label);
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
@@ -309,14 +309,15 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     						flowpanel.add(tree);
     					}
     				}
-    				 		   				
-    				tabPanel.add(flowpanel, QMshortName(jsonObj.get("name").isString().stringValue()));
+    				
+    				String qmName = jsonObj.get("name").isString().stringValue();
+    				tabPanel.add(flowpanel, QMshortName(qmName),qmName);
 				
     			}// for
     		
-    			tabPanel.add(new Label("test1"), "001");
-    			tabPanel.add(new Label("test2"), "002");
-    			tabPanel.add(new Label("test3"), "003");
+    			tabPanel.add(new Label("test1"), "001","Toolttip");
+    			tabPanel.add(new Label("test2"), "002","Toolttip");
+    			tabPanel.add(new Label("test3"), "003","Toolttip");
 
         	    data.clear(); 
         	    data.add(tabPanel);
