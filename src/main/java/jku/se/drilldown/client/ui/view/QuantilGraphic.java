@@ -9,6 +9,7 @@ import jku.se.drilldown.client.ui.model.BenchmarkData;
 import jku.se.drilldown.client.ui.model.BenchmarkTool;
 import jku.se.drilldown.client.ui.model.Distribution;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
+import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
@@ -35,7 +36,7 @@ public class QuantilGraphic extends DrilldownComponent {
 	private VerticalPanel rightPanel;
 	
 	public QuantilGraphic(DrilldownController drilldownController){
-		super();
+		super(drilldownController);
 		this.drilldownController=drilldownController;
 		this.drilldownModel=drilldownController.getModel();
 		listPanel = new VerticalPanel();
@@ -80,64 +81,66 @@ public class QuantilGraphic extends DrilldownComponent {
 		render(horizontalPanel);
 	}
 	
-	
-	public void reload()
+	@Override
+	public void reload(ViewComponents viewComponent)
 	{
-		horizontalPanel=new HorizontalPanel();
-		leftPanel=new VerticalPanel();
-		rightPanel=new VerticalPanel();
-		if(drilldownModel.getActiveMeasure()!=null){
-			Distribution distribution = loadBenchmarkData(drilldownModel.getActiveMeasure().getRuleKey());
+		switch(viewComponent){
+			case RULEDRILLDOWN:
+				horizontalPanel=new HorizontalPanel();
+				leftPanel=new VerticalPanel();
+				rightPanel=new VerticalPanel();
+				if(drilldownModel.getActiveMeasure()!=null){
+					Distribution distribution = loadBenchmarkData(drilldownModel.getActiveMeasure().getRuleKey());
+					
+					if(distribution!=null){
+						//fetch the values
+						float min = distribution.getMin();
+						float q25 = distribution.getQ25();
+						float median = distribution.getMedian();
+						float q75 = distribution.getQ75();
+						float max = distribution.getMax();
+						//value of the chosen distribution
+						float value = (float)drilldownModel.getActiveMeasure().getIntValue()/(float)drilldownModel.getCount("loc");
+						
+						//get the position of the line on the scale
+						int pos = getLinePos(min, q25, median, q75, max, value);
+						
+						NumberFormat format = NumberFormat.getScientificFormat();
+		
+						//set the data in the grid
+						grid.setText(0, 1, String.valueOf(format.format(value)));
+						grid.setText(1, 1, String.valueOf(format.format(min)));
+						grid.setText(2, 1, String.valueOf(format.format(q25)));
+						grid.setText(3, 1, String.valueOf(format.format(median)));
+						grid.setText(4, 1, String.valueOf(format.format(q75)));
+						grid.setText(5, 1, String.valueOf(format.format(max)));
+						
+						
+						
+						rightPanel.add(new Label(drilldownModel.getActiveMeasure().getRuleName()));
+						rightPanel.add(getScale(pos, min, q25, median, q75, max, value));
+					}else{
+						grid.setText(0, 1, "");
+						grid.setText(1, 1, "");
+						grid.setText(2, 1, "");
+						grid.setText(3, 1, "");
+						grid.setText(4, 1, "");
+						grid.setText(5, 1, "");
+					}
+				}else{
+					grid.setText(0, 1, "");
+					grid.setText(1, 1, "");
+					grid.setText(2, 1, "");
+					grid.setText(3, 1, "");
+					grid.setText(4, 1, "");
+					grid.setText(5, 1, "");
+				}
 			
-			if(distribution!=null){
-				//fetch the values
-				float min = distribution.getMin();
-				float q25 = distribution.getQ25();
-				float median = distribution.getMedian();
-				float q75 = distribution.getQ75();
-				float max = distribution.getMax();
-				//value of the chosen distribution
-				float value = (float)drilldownModel.getActiveMeasure().getIntValue()/(float)drilldownModel.getCount("loc");
-				
-				//get the position of the line on the scale
-				int pos = getLinePos(min, q25, median, q75, max, value);
-				
-				NumberFormat format = NumberFormat.getScientificFormat();
-
-				//set the data in the grid
-				grid.setText(0, 1, String.valueOf(format.format(value)));
-				grid.setText(1, 1, String.valueOf(format.format(min)));
-				grid.setText(2, 1, String.valueOf(format.format(q25)));
-				grid.setText(3, 1, String.valueOf(format.format(median)));
-				grid.setText(4, 1, String.valueOf(format.format(q75)));
-				grid.setText(5, 1, String.valueOf(format.format(max)));
-				
-				
-				
-				rightPanel.add(new Label(drilldownModel.getActiveMeasure().getRuleName()));
-				rightPanel.add(getScale(pos, min, q25, median, q75, max, value));
-			}else{
-				grid.setText(0, 1, "");
-				grid.setText(1, 1, "");
-				grid.setText(2, 1, "");
-				grid.setText(3, 1, "");
-				grid.setText(4, 1, "");
-				grid.setText(5, 1, "");
-			}
-		}else{
-			grid.setText(0, 1, "");
-			grid.setText(1, 1, "");
-			grid.setText(2, 1, "");
-			grid.setText(3, 1, "");
-			grid.setText(4, 1, "");
-			grid.setText(5, 1, "");
+				leftPanel.add(grid);
+				horizontalPanel.add(leftPanel);
+				horizontalPanel.add(rightPanel);
+				render(horizontalPanel);
 		}
-		
-		
-		leftPanel.add(grid);
-		horizontalPanel.add(leftPanel);
-		horizontalPanel.add(rightPanel);
-		render(horizontalPanel);
 		
 	}
 	

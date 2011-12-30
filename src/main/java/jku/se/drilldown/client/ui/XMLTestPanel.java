@@ -70,13 +70,7 @@ public class XMLTestPanel extends Page{
 			
 			quantilGraphic = new QuantilGraphic(drilldownController);
 			quantilGraphic.setWidth("100%");
-			
-			drilldownController.setPathComponent(pathComponent);
-			drilldownController.setRuleList(drilldownComponentRuleList);
-			drilldownController.setStructureDrilldown(structureComponent);
-			drilldownController.setResource(resource);
-			drilldownController.setBenchmarkDrilldown(benchmarkDrilldown);
-			drilldownController.setQuantilGraphic(quantilGraphic);
+			quantilGraphic.setHeight("170px");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			

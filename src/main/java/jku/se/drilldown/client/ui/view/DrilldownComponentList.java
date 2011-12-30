@@ -2,6 +2,8 @@ package jku.se.drilldown.client.ui.view;
 
 import java.util.Map;
 
+import jku.se.drilldown.client.ui.controller.DrilldownController;
+
 
 import org.sonar.gwt.ui.Loading;
 
@@ -27,7 +29,8 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	// map contains current list items displayed by the user interface
 	private Map<String,Integer> hashmap;
 	
-	public DrilldownComponentList() {
+	public DrilldownComponentList(DrilldownController drilldownController) {
+		super(drilldownController);
 		listPanel = new VerticalPanel();
 		initWidget(listPanel);
 	}

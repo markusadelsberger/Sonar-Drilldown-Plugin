@@ -6,12 +6,8 @@ import java.util.List;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
+import jku.se.drilldown.client.ui.view.DrilldownComponent;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
-import jku.se.drilldown.client.ui.view.PathComponent;
-import jku.se.drilldown.client.ui.view.QualityModelComponent;
-import jku.se.drilldown.client.ui.view.QuantilGraphic;
-import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
-import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;
@@ -19,7 +15,6 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-import com.google.gwt.user.client.Window;
 
 /**
  * @author markus
@@ -28,53 +23,25 @@ import com.google.gwt.user.client.Window;
  */
 public class DrilldownController implements IComponentController{
 
-	private StructureDrilldownComponent structureDrilldown;
-	private DrilldownComponentRuleList ruleList;
-	private PathComponent pathComponent;
 	private DrilldownModel drilldownModel;
-	private SeveretyDrilldown severetyDrilldown;
-	private QualityModelComponent qmComponent;
-	private BenchmarkDrilldown benchmarkDrilldown;
-	private QuantilGraphic quantilGraphic;
+	private List<DrilldownComponent> listenerList = new LinkedList<DrilldownComponent>();
 	
 	private Resource resource;
 	
-	
-	
-	public void setQMComponent(QualityModelComponent qmComponent) {
-		this.qmComponent = qmComponent;
-	}
-	
-	public void setStructureDrilldown(StructureDrilldownComponent structureDrilldown){
-		this.structureDrilldown = structureDrilldown;
-	}
-	
-	public void setRuleList(DrilldownComponentRuleList ruleList){
-		this.ruleList = ruleList;
-	}
-	
-	public void setPathComponent(PathComponent pathComponent){
-		this.pathComponent = pathComponent;
-	}
-	
 	public void setModel(DrilldownModel drilldownModel){
 		this.drilldownModel=drilldownModel;
-	}
-	
-	public void setSeveretyDrilldown(SeveretyDrilldown severetyDrilldown){
-		this.severetyDrilldown=severetyDrilldown;
 	}
 	
 	public void setResource(Resource resource){
 		this.resource=resource;
 	}
 	
-	public void setBenchmarkDrilldown(BenchmarkDrilldown benchmarkDrilldown) {
-		this.benchmarkDrilldown = benchmarkDrilldown;
+	public void addListener(DrilldownComponent drilldownComponent){
+		listenerList.add(drilldownComponent);
 	}
 	
-	public void setQuantilGraphic(QuantilGraphic quantilGraphic){
-		this.quantilGraphic=quantilGraphic;
+	public void removeListener(DrilldownComponent drilldownComponent){
+		listenerList.remove(drilldownComponent);
 	}
 	
 	/**
@@ -83,37 +50,9 @@ public class DrilldownController implements IComponentController{
 	 * @param component The component that called the method;
 	 */
 	public void onSelectedItemChanged(ViewComponents component) {
-		switch(component){
-			case QMTREE:
-				ruleList.reload();
-				pathComponent.reload();
-				structureDrilldown.reload();
-				break;
-			
-			case BENCHMARKDRILLDOWN:
-				ruleList.reload();
-				pathComponent.reload();
-				structureDrilldown.reload();
-				break;
-				
-			case SEVERETYDRILLDOWN:
-				ruleList.reload();
-				pathComponent.reload();
-				structureDrilldown.reload();
-				break;
-			
-			case RULEDRILLDOWN: 
-				pathComponent.reload();
-				structureDrilldown.reload();
-				quantilGraphic.reload();
-				break;
-			
-			case PACKAGELIST:
-			case FILELIST:
-			case MODULELIST: pathComponent.reload(); 
-				break;		
-
-		}	
+		for(DrilldownComponent listener : listenerList){
+			listener.reload(component);
+		}
 	}
 	
 	/**
@@ -126,54 +65,32 @@ public class DrilldownController implements IComponentController{
 			case SEVERETYDRILLDOWN:
 				drilldownModel.setActiveElement("Severety", null);
 				drilldownModel.setActiveMeasures(null);
-				
-				ruleList.reload();
-				structureDrilldown.reload();
-				pathComponent.reload();
 			break;
 		
 			case RULEDRILLDOWN:
 				drilldownModel.setActiveMeasure(null);
-				
-				structureDrilldown.reload();
-				ruleList.reload();
-				pathComponent.reload();
-				quantilGraphic.reload();
 			break;
 		
 			case MODULELIST:
 				drilldownModel.setSelectedItem(ViewComponents.MODULELIST, null);
-				
-				structureDrilldown.reload();
-				pathComponent.reload();
 			break;
 			
 			case PACKAGELIST:
 				drilldownModel.setSelectedItem(ViewComponents.PACKAGELIST, null);
-				
-				structureDrilldown.reload();
-				pathComponent.reload();
 			break;
 			
 			case QMTREE:
 				drilldownModel.setActiveElement("qmtreeNode", null);
 				drilldownModel.setActiveMeasures(null);
-				
-				qmComponent.reload();
-				ruleList.reload();
-				structureDrilldown.reload();
-				pathComponent.reload();	
 			break;
 			
 			case BENCHMARKDRILLDOWN:
 				drilldownModel.setActiveElement("Benchmark", null);
 				drilldownModel.setActiveMeasures(null);
-				
-				ruleList.reload();
-				structureDrilldown.reload();
-				pathComponent.reload();
 			break;
 		}
+		
+		onSelectedItemChanged(component);
 	}
 
 	/**
@@ -231,7 +148,6 @@ public class DrilldownController implements IComponentController{
 						infoCount+=measure.getIntValue();
 					}
 				}
-					
 				
 				drilldownModel.addList("Blocker", blockerList);
 				drilldownModel.addList("Critical", criticalList);
@@ -246,17 +162,9 @@ public class DrilldownController implements IComponentController{
 				drilldownModel.addCount("Info", infoCount);
 				drilldownModel.addCount("SeveretyTotal", blockerCount+criticalCount+majorCount+minorCount+infoCount);
 				
-				benchmarkDrilldown.loadBenchmarkData();
-				//severetyDrilldown.reload();
-				ruleList.reload();
+				onSelectedItemChanged(ViewComponents.INITIALIZE);
 			}
 
 		});
-	}
-		
-	private ResourceQuery getQuery(String... metric)
-	{
-		ResourceQuery query = ResourceQuery.createForResource(resource, metric).setDepth(0).setExcludeRules(false);
-		return query;
 	}
 }

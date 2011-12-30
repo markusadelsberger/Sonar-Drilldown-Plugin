@@ -38,8 +38,8 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	private List<ViewComponents> viewComponents;
 
-	public PathComponent(DrilldownController drilldownController, List<ViewComponents> viewComponents)
-	{
+	public PathComponent(DrilldownController drilldownController, List<ViewComponents> viewComponents){
+		super(drilldownController);
 		this.drilldownController = drilldownController;
 		this.drilldownModel=drilldownController.getModel();
 		pathInformation = new Grid(1,5);
@@ -59,7 +59,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	{
 		pathInformation.setWidget(0, 0, new Label(labels[0]));
 		
-		reload();
+		reload(ViewComponents.INITIALIZE);
 	}
 	
 	public void onClick(ClickEvent event) {			
@@ -87,80 +87,91 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	}
 	
 	@Override
-	public void reload()
+	public void reload(ViewComponents viewComponent)
 	{
-		for(ViewComponents component: viewComponents)
-		{
-			int position = 0;
-			int label=0;
-			String pattern = null;
-			
-			switch(component)
+		switch(viewComponent){
+			case INITIALIZE:
+			case QMTREE:
+			case BENCHMARKDRILLDOWN:
+			case SEVERETYDRILLDOWN:
+			case RULEDRILLDOWN:
+			case PACKAGELIST:
+			case FILELIST:
+			case MODULELIST:
+		
+			for(ViewComponents component: viewComponents)
 			{
-				case SEVERETYDRILLDOWN:
-					position=1;
-					label=1;
-					String severety = drilldownModel.getActiveElement("Severety");
-					
-					if(severety!=null)
-						pattern= severety;
-				break;
+				int position = 0;
+				int label=0;
+				String pattern = null;
 				
-				case RULEDRILLDOWN: 
-					position=2;
-					label=2;
-					Measure activeMeasure = drilldownModel.getActiveMeasure();
-				
-					if(activeMeasure!=null){
-						pattern=activeMeasure.getRuleName();
-					}
-				break;
-				
-				case MODULELIST: 
-					position=3;
-					label=3;
-					Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
-				
-					if(selectedModule!=null) {
-						pattern=selectedModule.getName();
-					}
-				break;
-				
-				case PACKAGELIST: 
-					position=4;
-					label=4;
-					Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
-				
-					if(selectedPackage!=null)
-						pattern=selectedPackage.getName();
-				break;
+				switch(component)
+				{
+					case SEVERETYDRILLDOWN:
+						position=1;
+						label=1;
+						String severety = drilldownModel.getActiveElement("Severety");
+						
+						if(severety!=null)
+							pattern= severety;
+					break;
 					
-				case QMTREE: 
-					position=1;
-					label=5;
+					case RULEDRILLDOWN: 
+						position=2;
+						label=2;
+						Measure activeMeasure = drilldownModel.getActiveMeasure();
 					
-					String qmtreeNodeName = drilldownModel.getActiveElement("qmtreeNode");
+						if(activeMeasure!=null){
+							pattern=activeMeasure.getRuleName();
+						}
+					break;
 					
-					if(qmtreeNodeName!=null)
-						pattern= qmtreeNodeName;
+					case MODULELIST: 
+						position=3;
+						label=3;
+						Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
 					
-				break;
+						if(selectedModule!=null) {
+							pattern=selectedModule.getName();
+						}
+					break;
+					
+					case PACKAGELIST: 
+						position=4;
+						label=4;
+						Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
+					
+						if(selectedPackage!=null)
+							pattern=selectedPackage.getName();
+					break;
+						
+					case QMTREE: 
+						position=1;
+						label=5;
+						
+						String qmtreeNodeName = drilldownModel.getActiveElement("qmtreeNode");
+						
+						if(qmtreeNodeName!=null)
+							pattern= qmtreeNodeName;
+						
+					break;
+					
+					case BENCHMARKDRILLDOWN:
+						position=1;
+						label=6;
+						
+						String benchmarkQuantil = drilldownModel.getActiveElement("benchmark");
+						
+						if(benchmarkQuantil!=null)
+							pattern=benchmarkQuantil;
+				}
 				
-				case BENCHMARKDRILLDOWN:
-					position=1;
-					label=6;
-					
-					String benchmarkQuantil = drilldownModel.getActiveElement("benchmark");
-					
-					if(benchmarkQuantil!=null)
-						pattern=benchmarkQuantil;
+				if(pattern!=null)
+					setElement(pattern, position, component);
+				else
+					setElement(labels[label], position, null);
+	
 			}
-			
-			if(pattern!=null)
-				setElement(pattern, position, component);
-			else
-				setElement(labels[label], position, null);
-
 		}
 	}
 }

@@ -32,7 +32,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	 * @param controller The associated controller
 	 */
 	public SeveretyDrilldown(DrilldownController controller) {
-		super();
+		super(controller);
 		this.controller=controller;
 		drilldownModel=controller.getModel();
 	}
@@ -79,13 +79,18 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	/**
 	 * Reloads the data from the model and rerenders the grid
 	 */
-	public void reload(){
-		for(int i=0;i<5;i++){
-			addMeasures(i, drilldownModel.getCount(severeties[i]));
-			addDrilldownAnchor(severeties[i], i);
-			addGraph(severeties[i], i);
+	@Override
+	public void reload(ViewComponents viewComponent){
+		switch(viewComponent){
+			case INITIALIZE:
+				for(int i=0;i<5;i++){
+					addMeasures(i, drilldownModel.getCount(severeties[i]));
+					addDrilldownAnchor(severeties[i], i);
+					addGraph(severeties[i], i);
+				}
+				render(getGrid());
 		}
-		render(getGrid());
+		
 	}
 	
 	public void addMeasures(int row, int violations){

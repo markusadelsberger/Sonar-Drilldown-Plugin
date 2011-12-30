@@ -58,6 +58,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	
 	public QualityModelComponent(DrilldownController controller, Resource resource)
 	{
+		super(controller);
 		this.resource=resource;
 		
 		this.controller=controller;
@@ -90,7 +91,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 
 	@Override
-	public void reload(){
+	public void reload(ViewComponents viewComponent){
+		//TODO: Bitte implementieren, weiß nicht wo das benötigt wird
 		if(selectedItem!=null && model.getActiveElement("qmtreeNode")==null)
 		{
 			deselectNode((Grid)selectedItem.getWidget());

@@ -30,10 +30,11 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 
 	private DrilldownModel drilldownModel;
 	private DrilldownController drilldownController;
+	private boolean initialized = false;
 	
 	
 	public BenchmarkDrilldown(DrilldownController drilldownController){
-		super();
+		super(drilldownController);
 		this.drilldownController=drilldownController;
 		this.drilldownModel = drilldownController.getModel();
 	}
@@ -77,12 +78,20 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	}
 	
 	@Override
-	public void reload() {
-		for(int i = 0; i<=5; i++){
-			addMeasures(i, drilldownModel.getCount("q"+i));
-			addGraph("q"+i, i);
+	public void reload(ViewComponents viewComponent) {
+		if(initialized){
+			switch(viewComponent){
+				case INITIALIZE:
+					for(int i = 0; i<=5; i++){
+						addMeasures(i, drilldownModel.getCount("q"+i));
+						addGraph("q"+i, i);
+					}
+					render(getGrid());
+			}
+		}else{
+			loadBenchmarkData();
 		}
-		render(getGrid());
+		
 	}
 	
 	public void loadBenchmarkData(){
@@ -102,7 +111,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 						if(loc != null){
 							drilldownModel.addCount("loc", loc.getIntValue());
 						}
-						
+						initialized=true;
 						combineData();
 					}
 				});
@@ -118,8 +127,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	public void combineData(){
 		try{
 			//Load the Rules
-			//Window.alert("CombineData");
-			List<Measure> measureList = new ArrayList();
+			List<Measure> measureList = new ArrayList<Measure>();
 			measureList.addAll(drilldownModel.getList("Blocker"));
 			measureList.addAll(drilldownModel.getList("Critical"));
 			measureList.addAll(drilldownModel.getList("Major"));
@@ -191,7 +199,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		}catch(Exception e){
 			Window.alert("CombineData: "+e.toString());
 		}
-		reload();
+		reload(ViewComponents.INITIALIZE);
 	}
 	
 	private double getGraphWidth(String severety){
