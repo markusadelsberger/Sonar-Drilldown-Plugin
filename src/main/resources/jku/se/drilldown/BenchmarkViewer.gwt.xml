@@ -1,0 +1,11 @@
+<module>
+
+<inherits name='com.google.gwt.user.User' />
+<inherits name="org.sonar.Sonar" />
+
+<entry-point class='jku.se.drilldown.client.ui.BenchmarkViewerPanel' />
+
+<extend-property name="locale" values="en" />
+<extend-property name="locale" values="fr" />
+
+</module>

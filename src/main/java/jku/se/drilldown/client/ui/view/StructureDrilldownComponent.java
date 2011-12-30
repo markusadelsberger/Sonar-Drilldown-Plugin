@@ -42,6 +42,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	 * @param pageID The gwtID of the page that contains this element. for example "jku.se.drilldown.qm.page.QMDrilldownPage" 
 	 */
 	public StructureDrilldownComponent(DrilldownController controller, Resource resource, String pageID){
+		super(controller);
 		this.pageID= pageID;
 		
 		this.controller=controller;
@@ -196,16 +197,23 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		fileList.reload();
 	}
 
-	public void reload() {
-		
-		Measure selectedMeasure = model.getActiveMeasure();
-		
-		if(selectedMeasure == null) {
-			setSelectedRules(model.getActiveMeasures());
+	@Override
+	public void reload(ViewComponents viewComponent) {
+		switch(viewComponent){
+			case QMTREE:
+			case BENCHMARKDRILLDOWN:
+			case SEVERETYDRILLDOWN:
+			case RULEDRILLDOWN:
+				Measure selectedMeasure = model.getActiveMeasure();
+				
+				if(selectedMeasure == null) {
+					setSelectedRules(model.getActiveMeasures());
+				}
+				else {
+					setSelectedRule(selectedMeasure);
+				}
 		}
-		else {
-			setSelectedRule(selectedMeasure);
-		}
+		
 	}
 }
  

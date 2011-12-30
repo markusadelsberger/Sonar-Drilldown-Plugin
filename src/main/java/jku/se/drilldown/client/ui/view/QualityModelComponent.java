@@ -58,6 +58,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	
 	public QualityModelComponent(DrilldownController controller, Resource resource)
 	{
+		super(controller);
 		this.resource=resource;
 		
 		this.controller=controller;
@@ -90,7 +91,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 
 	@Override
-	public void reload(){
+	public void reload(ViewComponents viewComponent){
+		//TODO: Bitte implementieren, weiß nicht wo das benötigt wird
 		if(selectedItem!=null && model.getActiveElement("qmtreeNode")==null)
 		{
 			deselectNode((Grid)selectedItem.getWidget());
@@ -99,7 +101,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 	
 	private Widget createHeader() {
-		return new Label("QM-Models");
+		return new Label("Qualtiy Models");
 	}
 
 	private void doLoadData() {
@@ -315,6 +317,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 				
     			}// for
     		
+    			//TODO: remove
     			tabPanel.add(new Label("test1"), "001","Toolttip");
     			tabPanel.add(new Label("test2"), "002","Toolttip");
     			tabPanel.add(new Label("test3"), "003","Toolttip");

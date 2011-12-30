@@ -86,8 +86,8 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>1.2</version>
-        <executions> 
-          <execution>
+         <executions> 
+         <execution>
             <configuration>
               <modules>
                 <module>jku.se.drilldown.QMDrilldownPage</module>

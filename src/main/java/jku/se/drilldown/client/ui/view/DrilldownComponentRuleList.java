@@ -27,9 +27,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	private DrilldownModel drilldownModel;
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
-		super();
+		super(controller);
 		this.controller=controller;
-		controller.setRuleList(this);
 		Grid grid = new Grid(0, gridColumnCount());
 		grid.setStyleName("spaced");
 		setGrid(grid);
@@ -49,7 +48,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	@Override
 	public void doLoadData()
 	{
-
+		
 	}
 	
 	private String getIcon(String severity){
@@ -170,25 +169,33 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	/**
 	 * Reloads the rules from the model and rerenders the grid
 	 */
-	public void reload(){
+	@Override
+	public void reload(ViewComponents viewComponent){
+		switch(viewComponent){
+			case QMTREE:
+			case BENCHMARKDRILLDOWN:
+			case SEVERETYDRILLDOWN:
+			case INITIALIZE:
+				if(drilldownModel.getActiveMeasures()!=null) {
+					List<Measure> measureList = drilldownModel.getActiveMeasures();
+					reloadBegin();
+					addMeasures(measureList);
+					reloadFinished();
+				}
+				else {
+					List<Measure> measureList = new LinkedList<Measure>();
+					measureList.addAll(drilldownModel.getList("Blocker"));
+					measureList.addAll(drilldownModel.getList("Critical"));
+					measureList.addAll(drilldownModel.getList("Major"));
+					measureList.addAll(drilldownModel.getList("Minor"));
+					measureList.addAll(drilldownModel.getList("Info"));
+					reloadBegin();
+					addMeasures(measureList);
+					reloadFinished();
+				}
+			break;
+		}
 		
-		if(drilldownModel.getActiveMeasures()!=null) {
-			List<Measure> measureList = drilldownModel.getActiveMeasures();
-			reloadBegin();
-			addMeasures(measureList);
-			reloadFinished();
-		}
-		else {
-			List<Measure> measureList = new LinkedList<Measure>();
-			measureList.addAll(drilldownModel.getList("Blocker"));
-			measureList.addAll(drilldownModel.getList("Critical"));
-			measureList.addAll(drilldownModel.getList("Major"));
-			measureList.addAll(drilldownModel.getList("Minor"));
-			measureList.addAll(drilldownModel.getList("Info"));
-			reloadBegin();
-			addMeasures(measureList);
-			reloadFinished();
-		}
 	}
 	
 }

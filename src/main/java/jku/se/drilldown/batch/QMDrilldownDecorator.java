@@ -20,7 +20,8 @@ public class QMDrilldownDecorator implements Decorator {
 		return BatchUtility.checkQMFileExist(project, logger, logMarker);
 	}
 
-	public void decorate(Resource resource, DecoratorContext context) {
+	@SuppressWarnings("rawtypes")
+	public void decorate( Resource resource, DecoratorContext context) {
     		
 		if (Scopes.isHigherThan(resource, Scopes.FILE)) {
 			Measure measure = new Measure(DrilldownMetrics.QMTREE_PROJECTKEY, context.getProject().getKey());
