@@ -11,6 +11,7 @@ import org.sonar.api.SonarPlugin;
 
 public class QMDrilldownPlugin extends SonarPlugin {
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getExtensions() {
 		return Arrays.asList(	
 			// Definitions
