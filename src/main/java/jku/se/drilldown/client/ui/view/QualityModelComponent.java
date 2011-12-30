@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -104,8 +103,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 
 	private void doLoadData() {
-      
-	    final TabPanel tabPanel = new TabPanel();
+		
+	    final LimitedTabPanel tabPanel = new LimitedTabPanel(3, label);
 	    
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
@@ -134,33 +133,28 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		  			hashmap.put(key, item);
     		   		}
     			}
-    			   			
     			
-    			/*MetricQuery resource_query = MetricQuery.byKey("qmtree");
-    			
-    			Sonar.getInstance().findAll(resource_query, new AbstractListCallback<Metric>() {
+    			ResourceQuery query = ResourceQuery.createForMetrics(resource.getKey(), "projectkey");
+    			Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 
 					@Override
-					protected void doOnResponse(List<Metric> result) {
-						
-						String output = "";
-						
-						for(Metric m : result)
-							output+=m.getName();
-						
-						label.setText(output);
-					}
-
-						    
-    			});*/
-    			
-    			ResourceQuery query = ResourceQuery.createForResource(resource, "qmtree");
-    			Sonar.getInstance().find(query, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
-    	
-    		}
-	    			
-	    });// Sonar.getInstance().find
-	
+					protected void doOnResponse(Resource result) {
+						if (result==null) {
+			    			data.clear(); 
+			        	    data.add(new Label("For the project is no quality model available."));
+			    		} 
+			    		else 
+			    		{    	 
+			    			Measure measure = result.getMeasure("projectkey");
+			    			
+			    			ResourceQuery qmtreeQuery = ResourceQuery.createForMetrics(measure.getData(), "qmtree");
+			    			
+			    			Sonar.getInstance().find(qmtreeQuery, new QMTreeCallbackHandler(tabPanel, selectionHandler, openHandler));
+			    		}
+					}	
+    			});// Sonar.getInstance().find	
+    		}			
+	    });// Sonar.getInstance().find	
 	}
 
 	public void onSelection(SelectionEvent<TreeItem> event) {
@@ -249,20 +243,17 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 
 	private class QMTreeCallbackHandler extends AbstractCallback<Resource>{
 
-		private TabPanel tabPanel;
+		private LimitedTabPanel tabPanel;
 		private SelectionHandler<TreeItem> selectionHandler;
 		private OpenHandler<TreeItem> openHandler;
-
 		
-		public QMTreeCallbackHandler(TabPanel tabPanel,
+		public QMTreeCallbackHandler(LimitedTabPanel tabPanel,
 				SelectionHandler<TreeItem> selectionHandler,
 				OpenHandler<TreeItem> openHandler) {
 
 			this.tabPanel=tabPanel;
 			this.selectionHandler=selectionHandler;
-			this.openHandler=openHandler;
-
-			
+			this.openHandler=openHandler;		
 		}
 
 		@Override
@@ -284,7 +275,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     			Measure measure = result.getMeasure("qmtree");
     			
     			JSONArray items = JSONParser.parse(measure.getData()).isArray(); 
-          
+    			
     			for(int i=0; i<items.size(); i++)
     			{
     				JSONObject jsonObj = items.get(i).isObject();
@@ -318,13 +309,20 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     						flowpanel.add(tree);
     					}
     				}
-    				 			    
-    				tabPanel.add(flowpanel, QMshortName(jsonObj.get("name").isString().stringValue()));
     				
+    				String qmName = jsonObj.get("name").isString().stringValue();
+    				tabPanel.add(flowpanel, QMshortName(qmName),qmName);
+				
     			}// for
     		
+    			tabPanel.add(new Label("test1"), "001","Toolttip");
+    			tabPanel.add(new Label("test2"), "002","Toolttip");
+    			tabPanel.add(new Label("test3"), "003","Toolttip");
+
         	    data.clear(); 
         	    data.add(tabPanel);
+        	    
+    			tabPanel.selectTab(0);
     			
     		}// if - else
     			    
