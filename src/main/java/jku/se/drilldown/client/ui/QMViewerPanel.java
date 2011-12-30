@@ -64,13 +64,8 @@ public class QMViewerPanel extends Page{
 		drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 
 		structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
-					
-		drilldownController.setPathComponent(pathComponent);
-		drilldownController.setRuleList(drilldownComponentRuleList);
-		drilldownController.setStructureDrilldown(structureComponent);
-		drilldownController.setQMComponent(qmComponent);
+
 		drilldownController.setResource(resource);
-		drilldownController.setSeveretyDrilldown(severetyDrilldown);
 		drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 		
 		leftPanel.add(severetyDrilldown);
