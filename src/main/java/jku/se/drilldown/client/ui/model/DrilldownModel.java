@@ -21,6 +21,7 @@ public class DrilldownModel {
 	private List<Measure> activeMeasures;
 	private Resource resource;
 	private HashMap<ViewComponents,Resource> selectedResource;
+	private BenchmarkData benchmarkData;
 	
 	public DrilldownModel(){
 		measureMap=new HashMap<String, List<Measure>>();
@@ -114,6 +115,14 @@ public class DrilldownModel {
 
 	public void setSelectedItem(ViewComponents componentList, Resource resource){
 		this.selectedResource.put(componentList, resource);
+	}
+
+	public BenchmarkData getBenchmarkData() {
+		return benchmarkData;
+	}
+
+	public void setBenchmarkData(BenchmarkData benchmarkData) {
+		this.benchmarkData = benchmarkData;
 	}
 
 	public void setActiveMeasures(List<Measure> list) {

@@ -12,6 +12,7 @@ import org.sonar.wsclient.services.Resource;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -33,7 +34,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
-	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " ","Any QM Node >>"};
+	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " ","Any QM Node >> ", "Any Benchmark Quantil >> "};
 	
 	private List<ViewComponents> viewComponents;
 
@@ -62,10 +63,10 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	}
 	
 	public void onClick(ClickEvent event) {			
+		
 		Element element = event.getRelativeElement();
 		
 		ViewComponents clearItem = (ViewComponents)element.getPropertyObject("clearItem");
-		
 		drilldownController.clearElement(clearItem);		
 	}
 
@@ -144,6 +145,15 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 						pattern= qmtreeNodeName;
 					
 				break;
+				
+				case BENCHMARKDRILLDOWN:
+					position=1;
+					label=6;
+					
+					String benchmarkQuantil = drilldownModel.getActiveElement("benchmark");
+					
+					if(benchmarkQuantil!=null)
+						pattern=benchmarkQuantil;
 			}
 			
 			if(pattern!=null)

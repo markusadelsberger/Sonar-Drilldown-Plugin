@@ -7,5 +7,6 @@ public enum ViewComponents {
 	PACKAGELIST, 
 	FILELIST, 
 	STRUCTURE, 
-	QMTREE
+	QMTREE,
+	BENCHMARKDRILLDOWN
 }
