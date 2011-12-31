@@ -32,7 +32,6 @@ public class QMViewerPanel extends Page{
 	private Panel rightPanel;
 	private Panel leftPanel;
 	private PathComponent pathComponent;
-	private SeveretyDrilldown severetyDrilldown;
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
 	private DrilldownController drilldownController;
@@ -44,45 +43,45 @@ public class QMViewerPanel extends Page{
 		VerticalPanel panel = new VerticalPanel();
 		
 		try{
-		mainPanel= new HorizontalPanel();
-		rightPanel=new HorizontalPanel();
-		leftPanel=new HorizontalPanel();
-		
-		drilldownController = new DrilldownController();
-		drilldownModel = new DrilldownModel();
-		drilldownController.setModel(drilldownModel);
-		
-		List<ViewComponents> components = new ArrayList<ViewComponents>();
-		components.add(ViewComponents.RULEDRILLDOWN);
-		components.add(ViewComponents.MODULELIST);
-		components.add(ViewComponents.PACKAGELIST);
-		components.add(ViewComponents.QMTREE);
-		pathComponent = new PathComponent(drilldownController,components);
+			mainPanel= new HorizontalPanel();
+			rightPanel=new HorizontalPanel();
+			leftPanel=new HorizontalPanel();
 
-		severetyDrilldown=new SeveretyDrilldown(drilldownController);
-		qmComponent = new QualityModelComponent(drilldownController, resource);
-		drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			drilldownController = new DrilldownController();
+			drilldownModel = new DrilldownModel();
+			drilldownController.setModel(drilldownModel);
+			drilldownController.setResource(resource);
 
-		structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
+			List<ViewComponents> components = new ArrayList<ViewComponents>();
+			components.add(ViewComponents.RULEDRILLDOWN);
+			components.add(ViewComponents.MODULELIST);
+			components.add(ViewComponents.PACKAGELIST);
+			components.add(ViewComponents.QMTREE);
+			pathComponent = new PathComponent(drilldownController,components);
 
-		drilldownController.setResource(resource);
-		drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
-		
-		leftPanel.add(severetyDrilldown);
-		leftPanel.add(qmComponent);
-		
-		rightPanel.add(drilldownComponentRuleList);
-		
-		mainPanel.add(leftPanel);
-		mainPanel.add(rightPanel);
-		mainPanel.setWidth("100%");
-		mainPanel.setCellWidth(leftPanel, "400px");
-		mainPanel.setCellWidth(rightPanel, "100%");
-		panel.add(mainPanel);
-		
-		panel.add(structureComponent);
-		panel.add(pathComponent);
-		panel.setWidth("100%");
+			qmComponent = new QualityModelComponent(drilldownController, resource);
+			
+			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			
+			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
+			
+			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
+			
+			leftPanel.add(qmComponent);
+
+			rightPanel.add(drilldownComponentRuleList);
+			rightPanel.setWidth("100%");
+			
+			mainPanel.add(leftPanel);
+			mainPanel.add(rightPanel);
+			mainPanel.setWidth("100%");
+			mainPanel.setCellWidth(leftPanel, "230px");
+			mainPanel.setCellWidth(rightPanel, "100%");
+			panel.add(mainPanel);
+
+			panel.add(structureComponent);
+			panel.add(pathComponent);
+			panel.setWidth("100%");
 
 		
 		}catch (Exception e){

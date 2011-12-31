@@ -28,10 +28,13 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
 		super(controller);
+		
 		this.controller=controller;
+		
 		Grid grid = new Grid(0, gridColumnCount());
 		grid.setStyleName("spaced");
 		setGrid(grid);
+		
 		drilldownModel=controller.getModel();
 	}
 

@@ -32,6 +32,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	public DrilldownComponentList(DrilldownController drilldownController) {
 		super(drilldownController);
 		listPanel = new VerticalPanel();
+		listPanel.setWidth("100%");
 		initWidget(listPanel);
 	}
 
@@ -40,6 +41,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		listPanel.add(createHeader());
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
+		data.setWidth("100%");
 		listPanel.add(data);
 		
 		data.clear();

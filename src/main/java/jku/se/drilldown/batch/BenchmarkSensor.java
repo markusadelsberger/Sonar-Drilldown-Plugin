@@ -16,7 +16,7 @@ public class BenchmarkSensor implements Sensor{
 	public void analyse(Project project, SensorContext sensorContext) {
 		try{
 			String baseDir = project.getFileSystem().getBasedir().toString();
-			String xml = BenchmarkFileReader.readFile(baseDir+"\\benchmarkdistributions.xml");
+			String xml = BatchUtility.readFile(baseDir+"\\benchmarkdistributions.xml");
 			Measure measure = new Measure(DrilldownMetrics.BENCHMARK,xml);
 		    sensorContext.saveMeasure(measure);
 		}catch(Exception e){

@@ -82,6 +82,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
+		data.setWidth("250px");
+		
 		qmoverview.add(data);
 		
     	label = new Label();

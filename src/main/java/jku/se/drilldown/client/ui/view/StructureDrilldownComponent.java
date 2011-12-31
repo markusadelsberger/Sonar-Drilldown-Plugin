@@ -55,6 +55,8 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		fileList = null;
 					
 		verticalPanel = new VerticalPanel();
+		verticalPanel.setWidth("100%");
+		
 		initWidget(verticalPanel);	
 	}
 		
@@ -83,7 +85,10 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			moduleList = new StructureDrilldownList(controller, STRUCTURE[0], pageID, ViewComponents.MODULELIST);
 			
 			structurePanel = new Grid(1,3);
+			structurePanel.setWidth("100%");
+			
 			structurePanel.setWidget(0, listPosition, moduleList);
+			
 			
 			listPosition++;
 			parentExists =true;
@@ -92,16 +97,18 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || parentExists){
 			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID, ViewComponents.PACKAGELIST);
 			
-			if(parentExists){
-				packageList.setPrev(moduleList);
-				structurePanel.setWidget(0, listPosition, packageList);
+			if(parentExists)
+			{
+				packageList.setPrev(moduleList);		
 			}
 			else
 			{
 				structurePanel = new Grid(1,2);
-				structurePanel.setWidget(0, listPosition, packageList);
+				structurePanel.setWidth("100%");
 			}
 			
+			structurePanel.setWidget(0, listPosition, packageList);
+
 			listPosition++;
 			parentExists =true;
 		} 
@@ -109,15 +116,17 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || parentExists){
 			fileList = new StructureDrilldownList(controller, STRUCTURE[2], pageID, ViewComponents.FILELIST);
 
-			if(parentExists){
-				fileList.setPrev(packageList);	
-				structurePanel.setWidget(0, listPosition, fileList);
+			if(parentExists)
+			{
+				fileList.setPrev(packageList);		
 			}
 			else
 			{
 				structurePanel = new Grid(1,1);
-				structurePanel.setWidget(0, listPosition, fileList);
+				structurePanel.setWidth("100%");
 			}
+			
+			structurePanel.setWidget(0, listPosition, fileList);
 		}
 		
 		if(packageList!=null)
