@@ -1,0 +1,17 @@
+<module>
+
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.google.gwt.json.JSON"/>
+  <inherits name="com.google.gwt.http.HTTP"/>
+  <inherits name="com.google.gwt.xml.XML" />
+  <inherits name="org.sonar.Sonar"/>
+
+  <entry-point class='jku.se.drilldown.client.ui.QMViewerPanel'/>
+
+  <stylesheet src="drilldownComponents.css"/>
+
+  <extend-property name="locale" values="en"/>
+  <extend-property name="locale" values="fr"/>
+
+</module>
+ 
