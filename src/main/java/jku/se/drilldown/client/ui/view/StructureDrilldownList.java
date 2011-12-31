@@ -65,6 +65,8 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		this.model=controller.getModel();
 		
 		this.listType = listType;
+		
+		
 	}
  
 	@Override

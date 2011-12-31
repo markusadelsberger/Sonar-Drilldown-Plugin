@@ -5,9 +5,7 @@ import java.util.List;
 
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
-import jku.se.drilldown.client.ui.view.BenchmarkDrilldown;
 import jku.se.drilldown.client.ui.view.DrilldownComponent;
-import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 
 import org.sonar.wsclient.gwt.AbstractCallback;
 import org.sonar.wsclient.gwt.Sonar;

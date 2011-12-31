@@ -87,6 +87,8 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			structurePanel = new Grid(1,3);
 			structurePanel.setWidth("100%");
 			
+			moduleList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
+			
 			structurePanel.setWidget(0, listPosition, moduleList);
 			
 			
@@ -95,6 +97,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_MODULE) || parentExists){
+				
 			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID, ViewComponents.PACKAGELIST);
 			
 			if(parentExists)
@@ -107,6 +110,8 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				structurePanel.setWidth("100%");
 			}
 			
+			packageList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
+			
 			structurePanel.setWidget(0, listPosition, packageList);
 
 			listPosition++;
@@ -114,10 +119,11 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		} 
 		
 		if (resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE) || parentExists){
+			
 			fileList = new StructureDrilldownList(controller, STRUCTURE[2], pageID, ViewComponents.FILELIST);
-
+			
 			if(parentExists)
-			{
+			{	
 				fileList.setPrev(packageList);		
 			}
 			else
@@ -125,6 +131,8 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				structurePanel = new Grid(1,1);
 				structurePanel.setWidth("100%");
 			}
+			
+			fileList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
 			structurePanel.setWidget(0, listPosition, fileList);
 		}

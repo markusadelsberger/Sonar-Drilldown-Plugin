@@ -31,19 +31,22 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	
 	public DrilldownComponentList(DrilldownController drilldownController) {
 		super(drilldownController);
+		
 		listPanel = new VerticalPanel();
 		listPanel.setWidth("100%");
+		
+		listPanel.add(createHeader());
+		
+		data = new ScrollPanel();
+		data.setStyleName("scrollable");
+					
+		listPanel.add(data);
+		
 		initWidget(listPanel);
 	}
 
 	@Override
 	public void onLoad() {
-		listPanel.add(createHeader());
-		data = new ScrollPanel();
-		data.setStyleName("scrollable");
-		data.setWidth("100%");
-		listPanel.add(data);
-		
 		data.clear();
 		data.add(new Loading());
 		doLoadData();
@@ -121,6 +124,11 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	
 	public Map<String,Integer> getHashmap(){
 		return this.hashmap;
+	}
+	
+	public void setSize(int size)
+	{
+		this.data.setWidth(size+"px");
 	}
 	
 	/**

@@ -9,7 +9,6 @@ import jku.se.drilldown.client.ui.model.ViewComponents;
 import jku.se.drilldown.client.ui.view.DrilldownComponentRuleList;
 import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.QualityModelComponent;
-import jku.se.drilldown.client.ui.view.SeveretyDrilldown;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
 import org.sonar.gwt.Metrics;
