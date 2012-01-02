@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Label;
  * If for example a selected item of a DrilldownComponentList changes this controller will be triggered 
  * and it refresh the other components. 
  * 
- * Additionally it displays selected items of components. 
+ * Additionally it displays items of components which are selected. 
  * 
  * @author Johannes
  *

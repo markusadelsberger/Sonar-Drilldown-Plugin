@@ -10,6 +10,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * LimitedTabPanel extends the functionality of a normal TabPanel because it limits the number of displayed tab.
+ * To iterate thru all tabs a next and previous tab is offered. 
+ * 
+ * @author Johannes
+ *
+ */
 public class LimitedTabPanel extends Composite implements SelectionHandler<Integer>{
 	
 	private int visibleTabs; 
@@ -42,6 +49,14 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		initWidget(tabPanel);
 	}
 	
+	/**
+	 * Adds an element to the tab panel. 
+	 * An tab element needs a widget, a text and a tooltip. 
+	 * 
+	 * @param widget Represents the content of the tab element.
+	 * @param tabText Text which is displayed at the top of the tab panel. 
+	 * @param toolTip Tooltip which is shown when mouse moves over the text. 
+	 */
 	public void add(Widget widget, String tabText, String toolTip){
 		tabItemList.add(new TabItem(widget,tabText,toolTip));
 		
@@ -57,7 +72,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	{
 		Label label = new Label(tabText);
 		
-		MouseHandlerForTooltip mouseHandler = new MouseHandlerForTooltip(toolTip,5000);
+		TooltipMouseHandler mouseHandler = new TooltipMouseHandler(toolTip,5000);
 		
 		label.addMouseOverHandler(mouseHandler);
 		label.addMouseOutHandler(mouseHandler);
@@ -125,6 +140,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 			tabPanel.selectTab(selectedTabIndex);
 		}
 	}
+	
 	
 	private class TabItem{
 		private Widget widget;

@@ -9,27 +9,18 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MouseHandlerForTooltip implements MouseOverHandler, MouseOutHandler {
+/**
+ * A TooltipMouseHandler reacts on mouse events and shows a tool tip 
+ * when the mouse is over a widget. When the mouse drops out of the widget the tooltip is hidden.
+ * 
+ * @author Johannes
+ * 
+ */
+public class TooltipMouseHandler implements MouseOverHandler, MouseOutHandler {
 	
 	private static final String DEFAULT_TOOLTIP_STYLE = "tooltip";
 	private static final int DEFAULT_OFFSET_X = 10;
 	private static final int DEFAULT_OFFSET_Y = 25;
-	
-	public void onMouseOver(MouseOverEvent event) {
-		
-		if (tooltip != null) {
-			tooltip.hide();
-	    }
-	    tooltip = new Tooltip( (Widget)event.getSource(), offsetX, offsetY, text, delay, styleName);
-	    tooltip.show();
-	}
-
-	public void onMouseOut(MouseOutEvent event) {
-		
-		if (tooltip != null) {
-			tooltip.hide();
-	    }	
-	}
 
 	private Tooltip tooltip;
 	private String text;
@@ -38,12 +29,11 @@ public class MouseHandlerForTooltip implements MouseOverHandler, MouseOutHandler
 	private int offsetX = DEFAULT_OFFSET_X;
 	private int offsetY = DEFAULT_OFFSET_Y;
 
-	public MouseHandlerForTooltip(String text, int delay) {
+	public TooltipMouseHandler(String text, int delay) {
 		this(text, delay, DEFAULT_TOOLTIP_STYLE );
 	}
 
-	public MouseHandlerForTooltip(String text, int delay, String styleName) {
-		
+	public TooltipMouseHandler(String text, int delay, String styleName) {
 		this.text = text;
 		this.delay = delay;
 		this.styleName = styleName;
@@ -73,16 +63,47 @@ public class MouseHandlerForTooltip implements MouseOverHandler, MouseOutHandler
 	    this.offsetY = offsetY;
 	}
 
+	/**
+	 * Method is triggered when mouse is over a widget and then it shows a tooltip.
+	 */
+	public void onMouseOver(MouseOverEvent event) {
+		
+		if (tooltip != null) {
+			tooltip.hide();
+	    }
+		
+	    tooltip = new Tooltip( (Widget)event.getSource(), offsetX, offsetY, text, delay, styleName);
+	    tooltip.show();
+	}
+
+	/**
+	 * Method is triggered when mouse drops out of the widget and then it hides the tooltip.
+	 */
+	public void onMouseOut(MouseOutEvent event) {
+		
+		if (tooltip != null) {
+			tooltip.hide();
+	    }	
+	}
+	
+	/**
+	 * Class is used to simulate a tooltip as a popup panel. 
+	 * The tooltip displays information for a certain time. 
+	 * 
+	 * @author Johannes
+	 * 
+	 */
 	private static class Tooltip extends PopupPanel {
 	
+		//defines the time the tooltip is visible
 		private int delay;
 	
-	    public Tooltip(Widget sender, int offsetX, int offsetY, final String text, final int delay, final String styleName) {
+	    public Tooltip(Widget sender, int offsetX, int offsetY, final String information, final int delay, final String styleName) {
 	    	super(true);
 	
 	    	this.delay = delay;
 	
-	    	HTML contents = new HTML(text);
+	    	HTML contents = new HTML(information);
 	    	add(contents);
 	
 	    	int left = sender.getAbsoluteLeft() + offsetX;
@@ -92,6 +113,10 @@ public class MouseHandlerForTooltip implements MouseOverHandler, MouseOutHandler
 	    	setStyleName(styleName);
 	    }
 	
+	    /**
+	     * Shows tooltip for a certain time. 
+	     * Time is defined by the delay. 
+	     */
 	    public void show() {
 	    	super.show();
 	    	

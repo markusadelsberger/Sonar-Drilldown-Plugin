@@ -1,6 +1,5 @@
 package jku.se.drilldown.client.ui.view;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,9 +35,10 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
  
 /**
+ * 
+ * 
  * @author Johannes
  *
  */
@@ -95,7 +95,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	@Override
 	public void reload(ViewComponents viewComponent){
 
-		//TODO: Bitte implementieren, weiß nicht wo das benötigt wird
 		if(selectedItem!=null && model.getActiveElement("qmtreeNode")==null)
 		{
 			deselectNode((Grid)selectedItem.getWidget());
