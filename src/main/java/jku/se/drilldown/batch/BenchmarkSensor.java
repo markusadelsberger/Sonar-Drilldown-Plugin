@@ -13,7 +13,8 @@ import jku.se.drilldown.batch.DrilldownMetrics;
 
 public class BenchmarkSensor implements Sensor{
 
-	protected static String fileName = "benchmarkdistributions.xml";
+	public static String fileName = "benchmarkdistributions.xml";
+	
 	private static Logger logger = LoggerFactory.getLogger("BenchmarkSensorLogger"); 
 	private static String logMarker = "BenchmarkSensor";
 	

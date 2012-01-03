@@ -83,15 +83,17 @@ public class QualityModelTreeNode {
 		});
 		
 		// removes duplicate nodes
-		if(leaves.size()>0)
-		{
+		if(leaves.size()>0) {
+			
 			Set<String> set = new HashSet<String>();
 			List<QualityModelTreeNode> newList = new ArrayList<QualityModelTreeNode>();
 			
 			for (Iterator<QualityModelTreeNode> iter = leaves.iterator();    iter.hasNext(); ) {
 				QualityModelTreeNode element = iter.next();
-				if (set.add(element.getNodeName()))
+				
+				if (set.add(element.getNodeName())) {
 					newList.add(element);
+				}
 			}
 			    
 			leaves.clear();

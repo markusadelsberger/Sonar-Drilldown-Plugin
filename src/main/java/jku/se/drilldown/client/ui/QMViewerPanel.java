@@ -1,8 +1,5 @@
 package jku.se.drilldown.client.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
@@ -27,33 +24,25 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */ 
 public class QMViewerPanel extends Page{
-	private HorizontalPanel mainPanel;
-	private Panel rightPanel;
-	private Panel leftPanel;
-	private PathComponent pathComponent;
-	private DrilldownComponentRuleList drilldownComponentRuleList;
-	private StructureDrilldownComponent structureComponent;
-	private DrilldownController drilldownController;
-	private QualityModelComponent qmComponent;
-	
+
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
-		VerticalPanel panel = new VerticalPanel();
+		Panel panel = new VerticalPanel();
 		
 		try{
-			mainPanel= new HorizontalPanel();
-			rightPanel=new HorizontalPanel();
-			leftPanel=new HorizontalPanel();
+			HorizontalPanel mainPanel= new HorizontalPanel();
+			Panel rightPanel=new HorizontalPanel();
+			Panel leftPanel=new HorizontalPanel();
 
-			drilldownController = new DrilldownController(new DrilldownModel(resource));
+			DrilldownController drilldownController = new DrilldownController(new DrilldownModel(resource));
 			
-			pathComponent = new PathComponent(drilldownController,ViewComponents.QMTREE);
+			PathComponent pathComponent = new PathComponent(drilldownController,ViewComponents.QMTREE);
 
-			qmComponent = new QualityModelComponent(drilldownController);
+			QualityModelComponent qmComponent = new QualityModelComponent(drilldownController);
 			
-			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			DrilldownComponentRuleList drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			
-			structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.QMDrilldownPage");
+			StructureDrilldownComponent structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.QMDrilldownPage");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			

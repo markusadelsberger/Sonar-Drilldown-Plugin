@@ -23,10 +23,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class StructureDrilldownComponent extends DrilldownComponent{
 	
+	private static String[] STRUCTURE = {Resource.SCOPE_SET, Resource.SCOPE_SPACE, Resource.SCOPE_ENTITY};
+	
 	private Panel verticalPanel;
 	private Grid structurePanel;
-	
-	final static String[] STRUCTURE = {Resource.SCOPE_SET, Resource.SCOPE_SPACE, Resource.SCOPE_ENTITY};
 	
 	private StructureDrilldownList moduleList;
 	private StructureDrilldownList packageList;
@@ -131,38 +131,36 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			structurePanel.setWidget(0, listPosition, fileList);
 		}
 		
-		if(structurePanel != null)
+		if(structurePanel != null) {
 			structurePanel.setWidth("100%");
-		
-		if(packageList!=null)
-		{
+		}
+			
+		if(packageList!=null) {
 			packageList.setNext(fileList);
 			
-			if(moduleList!=null)
+			if(moduleList!=null) {
 				moduleList.setNext(packageList);
+			}
 		}
 	}
 
-	private void setSelectedRule(Measure selectedMeasure)
-	{
-		if(selectedMeasure!=null)
-		{
+	private void setSelectedRule(Measure selectedMeasure) {
+		if(selectedMeasure!=null) {
 			List<Measure> selectedMeasures = new ArrayList<Measure>();
 			selectedMeasures.add(selectedMeasure);
 			
 			reloadLists(selectedMeasures);
 		}
-		else
+		else {
 			reloadLists(null);
+		}
 	}
 	
-	private void setSelectedRules(List<Measure> selectedMeasures)
-	{
+	private void setSelectedRules(List<Measure> selectedMeasures) {
 		reloadLists(selectedMeasures);
 	}
 	
-	private void reloadLists(List<Measure> selectedMeasures)
-	{
+	private void reloadLists(List<Measure> selectedMeasures) {
 		StructureDrilldownList startReloadingComp = null;
 		
 		if(moduleList!= null)
@@ -174,19 +172,22 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 		if(packageList!= null)
 		{
 			packageList.setSelectedMeasures(selectedMeasures);
-			if(startReloadingComp==null)
+			if(startReloadingComp==null) {
 				startReloadingComp= packageList;
+			}
 		}
 	
 		if(fileList!= null)
 		{
 			fileList.setSelectedMeasures(selectedMeasures);
-			if(startReloadingComp==null)
+			if(startReloadingComp==null) {
 				startReloadingComp= fileList;
+			}
 		}
 		
-		if(startReloadingComp != null)
+		if(startReloadingComp != null) {
 			startReloadingComp.reload();
+		}
 	}
 	
 	public Resource getSelectedModule(){

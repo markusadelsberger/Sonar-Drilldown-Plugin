@@ -31,12 +31,12 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	
 	public LimitedTabPanel (int visibleTabs){
 		super();
-	
-		
-		if(visibleTabs>1)
+
+		if(visibleTabs>1) {
 			this.visibleTabs=visibleTabs;
-		else
+		} else {
 			this.visibleTabs=1;
+		}
 		
 		tabItemList = new ArrayList<TabItem>();
 		
@@ -60,12 +60,11 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	public void add(Widget widget, String tabText, String toolTip){
 		tabItemList.add(new TabItem(widget,tabText,toolTip));
 		
-		if(tabItemList.size() > visibleTabs)
-		{
+		if(tabItemList.size() > visibleTabs) {
 			rebuildTabPanel(startListIndex, visibleTabs);
-		}
-		else
+		} else {
 			addTabToTabPanel(widget, tabText, toolTip);
+		}
 	}
 
 	private void addTabToTabPanel(Widget content, String tabText, String toolTip)
@@ -98,30 +97,25 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 
 	public void onSelection(SelectionEvent<Integer> event) {
 		
-		if(tabPanel.getWidget(event.getSelectedItem())==first)
-		{
-			if(selectedTabIndex == 1 && startListIndex>0)
-			{
+		if(tabPanel.getWidget(event.getSelectedItem())==first) {
+			if(selectedTabIndex == 1 && startListIndex>0) {
 				startListIndex--;
 				rebuildTabPanel(startListIndex,visibleTabs);
-			}
-			else if(selectedTabIndex > 1)
+			} else if(selectedTabIndex > 1) {
 				selectedTabIndex--;
+			}
 	
-		} 
-		else if (tabPanel.getWidget(event.getSelectedItem())==last)
-		{
+		} else if (tabPanel.getWidget(event.getSelectedItem())==last) {
 			
-			if(selectedTabIndex == visibleTabs && (tabItemList.size()-startListIndex-visibleTabs)>0)
-			{
+			if(selectedTabIndex == visibleTabs && (tabItemList.size()-startListIndex-visibleTabs)>0){
 				startListIndex++;
 				rebuildTabPanel(startListIndex,visibleTabs);
-			} 
-			else if(selectedTabIndex < visibleTabs)
+			} else if(selectedTabIndex < visibleTabs) {
 				selectedTabIndex++;
-		}
-		else
+			}
+		} else {
 			selectedTabIndex = event.getSelectedItem();
+		}
 		
 		tabPanel.selectTab(selectedTabIndex);
 		
@@ -129,13 +123,13 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	
 	public void selectTab(int index) {
 
-		if(index>=0 && index<tabItemList.size()){
+		if(index>=0 && index<tabItemList.size()) {
 		
 			if(tabItemList.size() > visibleTabs) {		
 				selectedTabIndex= index+1;
-			}
-			else
+			} else {
 				selectedTabIndex=index;
+			}
 			
 			tabPanel.selectTab(selectedTabIndex);
 		}

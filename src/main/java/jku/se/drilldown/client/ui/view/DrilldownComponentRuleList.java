@@ -139,8 +139,9 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 		this.setHashmap(hashmap);
 
-		if(containsSelectedItem(drilldownModel.getActiveMeasure()))
+		if(containsSelectedItem(drilldownModel.getActiveMeasure())) {
 			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+		}
 	}
 	
 	protected void reloadBegin(){
@@ -155,10 +156,10 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
 		
-		if(selectedMeasure != null)
-		{
-			if(containsSelectedItem(getSelectedItem()))
+		if(selectedMeasure != null) {
+			if(containsSelectedItem(getSelectedItem())){
 				deselectRow(getHashmap().get(getItemIdentifier(getSelectedItem())));
+			}
 			
 			selectRow(getHashmap().get(getItemIdentifier(selectedMeasure)));
 			
@@ -172,11 +173,12 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	 */
 	@Override
 	public void reload(ViewComponents viewComponent){
-		switch(viewComponent){
+		switch(viewComponent) {
 			case QMTREE:
 			case BENCHMARKDRILLDOWN:
 			case SEVERETYDRILLDOWN:
 			case INITIALIZE:
+			case RULEDRILLDOWN:
 				if(drilldownModel.getActiveMeasures()!=null) {
 					List<Measure> measureList = drilldownModel.getActiveMeasures();
 					reloadBegin();
@@ -195,6 +197,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 					reloadFinished();
 				}
 			break;
+			
+			default: break;
 		}
 		
 	}

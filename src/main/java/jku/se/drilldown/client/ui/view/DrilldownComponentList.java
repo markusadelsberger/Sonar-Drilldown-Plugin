@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class DrilldownComponentList<T> extends DrilldownComponent implements ClickHandler{
 
-	private Panel listPanel;
 	private Panel data;
 	private Grid grid;
 	
@@ -32,17 +31,17 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	public DrilldownComponentList(DrilldownController drilldownController) {
 		super(drilldownController);
 		
-		listPanel = new VerticalPanel();
-		listPanel.setWidth("100%");
+		Panel content = new VerticalPanel();
+		content.setWidth("100%");
 		
-		listPanel.add(createHeader());
+		content.add(createHeader());
 		
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
 					
-		listPanel.add(data);
+		content.add(data);
 		
-		initWidget(listPanel);
+		initWidget(content);
 	}
 
 	@Override
@@ -128,8 +127,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 		return this.hashmap;
 	}
 	
-	public void setSize(int size)
-	{
+	public void setSize(int size) {
 		this.data.setWidth(size+"px");
 	}
 	
@@ -140,9 +138,10 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	 * @return
 	 */
 	public boolean containsSelectedItem(T selectedItem){
-		if(selectedItem!= null)
-			if(hashmap.get(getItemIdentifier(selectedItem))!=null)
+		
+		if(selectedItem!= null && hashmap.get(getItemIdentifier(selectedItem))!=null) {
 				return true;
+		}
 		
 		return false;
 	}

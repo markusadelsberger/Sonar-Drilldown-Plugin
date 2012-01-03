@@ -9,8 +9,10 @@ public class BenchmarkTool {
 	private List<Distribution> distribution;
 	
 	public BenchmarkTool(String name, String version){
-		if(name!=null)this.name=name;
-		if(version!=null)this.version=version;
+		
+		if(name!=null) { this.name=name; }
+		if(version!=null) { this.version=version; }
+		
 		distribution=new ArrayList<Distribution>();
 	}
 
@@ -29,6 +31,4 @@ public class BenchmarkTool {
 	public void setDistribution(List<Distribution> distribution) {
 		this.distribution = distribution;
 	}
-	
-
 }

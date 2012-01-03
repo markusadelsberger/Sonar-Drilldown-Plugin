@@ -65,15 +65,11 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	}
 
 	private void setElement(String label, int column, ViewComponents viewComponent){
-		
-		if(label == null) {
-			label = labels[column];
-		}
-		
 		HorizontalPanel panel = new HorizontalPanel();
-		panel.add(new Label(label));		
-		
-		if(viewComponent!=null) {
+		if(label == null) {
+			panel.add(new Label(labels[column]));
+		} else {
+			panel.add(new Label(label));
 			Anchor link = new Anchor("Clear");
 			link.getElement().setPropertyObject("clearItem", viewComponent);
 			link.addClickHandler(this);

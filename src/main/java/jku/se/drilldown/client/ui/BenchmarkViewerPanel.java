@@ -1,8 +1,5 @@
 package jku.se.drilldown.client.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
@@ -23,38 +20,29 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BenchmarkViewerPanel extends Page{
-	private DrilldownController drilldownController;
-	private BenchmarkDrilldown benchmarkDrilldown;
-	private HorizontalPanel mainPanel;
-	private Panel rightPanel;
-	private Panel leftPanel;
-	private PathComponent pathComponent;
-	private DrilldownComponentRuleList drilldownComponentRuleList;
-	private StructureDrilldownComponent structureComponent;
-	private QuantilGraphic quantilGraphic;
 
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
 			
 		try{
-			mainPanel= new HorizontalPanel();
-			rightPanel=new VerticalPanel();
-			leftPanel=new HorizontalPanel();
+			HorizontalPanel mainPanel= new HorizontalPanel();
+			Panel rightPanel=new VerticalPanel();
+			Panel leftPanel=new HorizontalPanel();
 			
-			drilldownController = new DrilldownController(new DrilldownModel(resource));
+			DrilldownController drilldownController = new DrilldownController(new DrilldownModel(resource));
 				
-			pathComponent = new PathComponent(drilldownController, ViewComponents.BENCHMARKDRILLDOWN);
+			PathComponent pathComponent = new PathComponent(drilldownController, ViewComponents.BENCHMARKDRILLDOWN);
 			
-			benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
+			BenchmarkDrilldown benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
 			benchmarkDrilldown.setWidth("175px");
 			
-			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
+			DrilldownComponentRuleList drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
 			
-			structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.BenchmarkPage");
+			StructureDrilldownComponent structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.BenchmarkPage");
 			
-			quantilGraphic = new QuantilGraphic(drilldownController);
+			QuantilGraphic quantilGraphic = new QuantilGraphic(drilldownController);
 			quantilGraphic.setWidth("100%");
 			quantilGraphic.setHeight("170px");
 			
@@ -82,8 +70,5 @@ public class BenchmarkViewerPanel extends Page{
 		}	
 		
 		return panel;
-	}
-	
-	
-	
+	}	
 }
