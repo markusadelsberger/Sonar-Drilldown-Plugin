@@ -8,4 +8,7 @@ public interface I18nConstants extends com.google.gwt.i18n.client.Constants {
 
   @DefaultStringValue("Hier wird das QM Drilldown Modul entwickelt!")
   String sample();
+  
+  @DefaultStringValue("Hier wird das QM Drilldown Modul entwickelt!")
+  String sample();
 }

@@ -123,18 +123,4 @@ public class QualityModelTreeNode {
 
 		return leaves;
 	}
-	
-	@Override
-	public boolean equals(Object o){
-		
-		if ( !(o instanceof QualityModelTreeNode) ) return false;
-		
-		QualityModelTreeNode node = (QualityModelTreeNode)o;
-		
-		if(getNodeName().equalsIgnoreCase(node.getNodeName()))
-			return true;
-		else
-			return false;
-
-	}
 }

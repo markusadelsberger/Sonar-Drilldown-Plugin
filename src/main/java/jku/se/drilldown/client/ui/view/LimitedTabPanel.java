@@ -87,8 +87,9 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		//if(startIndex!=0)
 			addTabToTabPanel(first, "("+startIndex+") <<","previous Quality Model");	
 				
-		for(int i =startIndex; i<startIndex+count; i++)
+		for(int i =startIndex; i<startIndex+count; i++) {
 			addTabToTabPanel(tabItemList.get(i).getWidget(), tabItemList.get(i).getText(),tabItemList.get(i).getToolTip());	
+		}
 		
 		//if((widgetList.size()-startIndex-count)!=0)
 			addTabToTabPanel(last, ">> ("+(tabItemList.size()-startIndex-count)+")","next Quality Model");
@@ -130,8 +131,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 
 		if(index>=0 && index<tabItemList.size()){
 		
-			if(tabItemList.size() > visibleTabs)
-			{		
+			if(tabItemList.size() > visibleTabs) {		
 				selectedTabIndex= index+1;
 			}
 			else

@@ -9,7 +9,9 @@ import jku.se.drilldown.batch.QMDrilldownDecorator;
 import jku.se.drilldown.batch.QMDrilldownSensor;
 import org.sonar.api.SonarPlugin;
 
-public class DrilldownPlugin {
+import org.sonar.api.SonarPlugin;
+
+public class DrilldownPlugin extends SonarPlugin {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List getExtensions() {

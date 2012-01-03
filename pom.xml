@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jku.se.drilldown</groupId>
-	<artifactId>sonar-benchmark-plugin</artifactId>
+	<artifactId>sonar-drilldown-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
 	<version>0.1-SNAPSHOT</version>
 	<name>Sonar Drilldown Plugin</name>

@@ -41,14 +41,13 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 	 * @param resource The selected resource object on the sonar platform. 
 	 * @param pageID The gwtID of the page that contains this element. for example "jku.se.drilldown.qm.page.QMDrilldownPage" 
 	 */
-	public StructureDrilldownComponent(DrilldownController controller, Resource resource, String pageID){
+	public StructureDrilldownComponent(DrilldownController controller, String pageID){
 		super(controller);
 		this.pageID= pageID;
 		
 		this.controller=controller;
 		
 		model=controller.getModel();
-		model.setResource(resource);
 		
 		moduleList = null;
 		packageList = null;
@@ -85,7 +84,6 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			moduleList = new StructureDrilldownList(controller, STRUCTURE[0], pageID, ViewComponents.MODULELIST);
 			
 			structurePanel = new Grid(1,3);
-			structurePanel.setWidth("100%");
 			
 			moduleList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
@@ -100,14 +98,11 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				
 			packageList = new StructureDrilldownList(controller, STRUCTURE[1], pageID, ViewComponents.PACKAGELIST);
 			
-			if(parentExists)
-			{
+			if(parentExists) {
 				packageList.setPrev(moduleList);		
 			}
-			else
-			{
+			else {
 				structurePanel = new Grid(1,2);
-				structurePanel.setWidth("100%");
 			}
 			
 			packageList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
@@ -129,13 +124,15 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			else
 			{
 				structurePanel = new Grid(1,1);
-				structurePanel.setWidth("100%");
 			}
 			
 			fileList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
 			structurePanel.setWidget(0, listPosition, fileList);
 		}
+		
+		if(structurePanel != null)
+			structurePanel.setWidth("100%");
 		
 		if(packageList!=null)
 		{
@@ -229,8 +226,9 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				else {
 					setSelectedRule(selectedMeasure);
 				}
-		}
-		
+				break;
+			default: break;
+		}	
 	}
 }
  

@@ -135,7 +135,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		for (Measure measure : measures)
 		{
 			renderRow(measure, row);
-			hashmap.put(getItemIdentifier(measure), new Integer(row));
+			hashmap.put(getItemIdentifier(measure), Integer.valueOf(row));
 			row++;
 		}
 

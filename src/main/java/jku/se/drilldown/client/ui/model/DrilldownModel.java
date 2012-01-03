@@ -1,7 +1,9 @@
 package jku.se.drilldown.client.ui.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
@@ -13,22 +15,26 @@ import org.sonar.wsclient.services.Resource;
  */
 public class DrilldownModel {
 	
-	private HashMap<String, List<Measure>> measureMap;
-	private HashMap<String, String> activeMap;
-	private HashMap<String, Integer> countMap;
+	private Map<String, List<Measure>> measureMap;
+	private Map<String, String> activeMap;
+	private Map<String, Integer> countMap;
 	
 	private Measure activeMeasure;
 	private List<Measure> activeMeasures;
 	private Resource resource;
-	private HashMap<ViewComponents,Resource> selectedResource;
+	private Map<ViewComponents,Resource> selectedResource;
 	private BenchmarkData benchmarkData;
 	
-	public DrilldownModel(){
+	public DrilldownModel(Resource resource){
+		this.resource=resource;
+		
 		measureMap=new HashMap<String, List<Measure>>();
 		activeMap=new HashMap<String, String>();
 		countMap= new HashMap<String, Integer>();
+		
+		activeMeasures= new ArrayList<Measure>();
 		selectedResource=new HashMap<ViewComponents, Resource>();
-		activeMeasure = null;
+
 	}
 	
 	/**
