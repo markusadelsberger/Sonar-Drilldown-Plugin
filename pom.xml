@@ -6,7 +6,7 @@
 	<artifactId>sonar-benchmark-plugin</artifactId>
 	<packaging>sonar-plugin</packaging>
 	<version>0.1-SNAPSHOT</version>
-	<name>Sonar Benchmark Plugin</name>
+	<name>Sonar Drilldown Plugin</name>
 
 	<properties>
 		<sonar.buildVersion>2.11</sonar.buildVersion>
@@ -49,7 +49,16 @@
 			<version>2.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.spqr</groupId>
+			<artifactId>spqr</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
 		<!-- unit tests -->
 		<dependency>
 			<groupId>org.codehaus.sonar</groupId>
@@ -63,6 +72,7 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -73,7 +83,7 @@
 				<version>1.1</version>
 				<extensions>true</extensions>
 				<configuration>
-					<pluginClass>jku.se.drilldown.BenchmarkPlugin</pluginClass>
+					<pluginClass>jku.se.drilldown.DrilldownPlugin</pluginClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -81,11 +91,11 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>1.2</version>
 				<executions>
-					<!-- <execution>
-						<id>Benchmark</id>
+					<execution>
+						<id>Quality</id>
 						<configuration>
 							<modules>
-								<module>jku.se.drilldown.BenchmarkViewer</module>
+								<module>jku.se.drilldown.QMDrilldownPage</module>
 							</modules>
 							<webappDirectory>${project.build.directory}/classes</webappDirectory>
 							<extraJvmArgs>-Xmx512m</extraJvmArgs>
@@ -93,12 +103,12 @@
 						<goals>
 							<goal>compile</goal>
 						</goals>
-					</execution> -->
+					</execution>
 					<execution>
 						<id>XML</id>
 						<configuration>
 							<modules>
-								<module>jku.se.drilldown.XMLTest</module>
+								<module>jku.se.drilldown.BenchmarkPage</module>
 							</modules>
 							<webappDirectory>${project.build.directory}/classes</webappDirectory>
 							<extraJvmArgs>-Xmx512m</extraJvmArgs>
