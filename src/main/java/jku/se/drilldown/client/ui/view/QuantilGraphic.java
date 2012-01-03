@@ -42,7 +42,7 @@ public class QuantilGraphic extends DrilldownComponent {
 		
 		doOnLoad();
 	}
-	
+
 	private void doOnLoad(){
 		grid = new Grid(6, 2);
 		
@@ -230,7 +230,7 @@ public class QuantilGraphic extends DrilldownComponent {
 		}
 	}
 	
-	protected String getRowCssClass(int row, boolean selected) {
+	private String getRowCssClass(int row, boolean selected) {
 		return row % 2 == 0 ? "even" + getRowCssSelected(selected) : "odd" + getRowCssSelected(selected);
 	}
 	

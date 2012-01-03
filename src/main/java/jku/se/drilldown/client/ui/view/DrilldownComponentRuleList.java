@@ -49,8 +49,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 
 	@Override
-	public void doLoadData()
-	{
+	public void doLoadData() {
 		
 	}
 	
@@ -102,7 +101,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		String severety = item.getRuleSeverity();
 		double width = Math.round(getGraphWidth(severety, item));
 		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
-		getGrid().setWidget(row, 3, bar);
+		getGrid().setWidget(row, column, bar);
 	}
 	
 	private double getGraphWidth(String severety, Measure item){
@@ -132,8 +131,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 		Map<String, Integer> hashmap= new HashMap<String,Integer>();
 
-		for (Measure measure : measures)
-		{
+		for (Measure measure : measures) {
 			renderRow(measure, row);
 			hashmap.put(getItemIdentifier(measure), Integer.valueOf(row));
 			row++;
