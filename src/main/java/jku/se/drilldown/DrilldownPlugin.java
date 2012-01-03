@@ -7,6 +7,7 @@ import jku.se.drilldown.batch.BenchmarkSensor;
 import jku.se.drilldown.batch.DrilldownMetrics;
 import jku.se.drilldown.batch.QMDrilldownDecorator;
 import jku.se.drilldown.batch.QMDrilldownSensor;
+import org.sonar.api.SonarPlugin;
 
 public class DrilldownPlugin {
 
