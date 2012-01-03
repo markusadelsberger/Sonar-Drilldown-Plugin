@@ -1,9 +1,5 @@
 package jku.se.drilldown.client.ui.view;
 
-import java.util.List;
-
-import org.sonar.wsclient.services.Measure;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.BenchmarkData;
 import jku.se.drilldown.client.ui.model.BenchmarkTool;
@@ -12,7 +8,6 @@ import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
 
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -23,10 +18,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-
 public class QuantilGraphic extends DrilldownComponent {
 	
-	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
 	private Panel listPanel;
 	private Panel data;
@@ -37,10 +30,11 @@ public class QuantilGraphic extends DrilldownComponent {
 	
 	public QuantilGraphic(DrilldownController drilldownController){
 		super(drilldownController);
-		this.drilldownController=drilldownController;
+
 		this.drilldownModel=drilldownController.getModel();
 		listPanel = new VerticalPanel();
 		initWidget(listPanel);
+		
 		listPanel.add(new Label("Benchmark Quantil Graphic"));
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
@@ -86,9 +80,11 @@ public class QuantilGraphic extends DrilldownComponent {
 	{
 		switch(viewComponent){
 			case RULEDRILLDOWN:
+				
 				horizontalPanel=new HorizontalPanel();
 				leftPanel=new VerticalPanel();
 				rightPanel=new VerticalPanel();
+				
 				if(drilldownModel.getActiveMeasure()!=null){
 					Distribution distribution = loadBenchmarkData(drilldownModel.getActiveMeasure().getRuleKey());
 					
@@ -140,6 +136,10 @@ public class QuantilGraphic extends DrilldownComponent {
 				horizontalPanel.add(leftPanel);
 				horizontalPanel.add(rightPanel);
 				render(horizontalPanel);
+				
+				break; //RULEDRILLDOWN
+				
+			default: break;
 		}
 		
 	}
@@ -147,8 +147,10 @@ public class QuantilGraphic extends DrilldownComponent {
 	private Distribution loadBenchmarkData(String measure){
 		BenchmarkData benchmarkData = drilldownModel.getBenchmarkData();
 		//The toolname and the rulename are saved in seperate Strings
-		String tool=measure.substring(0, measure.indexOf(":"));
-		String rule=measure.substring(measure.indexOf(":")+1, measure.length());
+		
+		String tool=measure.substring(0, measure.indexOf(':'));
+		String rule=measure.substring(measure.indexOf(':')+1, measure.length());
+		
 		for(BenchmarkTool benchmarkTool : benchmarkData.getTools()){
 			if(benchmarkTool.getName().compareToIgnoreCase(tool)==0){
 				for(Distribution benchmarkDistribution : benchmarkTool.getDistribution()){
@@ -158,6 +160,7 @@ public class QuantilGraphic extends DrilldownComponent {
 				}
 			}
 		}
+		
 		return null;
 	}
 	
@@ -200,7 +203,7 @@ public class QuantilGraphic extends DrilldownComponent {
 							"<text x=\""+(x+400)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(max).toString()+"</text>"+
 							"<text x=\""+(position)+"\" y=\"15\"  style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>"+
 					"</svg>";
-		}else{
+		} else {
 			svg = 
 					"<svg width=\"520px\" height=\"100px\" viewBox=\"0 0 520 100\">" +
 							blackLines +

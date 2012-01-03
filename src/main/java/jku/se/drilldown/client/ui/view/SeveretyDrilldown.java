@@ -83,12 +83,17 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 	public void reload(ViewComponents viewComponent){
 		switch(viewComponent){
 			case INITIALIZE:
+				
 				for(int i=0;i<5;i++){
 					addMeasures(i, drilldownModel.getCount(severeties[i]));
 					addDrilldownAnchor(severeties[i], i);
 					addGraph(severeties[i], i);
 				}
+				
 				render(getGrid());
+				break;
+				
+			default: break;
 		}
 		
 	}
@@ -116,7 +121,7 @@ public class SeveretyDrilldown extends DrilldownComponentList<List<Measure>> {
 		
 		if(severetyCount!=null && totalCount!=null){
 			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
-		}else{
+		} else {
 			return -1D;
 		}
 	}

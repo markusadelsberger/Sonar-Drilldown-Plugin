@@ -24,14 +24,14 @@ public class DrilldownController implements IComponentController{
 	private DrilldownModel drilldownModel;
 	private List<DrilldownComponent> listenerList = new LinkedList<DrilldownComponent>();
 	
-	private Resource resource;
-	
-	public void setModel(DrilldownModel drilldownModel){
-		this.drilldownModel=drilldownModel;
-	}
-	
-	public void setResource(Resource resource){
-		this.resource=resource;
+	public DrilldownController (DrilldownModel drilldownModel) throws NullPointerException{
+		
+		if(drilldownModel == null) {
+			throw new NullPointerException();
+		}
+		else {
+			this.drilldownModel=drilldownModel;
+		}
 	}
 	
 	public void addListener(DrilldownComponent drilldownComponent){
@@ -86,6 +86,8 @@ public class DrilldownController implements IComponentController{
 				drilldownModel.setActiveElement("Benchmark", null);
 				drilldownModel.setActiveMeasures(null);
 			break;
+			
+			default: break;
 		}
 		
 		onSelectedItemChanged(component);
@@ -104,7 +106,7 @@ public class DrilldownController implements IComponentController{
 	 * @param metric The Metric Name from the org.sonar.gwt.Metrics Interface
 	 */
 	public void loadRuleDataForMetric(String... metric){
-		ResourceQuery query = ResourceQuery.createForResource(resource, metric).setDepth(0).setExcludeRules(false);
+		ResourceQuery query = ResourceQuery.createForResource(drilldownModel.getResource(), metric).setDepth(0).setExcludeRules(false);
 		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 
 			@Override

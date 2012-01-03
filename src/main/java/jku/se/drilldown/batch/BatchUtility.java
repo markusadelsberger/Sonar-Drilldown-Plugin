@@ -10,17 +10,17 @@ import org.sonar.api.resources.Project;
 
 public class BatchUtility {
 
-	public static boolean checkQMFileExist(Project project, Logger logger, String logMarker)
+	public static boolean checkFileExist(Project project, String fileName, Logger logger, String logMarker)
 	{
 		String baseDir = project.getFileSystem().getBasedir().toString();
-		File file = new File(baseDir+"\\qualitymodel.xml");
+		File file = new File(baseDir+"\\"+fileName);
 		
 		if(file.exists()){
 			// logger.info(logMarker+" scan ..."); 
 			return true;
 		}
 		else{
-			logger.info(logMarker+": qualitymodel.xml not available"); 
+			logger.info(logMarker+": "+fileName+" not available"); 
 			logger.warn(logMarker+" not executed");
 			return false;
 		}

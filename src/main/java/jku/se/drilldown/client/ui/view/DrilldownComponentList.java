@@ -88,13 +88,15 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	public abstract void renderRow(T item, int row);
 	
 	public void selectRow(int row){
-		for(int i=0; i<grid.getCellCount(row); i++)
+		for(int i=0; i<grid.getCellCount(row); i++) {
 			grid.getCellFormatter().setStyleName(row, i, getRowCssClass(row, true));
+		}
 	}
 	
 	public void deselectRow(int row){
-		for(int i=0; i<grid.getCellCount(row); i++)
+		for(int i=0; i<grid.getCellCount(row); i++) {
 			grid.getCellFormatter().setStyleName(row, i, getRowCssClass(row, false));
+		}
 	}
 	
 	protected void render(Widget widget) {

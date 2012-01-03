@@ -16,7 +16,6 @@ import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -24,8 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BenchmarkViewerPanel extends Page{
-	DrilldownController drilldownController;
-	DrilldownModel drilldownModel;
+	private DrilldownController drilldownController;
 	private BenchmarkDrilldown benchmarkDrilldown;
 	private HorizontalPanel mainPanel;
 	private Panel rightPanel;
@@ -34,31 +32,19 @@ public class BenchmarkViewerPanel extends Page{
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
 	private QuantilGraphic quantilGraphic;
-	
-	
+
 	@Override
 	protected Widget doOnResourceLoad(Resource resource) {
 		VerticalPanel panel = new VerticalPanel();
-		
-		
+			
 		try{
 			mainPanel= new HorizontalPanel();
 			rightPanel=new VerticalPanel();
 			leftPanel=new HorizontalPanel();
 			
-			drilldownController = new DrilldownController();
-			drilldownModel = new DrilldownModel();
-			drilldownController.setModel(drilldownModel);
-			drilldownController.setResource(resource);
-			
-			List<ViewComponents> components = new ArrayList<ViewComponents>();
-			components.add(ViewComponents.RULEDRILLDOWN);
-			components.add(ViewComponents.MODULELIST);
-			components.add(ViewComponents.PACKAGELIST);
-			components.add(ViewComponents.BENCHMARKDRILLDOWN);
-			
-			
-			pathComponent = new PathComponent(drilldownController, components);
+			drilldownController = new DrilldownController(new DrilldownModel(resource));
+				
+			pathComponent = new PathComponent(drilldownController, ViewComponents.BENCHMARKDRILLDOWN);
 			
 			benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
 			benchmarkDrilldown.setWidth("175px");
@@ -66,15 +52,14 @@ public class BenchmarkViewerPanel extends Page{
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
 			
-			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.BenchmarkViewer");
+			structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.BenchmarkPage");
 			
 			quantilGraphic = new QuantilGraphic(drilldownController);
 			quantilGraphic.setWidth("100%");
 			quantilGraphic.setHeight("170px");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
-			
-			
+				
 			leftPanel.add(benchmarkDrilldown);
 			leftPanel.setWidth("175px");
 			rightPanel.add(drilldownComponentRuleList);
@@ -91,9 +76,11 @@ public class BenchmarkViewerPanel extends Page{
 			panel.add(structureComponent);
 			panel.add(pathComponent);
 			panel.setWidth("100%");
-		}catch(Exception e){
-			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
-		}		
+		
+		} catch(NullPointerException e) {
+			panel.add(new Label("DrilldownController initialized with null. \n Error message: "+e.getMessage()));
+		}	
+		
 		return panel;
 	}
 	

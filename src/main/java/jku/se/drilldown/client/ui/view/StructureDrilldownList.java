@@ -122,7 +122,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				for (Resource item : resourceList) 
 				{
 					renderRow(item, row);
-					hashmap.put(getItemIdentifier(item), new Integer(row));
+					hashmap.put(getItemIdentifier(item), Integer.valueOf(row));
 
 					row++;
 				}
@@ -200,8 +200,9 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		{
 			int sumOfValues=0;
 			
-			for(Measure measure : resource.getMeasures())
+			for(Measure measure : resource.getMeasures()) {
 				sumOfValues += Integer.parseInt(measure.getFormattedValue());
+			}
 
 			getGrid().setHTML(row, column, ""+sumOfValues);
 		}
@@ -244,8 +245,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 			String[] selectedRuleKeys = new String[this.selectedMeasures.size()];
 			
 			int i =0;
-			for(Measure measure : selectedMeasures)
-			{
+			for(Measure measure : selectedMeasures) {
 				selectedRuleKeys[i]=measure.getRuleKey();
 				i++;
 			}
@@ -263,16 +263,13 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	 */
 	private Resource getRootResource()
 	{
-		if(prev==null)
-		{
+		if(prev==null) {
 			return model.getResource();
 		} 
-		else if (prev.getSelectedItem()!= null)
-		{
+		else if (prev.getSelectedItem()!= null) {
 			return prev.getSelectedItem();
 		} 
-		else
-		{
+		else {
 			return prev.getRootResource();
 		}
 	}

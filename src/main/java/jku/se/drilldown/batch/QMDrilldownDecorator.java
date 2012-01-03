@@ -12,12 +12,12 @@ import org.sonar.api.resources.Scopes;
 
 public class QMDrilldownDecorator implements Decorator {
 
-	private static Logger logger = LoggerFactory.getLogger("QMDrilldownSensorLogger"); 
+	private static Logger logger = LoggerFactory.getLogger("QMDrilldownDecoratorLogger"); 
 	private static String logMarker = "QMDrilldownDecorator";
 	
 	public boolean shouldExecuteOnProject(Project project) {
 		
-		return BatchUtility.checkQMFileExist(project, logger, logMarker);
+		return BatchUtility.checkFileExist(project, QMDrilldownSensor.fileName, logger, logMarker);
 	}
 
 	@SuppressWarnings("rawtypes")

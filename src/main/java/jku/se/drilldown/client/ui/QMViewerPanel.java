@@ -34,7 +34,6 @@ public class QMViewerPanel extends Page{
 	private DrilldownComponentRuleList drilldownComponentRuleList;
 	private StructureDrilldownComponent structureComponent;
 	private DrilldownController drilldownController;
-	private DrilldownModel drilldownModel;
 	private QualityModelComponent qmComponent;
 	
 	@Override
@@ -46,23 +45,15 @@ public class QMViewerPanel extends Page{
 			rightPanel=new HorizontalPanel();
 			leftPanel=new HorizontalPanel();
 
-			drilldownController = new DrilldownController();
-			drilldownModel = new DrilldownModel();
-			drilldownController.setModel(drilldownModel);
-			drilldownController.setResource(resource);
+			drilldownController = new DrilldownController(new DrilldownModel(resource));
+			
+			pathComponent = new PathComponent(drilldownController,ViewComponents.QMTREE);
 
-			List<ViewComponents> components = new ArrayList<ViewComponents>();
-			components.add(ViewComponents.RULEDRILLDOWN);
-			components.add(ViewComponents.MODULELIST);
-			components.add(ViewComponents.PACKAGELIST);
-			components.add(ViewComponents.QMTREE);
-			pathComponent = new PathComponent(drilldownController,components);
-
-			qmComponent = new QualityModelComponent(drilldownController, resource);
+			qmComponent = new QualityModelComponent(drilldownController);
 			
 			drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			
-			structureComponent= new StructureDrilldownComponent(drilldownController, resource, "jku.se.drilldown.QMDrilldownPage");
+			structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.QMDrilldownPage");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
@@ -81,10 +72,9 @@ public class QMViewerPanel extends Page{
 			panel.add(structureComponent);
 			panel.add(pathComponent);
 			panel.setWidth("100%");
-
-		
-		}catch (Exception e){
-			panel.add(new Label("BenchmarkViewerPanel: "+e.toString()));
+			
+		} catch(NullPointerException e) {
+			panel.add(new Label("DrilldownController initialized with null. \n Error message: "+e.getMessage()));
 		}
 		
 		return panel;

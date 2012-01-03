@@ -1,13 +1,8 @@
 package jku.se.drilldown.client.ui.view;
 
-import java.util.List;
-
 import jku.se.drilldown.client.ui.controller.DrilldownController;
 import jku.se.drilldown.client.ui.model.DrilldownModel;
 import jku.se.drilldown.client.ui.model.ViewComponents;
-
-import org.sonar.wsclient.services.Measure;
-import org.sonar.wsclient.services.Resource;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,18 +28,17 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	
 	private DrilldownController drilldownController;
 	private DrilldownModel drilldownModel;
+	private ViewComponents drilldownComponent;
 	private String[] labels = {"Path: ","Any severty >> ","Any rule >> ", " ", " ","Any QM Node >> ", "Any Benchmark Quantil >> "};
-	
-	private List<ViewComponents> viewComponents;
 
-	public PathComponent(DrilldownController drilldownController, List<ViewComponents> viewComponents){
+	public PathComponent(DrilldownController drilldownController, ViewComponents drilldownComponent){
 		super(drilldownController);
+		
 		this.drilldownController = drilldownController;
 		this.drilldownModel=drilldownController.getModel();
-		pathInformation = new Grid(1,5);
-		//pathInformation.setStyleName("spaced");
+		this.drilldownComponent = drilldownComponent;
 		
-		this.viewComponents=viewComponents;
+		pathInformation = new Grid(1,5);
 		
 		initWidget(pathInformation);	
 	}
@@ -66,15 +60,24 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		Element element = event.getRelativeElement();
 		
 		ViewComponents clearItem = (ViewComponents)element.getPropertyObject("clearItem");
+		
 		drilldownController.clearElement(clearItem);		
 	}
 
 	private void setElement(String label, int column, ViewComponents viewComponent){
 		
-		HorizontalPanel panel = new HorizontalPanel();
-		panel.add(new Label(label));
+		if(label == null) {
+			if(column>(pathInformation.getColumnCount()-1)) {	
+				label = labels[1];
+			} else {
+				label = labels[column];
+			}
+		}
 		
-		if(viewComponent!=null){
+		HorizontalPanel panel = new HorizontalPanel();
+		panel.add(new Label(label));		
+		
+		if(viewComponent!=null) {
 			Anchor link = new Anchor("Clear");
 			link.getElement().setPropertyObject("clearItem", viewComponent);
 			link.addClickHandler(this);
@@ -88,89 +91,56 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	@Override
 	public void reload(ViewComponents viewComponent)
 	{
-		switch(viewComponent){
-			case INITIALIZE:
-			case QMTREE:
-			case BENCHMARKDRILLDOWN:
-			case SEVERETYDRILLDOWN:
-			case RULEDRILLDOWN:
-			case PACKAGELIST:
-			case FILELIST:
-			case MODULELIST:
+		String label = null;
+		int labelIndex = 1;
 		
-			for(ViewComponents component: viewComponents)
-			{
-				int position = 0;
-				int label=0;
-				String pattern = null;
+		switch (drilldownComponent) {
+			case SEVERETYDRILLDOWN:
 				
-				switch(component)
-				{
-					case SEVERETYDRILLDOWN:
-						position=1;
-						label=1;
-						String severety = drilldownModel.getActiveElement("Severety");
-						
-						if(severety!=null)
-							pattern= severety;
-					break;
-					
-					case RULEDRILLDOWN: 
-						position=2;
-						label=2;
-						Measure activeMeasure = drilldownModel.getActiveMeasure();
-					
-						if(activeMeasure!=null){
-							pattern=activeMeasure.getRuleName();
-						}
-					break;
-					
-					case MODULELIST: 
-						position=3;
-						label=3;
-						Resource selectedModule = drilldownModel.getSelectedItem(ViewComponents.MODULELIST);
-					
-						if(selectedModule!=null) {
-							pattern=selectedModule.getName();
-						}
-					break;
-					
-					case PACKAGELIST: 
-						position=4;
-						label=4;
-						Resource selectedPackage = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST);
-					
-						if(selectedPackage!=null)
-							pattern=selectedPackage.getName();
-					break;
-						
-					case QMTREE: 
-						position=1;
-						label=5;
-						
-						String qmtreeNodeName = drilldownModel.getActiveElement("qmtreeNode");
-						
-						if(qmtreeNodeName!=null)
-							pattern= qmtreeNodeName;
-						
-					break;
-					
-					case BENCHMARKDRILLDOWN:
-						position=1;
-						label=6;
-						
-						String benchmarkQuantil = drilldownModel.getActiveElement("benchmark");
-						
-						if(benchmarkQuantil!=null)
-							pattern=benchmarkQuantil;
+				setElement(drilldownModel.getActiveElement("Severety"),1,ViewComponents.SEVERETYDRILLDOWN);
+				break;
+				
+			case QMTREE: 
+				
+				if(drilldownModel.getActiveElement("qmtreeNode") == null) {
+					labelIndex = 5;
 				}
 				
-				if(pattern!=null)
-					setElement(pattern, position, component);
-				else
-					setElement(labels[label], position, null);
-	
-			}
+				setElement(drilldownModel.getActiveElement("qmtreeNode"),labelIndex,ViewComponents.QMTREE);
+				break;
+				
+			case BENCHMARKDRILLDOWN:
+					
+				if(drilldownModel.getActiveElement("benchmark") == null) {
+					labelIndex = 6;
+				}
+				
+				setElement(drilldownModel.getActiveElement("benchmark"),labelIndex,ViewComponents.BENCHMARKDRILLDOWN);
+				break;
+			default: 
+				break;
 		}
+		
+	
+		label = null;
+		if(drilldownModel.getActiveMeasure()!=null) {
+			label = drilldownModel.getActiveMeasure().getRuleName();
+		}
+			
+		setElement(label,2,ViewComponents.RULEDRILLDOWN);
+		
+		label = null;
+		if(drilldownModel.getSelectedItem(ViewComponents.MODULELIST)!=null) {
+			label = drilldownModel.getSelectedItem(ViewComponents.MODULELIST).getName();
+		}
+			
+		setElement(label,3,ViewComponents.MODULELIST);
+		
+		label = null;
+		if(drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST)!=null) {
+			label = drilldownModel.getSelectedItem(ViewComponents.PACKAGELIST).getName();
+		}
+			
+		setElement(label,4,ViewComponents.PACKAGELIST);
 	}
 }

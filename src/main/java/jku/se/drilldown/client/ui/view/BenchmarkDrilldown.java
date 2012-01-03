@@ -57,8 +57,6 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		return 0;
 	}
 
-	
-	
 	@Override
 	public void doLoadData(){
 		this.setGrid(new Grid(6, 4));
@@ -82,46 +80,47 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		if(initialized){
 			switch(viewComponent){
 				case INITIALIZE:
+					
 					for(int i = 0; i<=5; i++){
 						addMeasures(i, drilldownModel.getCount("q"+i));
 						addGraph("q"+i, i);
 					}
+					
 					render(getGrid());
+					
+				break;	
+				
+				default: break;
 			}
-		}else{
+			
+		} else {
 			loadBenchmarkData();
-		}
-		
+		}	
 	}
 	
 	public void loadBenchmarkData(){
 		//Load the Benchmarkdata
-		if(drilldownController!=null){
-			try{
-				Resource resource = drilldownController.getModel().getResource();
-				ResourceQuery query = ResourceQuery.createForResource(resource, "benchmark", "ncloc");
-				Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
-					@Override
-					protected void doOnResponse(Resource innerResource) {
-						Measure benchmark = innerResource.getMeasure("benchmark");
-						if(benchmark != null){
-							drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
-						}
-						Measure loc = innerResource.getMeasure("ncloc");
-						if(loc != null){
-							drilldownModel.addCount("loc", loc.getIntValue());
-						}
-						initialized=true;
-						combineData();
-					}
-				});
-			}catch(Exception e){
-				Window.alert("Outer try "+e.getMessage());
+		Resource resource = drilldownModel.getResource();
+		ResourceQuery query = ResourceQuery.createForResource(resource, "benchmark", "ncloc");
+		
+		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+			@Override
+			protected void doOnResponse(Resource innerResource) {
+				Measure benchmark = innerResource.getMeasure("benchmark");
+				
+				if(benchmark != null){
+					drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
+				}
+				
+				Measure loc = innerResource.getMeasure("ncloc");
+				if(loc != null){
+					drilldownModel.addCount("loc", loc.getIntValue());
+				}
+				
+				initialized=true;
+				combineData();
 			}
-			
-		}else{
-			Window.alert("Controller not set");
-		}
+		});
 	}
 	
 	public void combineData(){
@@ -147,8 +146,8 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 				String key = measure.getRuleKey();
 				
 				//The toolname and the rulename are saved in seperate Strings
-				String tool=key.substring(0, key.indexOf(":"));
-				String rule=key.substring(key.indexOf(":")+1, key.length());
+				String tool=key.substring(0, key.indexOf(':'));
+				String rule=key.substring(key.indexOf(':')+1, key.length());
 				
 				//All the benchmarkTools are looped to find the right one in the rule data
 				try{
@@ -161,15 +160,15 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 									float measureValue = (float)measure.getIntValue()/(float)linesOfCode;
 									if(measureValue<distribution.getMin()){
 										q0.add(measure);
-									}else if(measureValue<distribution.getQ25()){
+									} else if(measureValue<distribution.getQ25()){
 										q1.add(measure);
-									}else if(measureValue<distribution.getMedian()){
+									} else if(measureValue<distribution.getMedian()){
 										q2.add(measure);
-									}else if(measureValue<distribution.getQ75()){
+									} else if(measureValue<distribution.getQ75()){
 										q3.add(measure);
-									}else if(measureValue<distribution.getMax()){
+									} else if(measureValue<distribution.getMax()){
 										q4.add(measure);
-									}else{
+									} else {
 										q5.add(measure);
 									} 
 									//Window.alert("Tool "+benchmarkTool.getName()+" is "+tool);
@@ -178,7 +177,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 							}					
 						}
 					}
-				}catch(Exception e){
+				} catch(Exception e) {
 					Window.alert(e.toString());
 				}
 			}
