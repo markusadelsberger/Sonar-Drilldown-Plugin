@@ -10,6 +10,11 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
 public class XMLExtractor {
+	
+	private XMLExtractor (){
+		; //this class is a utility class, instantiation do not make sense. 
+	}
+	
 	public static BenchmarkData extract (String xml){
 		BenchmarkData benchmarkData = new BenchmarkData();
 		try{			

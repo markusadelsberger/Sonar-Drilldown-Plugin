@@ -10,6 +10,10 @@ import org.sonar.api.resources.Project;
 
 public class BatchUtility {
 
+	private BatchUtility (){
+		; //this class is a utility class, instantiation do not make sense. 
+	}
+	
 	public static boolean checkFileExist(Project project, String fileName, Logger logger, String logMarker)
 	{
 		String baseDir = project.getFileSystem().getBasedir().toString();

@@ -67,11 +67,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 	private void setElement(String label, int column, ViewComponents viewComponent){
 		
 		if(label == null) {
-			if(column>(pathInformation.getColumnCount()-1)) {	
-				label = labels[1];
-			} else {
-				label = labels[column];
-			}
+			label = labels[column];
 		}
 		
 		HorizontalPanel panel = new HorizontalPanel();
@@ -82,6 +78,10 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 			link.getElement().setPropertyObject("clearItem", viewComponent);
 			link.addClickHandler(this);
 			panel.add(link);
+		}
+		
+		if(column>(pathInformation.getColumnCount()-1)) {	
+			column = 1;
 		}
 		
     	pathInformation.setWidget(0, column, panel);
@@ -120,7 +120,6 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 			default: 
 				break;
 		}
-		
 	
 		label = null;
 		if(drilldownModel.getActiveMeasure()!=null) {

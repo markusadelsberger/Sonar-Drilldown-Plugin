@@ -29,7 +29,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	private Label first = new Label("first");
 	private Label last = new Label("last");
 	
-	public LimitedTabPanel (int visibleTabs, Label label){
+	public LimitedTabPanel (int visibleTabs){
 		super();
 	
 		
