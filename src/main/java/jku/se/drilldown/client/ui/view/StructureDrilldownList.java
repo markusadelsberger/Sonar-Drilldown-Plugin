@@ -74,10 +74,11 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	
 	@Override
 	public int gridColumnCount() {
-		if(scope.equals(Resource.SCOPE_ENTITY))
+		if(scope.equals(Resource.SCOPE_ENTITY)) {
 			return 3;
-		else 
+		} else { 
 			return 4;
+		}
 	}
 
 	@Override
@@ -115,12 +116,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
 			
-				if(scope.equals(Resource.SCOPE_SET) && !resourceList.isEmpty())
+				if(scope.equals(Resource.SCOPE_SET) && !resourceList.isEmpty()) {
 					resourceList.remove(0);
+				}
 									
 				int row = 0;
-				for (Resource item : resourceList) 
-				{
+				for (Resource item : resourceList) {
 					renderRow(item, row);
 					hashmap.put(getItemIdentifier(item), Integer.valueOf(row));
 
@@ -129,13 +130,15 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				
 				setHashmap(hashmap);
 				
-				if(containsSelectedItem(selectedItem))
+				if(containsSelectedItem(selectedItem)) {
 					selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+				}
 						
 				render(getGrid());	
 				
-				if(next!=null)
+				if(next!=null) {
 					next.reload();	
+				}
 			}
 
 		});
@@ -150,8 +153,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	 */
 	private int renderIconCells(Resource resource, int row, int column ) {
 		
-		if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
-		{
+		if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE)) {
 			getGrid().setWidget(row, column, new HTML("<a id=\"zoom" + row + "\" href=\"" + Links.urlForResourcePage(resource.getKey(), pageID, null)+"\">" + Icons.get().zoom().getHTML() + "</a>"));
 			getGrid().getCellFormatter().setStyleName(row, column, getRowCssClass(row, false));
 			
@@ -172,14 +174,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
 		
-    	if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
-		{
+    	if(resource.getQualifier().equals(Resource.QUALIFIER_MODULE)||resource.getQualifier().equals(Resource.QUALIFIER_PACKAGE)) {
     	    // register listener to the component
         	link.addClickHandler(this);
-		}
-    	else
-    	{
-    		link.addClickHandler(new ClickHandler() {
+		} else {
+    		
+			link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                 	Links.openResourcePopup(resource.getKey());
                 }
@@ -205,9 +205,9 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 			}
 
 			getGrid().setHTML(row, column, ""+sumOfValues);
-		}
-		else
+		} else {
 			getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());
+		}
 		
 		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
 	}
@@ -221,10 +221,11 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	{
 		Resource selectedItem = model.getSelectedItem(this.listType);
 		
-		if(containsSelectedItem(selectedItem))
+		if(containsSelectedItem(selectedItem)) {
 			return selectedItem;
-		else
+		} else {
 			return null;
+		}
 	}
 	
 	/**
@@ -240,8 +241,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	    		.setScopes(scope)
 	    		.setDepth(-1);
 		
-		if(this.selectedMeasures!= null)
-		{
+		if(this.selectedMeasures!= null) {
 			String[] selectedRuleKeys = new String[this.selectedMeasures.size()];
 			
 			int i =0;
@@ -255,7 +255,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		return query;
 	}
-	
+	 
 	/**
 	 * Methods works recursive in the case the previous component is set and has no selected item.  
 	 * 
@@ -279,13 +279,11 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	}
 	
 	
-	public void setNext(StructureDrilldownList next)
-	{
+	public void setNext(StructureDrilldownList next) {
 		this.next=next;	
 	}
 	
-	public void setPrev(StructureDrilldownList prev)
-	{
+	public void setPrev(StructureDrilldownList prev) {
 		this.prev=prev;
 	}
 	
@@ -307,26 +305,25 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		Resource drillResource = (Resource)element.getPropertyObject("resourceObj");
 	
-		if(drillResource != null)
-		{		
-			if(drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE)||drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))
-			{				
-				deselectRow(model.getSelectedItem(this.listType));
-				
-				model.setSelectedItem(this.listType, drillResource);
-				
-				selectRow(getHashmap().get(getItemIdentifier(drillResource)));
-				
-				next.reload();
-				
-				controller.onSelectedItemChanged(this.listType);
-			} 
-		}	
+		if(drillResource != null && (drillResource.getQualifier().equals(Resource.QUALIFIER_MODULE) ||
+				drillResource.getQualifier().equals(Resource.QUALIFIER_PACKAGE))) {		
+			
+			deselectRow(model.getSelectedItem(this.listType));
+			
+			model.setSelectedItem(this.listType, drillResource);
+			
+			selectRow(getHashmap().get(getItemIdentifier(drillResource)));
+			
+			next.reload();
+			
+			controller.onSelectedItemChanged(this.listType);
+		} 	
 	}
 
 	public void deselectRow(Resource selectedModule) {
 		
-		if(containsSelectedItem(model.getSelectedItem(this.listType)))
+		if(containsSelectedItem(model.getSelectedItem(this.listType))) {
 			deselectRow(getHashmap().get(getItemIdentifier(model.getSelectedItem(this.listType))));
+		}
 	}
 }

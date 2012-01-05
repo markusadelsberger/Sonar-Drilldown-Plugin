@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.sonar.api.resources.Project;
 
-public class BatchUtility {
+public final class BatchUtility {
 
 	private BatchUtility (){
 		; //this class is a utility class, instantiation do not make sense. 
@@ -23,7 +23,7 @@ public class BatchUtility {
 			// logger.info(logMarker+" scan ..."); 
 			return true;
 		}
-		else{
+		else {
 			logger.info(logMarker+": "+fileName+" not available"); 
 			logger.warn(logMarker+" not executed");
 			return false;

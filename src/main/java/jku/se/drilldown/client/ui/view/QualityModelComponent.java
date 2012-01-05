@@ -48,7 +48,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	private Panel data;
 	
 	private TreeItem selectedItem;
-	private Label label;
 	
 	private DrilldownController controller;
 	private DrilldownModel model;
@@ -84,9 +83,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		
 		qmoverview.add(data);
 		
-    	label = new Label();
-    	qmoverview.add(label);
-		
 		loadData();
 	}
 
@@ -111,11 +107,11 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
  
-	    ResourceQuery r_query = ResourceQuery.createForResource(model.getResource(), Metrics.VIOLATIONS)
+	    ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.VIOLATIONS)
 	    	.setDepth(0)
 	    	.setExcludeRules(false);
 
-	    Sonar.getInstance().find(r_query, new AbstractCallback<Resource>() {
+	    Sonar.getInstance().find(violationsQuery, new AbstractCallback<Resource>() {
 
 	    	@Override
     		protected void doOnResponse(Resource resource) {
@@ -124,18 +120,19 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     				
     				hashmap= new HashMap<String,Measure>();
 
-    		  		for (Measure item : resource.getMeasures())
-    		  		{
+    		  		for (Measure item : resource.getMeasures()){
+    		  			
     		  			String key = item.getRuleKey();
     		  			
-    		  			if(key.indexOf(':')>0)
+    		  			if(key.indexOf(':')>0) {
     		  				key = key.substring(key.indexOf(':')+1,key.length());
+    		  			}
     		  			    		  			
     		  			hashmap.put(key, item);
     		   		}
     		  		
-    		  		ResourceQuery query = ResourceQuery.createForMetrics(resource.getKey(), "projectkey");
-        			Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+    		  		ResourceQuery projectKeyQuery = ResourceQuery.createForMetrics(resource.getKey(), "projectkey");
+        			Sonar.getInstance().find(projectKeyQuery, new AbstractCallback<Resource>() {
 
     					@Override
     					protected void doOnResponse(Resource result) {
@@ -161,8 +158,9 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	public void onSelection(SelectionEvent<TreeItem> event) {
 		TreeItem item = event.getSelectedItem();
 		    
-		if(selectedItem!=null)
+		if(selectedItem!=null) {
 			deselectNode((Grid)selectedItem.getWidget());
+		}
 
 		selectedItem = item;
 		selectNode((Grid)selectedItem.getWidget());
@@ -175,8 +173,9 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		for(QualityModelTreeNode leaf : leaves){
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
-			if(violation != null)
+			if(violation != null) {
 				selectedMeasures.add(violation);
+			}
 		}
 		
 		model.setActiveElement("qmtreeNode", modelNode.getNodeName());
@@ -235,8 +234,9 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		{
 			Measure violation = hashmap.get(leaf.getNodeName());
 			
-			if(violation!= null)
+			if(violation!= null) {
 				violationCount+=violation.getIntValue();
+			}
 		}
 		
 		modelNode.setViolationCount(violationCount);

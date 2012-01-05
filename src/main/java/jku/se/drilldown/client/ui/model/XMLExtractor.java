@@ -9,7 +9,7 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
-public class XMLExtractor {
+public final class XMLExtractor {
 	
 	private XMLExtractor (){
 		; //this class is a utility class, instantiation do not make sense. 

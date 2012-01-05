@@ -18,7 +18,8 @@ import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
 
 public class QMDrilldownSensor implements Sensor {
 
-	protected static String fileName = "qualitymodel.xml";
+	public static String fileName = "qualitymodel.xml";
+	
 	private static Logger logger = LoggerFactory.getLogger("QMDrilldownSensorLogger"); 
 	private static String logMarker = "QMDrilldownSensor";
 	

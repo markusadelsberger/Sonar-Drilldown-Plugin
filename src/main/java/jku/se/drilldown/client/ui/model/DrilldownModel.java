@@ -1,6 +1,5 @@
 package jku.se.drilldown.client.ui.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ public class DrilldownModel {
 		activeMap=new HashMap<String, String>();
 		countMap= new HashMap<String, Integer>();
 		
-		activeMeasures= new ArrayList<Measure>();
 		selectedResource=new HashMap<ViewComponents, Resource>();
 
 	}
