@@ -13,8 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A TooltipMouseHandler reacts on mouse events and shows a tool tip 
  * when the mouse is over a widget. When the mouse drops out of the widget the tooltip is hidden.
  * 
- * @author Johannes
- * 
+ * @author Johannes 
  */
 public class TooltipMouseHandler implements MouseOverHandler, MouseOutHandler {
 	
