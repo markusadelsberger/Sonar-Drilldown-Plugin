@@ -145,6 +145,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	}
 	
 	/**
+	 * Renders name of a resource object to a grid cell. 
 	 * 
 	 * @param resource Contains the corresponding information.
 	 * @param row The row of the grid. 
@@ -168,9 +169,17 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		return column; 
 	}
 
+	/**
+	 * Renders name of a resource object to a grid cell. 
+	 * 
+	 * @param resource Contains the name of the resource object.
+	 * @param row The row of the grid. 
+	 * @param column The column of the grid.
+	 * @return The next column in which a widget can be presented.
+	 */
 	private int renderNameCell(final Resource resource, int row, int column) {
 		Anchor link = new Anchor(resource.getName());
-		
+
 		// add resource object to link element
 	    link.getElement().setPropertyObject("resourceObj", resource);
 		
@@ -181,7 +190,12 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
     		
 			link.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                	Links.openResourcePopup(resource.getKey());
+                	if(selectedMeasures != null && selectedMeasures.size()==1) {
+                		Links.openMeasurePopup(resource.getKey(), selectedMeasures.get(0).getMetricKey());
+                	} 		
+                	else {
+                		Links.openMeasurePopup(resource.getKey(), null);
+                	}
                 }
               });
     	}
@@ -194,6 +208,14 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		return column; 
 	}
 
+	/**
+	 * Renders value of a resource object to a grid cell. 
+	 * 
+	 * @param resource Contains the value of the resource object.
+	 * @param row The row of the grid. 
+	 * @param column The column of the grid.
+	 * @return The next column in which a widget can be presented.
+	 */
 	private void renderValueCell(Resource resource, int row, int column) {
 		
 		if((this.selectedMeasures!=null) && (this.selectedMeasures.size()>0))
@@ -217,8 +239,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		return item.getKey();
 	}
 	
-	public Resource getSelectedItem()
-	{
+	public Resource getSelectedItem() {
 		Resource selectedItem = model.getSelectedItem(this.listType);
 		
 		if(containsSelectedItem(selectedItem)) {
@@ -233,8 +254,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	 * 
 	 * @return A resource query specified for the component's scope. 
 	 */
-	private ResourceQuery getQuery()
-	{
+	private ResourceQuery getQuery() {
 		Resource queryResource = getRootResource();
 		
 		ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.VIOLATIONS)
@@ -261,8 +281,7 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	 * 
 	 * @return
 	 */
-	private Resource getRootResource()
-	{
+	private Resource getRootResource() {
 		if(prev==null) {
 			return model.getResource();
 		} 

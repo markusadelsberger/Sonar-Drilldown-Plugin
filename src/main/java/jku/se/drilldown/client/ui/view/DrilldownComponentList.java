@@ -9,6 +9,7 @@ import org.sonar.gwt.ui.Loading;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -27,6 +28,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	// map stores the id of an item as key and its row in the grid as value
 	// map contains current list items displayed by the user interface
 	private Map<String,Integer> hashmap;
+	
 	
 	public DrilldownComponentList(DrilldownController drilldownController) {
 		super(drilldownController);
