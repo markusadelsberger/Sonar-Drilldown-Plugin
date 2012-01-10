@@ -28,6 +28,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -79,7 +80,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 		
 		data = new ScrollPanel();
 		data.setStyleName("scrollable");
-		data.setWidth("250px");
+		data.setWidth("320px");
 		
 		qmoverview.add(data);
 		
@@ -205,11 +206,11 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	
 	private void renderTreeNode (TreeItem treeNode, String text, String value){
 		Grid grid = new Grid(1, 2);
-		grid.setStyleName("spaced");
+		//grid.setStyleName("spaced");
 		
 		Anchor link = new Anchor(text);			
 		grid.setWidget(0, 0, link);
-		grid.setWidget(0,1,new Label(value));
+		grid.setWidget(0,1,new HTML("&nbsp "+value));
 		
 		treeNode.setWidget(grid);
 	}
@@ -354,13 +355,14 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	        		  QualityModelTreeNode modelChild = new QualityModelTreeNode(getNameFromJSONObject(jsonChild));
 	        		  modelNode.addChild(modelChild);
 	        		  
-	        		  TreeItem treeNode = new TreeItem();
-	        		  renderTreeNode(treeNode, getNameFromJSONObject(jsonChild),"");
-	        		  treeNode.setUserObject(modelChild);
-	        		  
-	        		  addNodesToTreeAndModel(jsonChild, modelChild, treeNode);
-	        		  
-	        		  rootNode.addItem(treeNode);
+	        		  if((jsonChild.get("childs")!=null) && (jsonChild.get("childs").isArray().size()!=0)) {
+		        		  TreeItem treeNode = new TreeItem();
+		        		  renderTreeNode(treeNode, getNameFromJSONObject(jsonChild),"");
+		        		  treeNode.setUserObject(modelChild);
+		        		  addNodesToTreeAndModel(jsonChild, modelChild, treeNode);
+		        		  
+		        		  rootNode.addItem(treeNode);
+	        		  }
 	        	}
 			}	
 		}// addNodesToTreeAndModel
