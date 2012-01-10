@@ -16,7 +16,6 @@ public class QMDrilldownDecorator implements Decorator {
 	private static String logMarker = "QMDrilldownDecorator";
 	
 	public boolean shouldExecuteOnProject(Project project) {
-		
 		return BatchUtility.checkFileExist(project, QMDrilldownSensor.fileName, logger, logMarker);
 	}
 

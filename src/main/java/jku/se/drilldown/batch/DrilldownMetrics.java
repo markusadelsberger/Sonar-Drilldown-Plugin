@@ -30,11 +30,18 @@ public final class DrilldownMetrics implements Metrics {
 	    .setQualitative(false)
 	    .setDomain(CoreMetrics.DOMAIN_GENERAL)
 	    .create();
+	
+	public static final Metric BENCHMARK_PROJECTKEY = new Metric.Builder("benchmark_projectkey", "ProjectKey", Metric.ValueType.STRING)
+	.setDescription("Key indicates the resource object that holds the Benchmark data.")
+	.setDirection(Metric.DIRECTION_BETTER)
+	.setQualitative(false)
+	.setDomain(CoreMetrics.DOMAIN_GENERAL)
+	.create();
 
 	 // getMetrics() method is defined in the Metrics interface and is used by
  	 // Sonar to retrieve the list of new metrics
   	public List<Metric> getMetrics() {
-  		return Arrays.asList(QMTREE, QMTREE_PROJECTKEY, BENCHMARK);
+  		return Arrays.asList(QMTREE, QMTREE_PROJECTKEY, BENCHMARK, BENCHMARK_PROJECTKEY);
   	}
 }
 

@@ -192,7 +192,7 @@ public class QuantilGraphic extends DrilldownComponent {
 			NumberFormat format = NumberFormat.getScientificFormat();
 
 			svg = 
-					"<svg width=\"520px\" height=\"140px\" viewBox=\"0 0 520 140\">" +
+					"<svg width=\"520px\" height=\"120px\" viewBox=\"0 0 520 120\">" +
 							blackLines +
 							"<!-- value line -->"+
 							"<line x1=\""+position+"\" y1=\""+y1+"\" x2=\""+position+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: green;\"/>" +

@@ -1,5 +1,6 @@
 package jku.se.drilldown.client.ui.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,14 @@ public class DrilldownModel {
 	/**
 	 * Fetches the list that was previously saved
 	 * @param name The name the list was saved under; this value is case insensitive
-	 * @return Returns the requested list or null if the list was not found
+	 * @return Returns the requested list or an empty list if the list was not found
 	 */
 	public List<Measure> getList(String name){
-		return measureMap.get(name.toLowerCase());
+		List<Measure> measures = measureMap.get(name.toLowerCase());
+		if(measures==null){
+			measures=new ArrayList<Measure>();
+		}
+		return measures;
 	}
 	
 	/**

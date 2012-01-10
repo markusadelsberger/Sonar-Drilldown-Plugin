@@ -39,7 +39,8 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		this.drilldownComponent = drilldownComponent;
 		
 		pathInformation = new Grid(1,5);
-		
+		pathInformation.setCellPadding(5);
+		pathInformation.setBorderWidth(1);
 		initWidget(pathInformation);	
 	}
 	
@@ -66,6 +67,7 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 
 	private void setElement(String label, int column, ViewComponents viewComponent){
 		HorizontalPanel panel = new HorizontalPanel();
+
 		if(label == null) {
 			panel.add(new Label(labels[column]));
 		} else {
@@ -81,7 +83,6 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		}
 		
     	pathInformation.setWidget(0, column, panel);
-		pathInformation.getCellFormatter().setStyleName(0, column, "even");
 	}
 	
 	@Override

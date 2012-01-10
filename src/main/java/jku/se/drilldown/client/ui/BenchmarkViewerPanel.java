@@ -47,7 +47,7 @@ public class BenchmarkViewerPanel extends Page{
 			quantilGraphic.setHeight("170px");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
-				
+			
 			leftPanel.add(benchmarkDrilldown);
 			leftPanel.setWidth("175px");
 			rightPanel.add(drilldownComponentRuleList);

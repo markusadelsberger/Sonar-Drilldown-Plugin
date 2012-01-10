@@ -53,14 +53,13 @@ public final class XMLExtractor {
 					BenchmarkTool tool = new BenchmarkTool(name, version);
 					
 					//Get all the children of the tool node -> all distributions, loop through them, get their data, and save it
-					NodeList distribution = ((Element)tools.item(i)).getChildNodes();
+					NodeList distribution = ((Element)tools.item(i)).getElementsByTagName("distribution");
 					
 					if(distribution!=null && distribution.getLength()>0){
 						List<Distribution> distributionList = new ArrayList<Distribution>(distribution.getLength());
 						
 						for(int j = 0;j<distribution.getLength();j++) {
-							try { 
-								
+							try {
 								float min = Float.parseFloat(((Element)distribution.item(j)).getAttribute("min"));
 								float q25 = Float.parseFloat(((Element)distribution.item(j)).getAttribute("q25"));
 								float median = Float.parseFloat(((Element)distribution.item(j)).getAttribute("median"));

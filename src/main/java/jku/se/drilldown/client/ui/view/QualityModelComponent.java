@@ -97,7 +97,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	}
 	
 	private Widget createHeader() {
-		return new Label("Qualtiy Models");
+		return new Label("Quality Models");
 	}
 
 	private void doLoadData() {
@@ -138,7 +138,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     					protected void doOnResponse(Resource result) {
     						if (result==null) {
     			    			data.clear(); 
-    			        	    data.add(new Label("For the project is no quality model available."));
+    			        	    data.add(new Label("For the project no quality model is available."));
     			    		} 
     			    		else 
     			    		{    	 
