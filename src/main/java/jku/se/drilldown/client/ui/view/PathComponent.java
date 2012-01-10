@@ -39,8 +39,6 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 		this.drilldownComponent = drilldownComponent;
 		
 		pathInformation = new Grid(1,5);
-		pathInformation.setCellPadding(5);
-		pathInformation.setBorderWidth(1);
 		initWidget(pathInformation);	
 	}
 	
