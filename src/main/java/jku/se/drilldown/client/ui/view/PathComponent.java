@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -68,12 +69,15 @@ public class PathComponent extends DrilldownComponent implements ClickHandler{
 
 		if(label == null) {
 			panel.add(new Label(labels[column]));
+			panel.add(new HTML("&nbsp;"));
 		} else {
 			panel.add(new Label(label));
+			panel.add(new HTML("&nbsp;"));
 			Anchor link = new Anchor("Clear");
 			link.getElement().setPropertyObject("clearItem", viewComponent);
 			link.addClickHandler(this);
 			panel.add(link);
+			panel.add(new HTML("&nbsp;"));
 		}
 		
 		if(column>(pathInformation.getColumnCount()-1)) {	
