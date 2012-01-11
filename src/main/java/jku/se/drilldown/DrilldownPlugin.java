@@ -3,6 +3,7 @@ package jku.se.drilldown;
 import java.util.Arrays;
 import java.util.List;
 
+import jku.se.drilldown.batch.BenchmarkDecorator;
 import jku.se.drilldown.batch.BenchmarkSensor;
 import jku.se.drilldown.batch.DrilldownMetrics;
 import jku.se.drilldown.batch.QMDrilldownDecorator;
@@ -23,6 +24,7 @@ public class DrilldownPlugin extends SonarPlugin {
 		    QMDrilldownSensor.class, 
 		    QMDrilldownDecorator.class,
 		    BenchmarkSensor.class,
+		    BenchmarkDecorator.class,
 
 		    // UI
 		    QMDrilldownPage.class,

@@ -115,25 +115,38 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	public void loadBenchmarkData(){
 		//Load the Benchmarkdata
 		Resource resource = drilldownModel.getResource();
-		ResourceQuery query = ResourceQuery.createForResource(resource, "benchmark", "ncloc");
+		ResourceQuery keyQuery = ResourceQuery.createForMetrics(resource.getKey(), "benchmark_projectkey");
+		Sonar.getInstance().find(keyQuery, new AbstractCallback<Resource>() {
 
-		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 			@Override
-			protected void doOnResponse(Resource innerResource) {
-				Measure benchmark = innerResource.getMeasure("benchmark");
-				if(benchmark != null){
-					drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
-				}
-
-				Measure loc = innerResource.getMeasure("ncloc");
-				if(loc != null){
-					drilldownModel.addCount("loc", loc.getIntValue());
-				}
-
+			protected void doOnResponse(Resource result) {
 				initialized=true;
-				combineData();
+				if(result==null){
+					reload(ViewComponents.INITIALIZE);
+				}else{
+					Measure measure = result.getMeasure("benchmark_projectkey");
+					if(measure!=null){
+						ResourceQuery query = ResourceQuery.createForMetrics(measure.getData(), "benchmark", "ncloc");
+						Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+							@Override
+							protected void doOnResponse(Resource result) {
+								Measure benchmark = result.getMeasure("benchmark");
+								Measure loc = result.getMeasure("ncloc");
+								if(benchmark != null && loc!=null){
+									drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
+									drilldownModel.addCount("loc", loc.getIntValue());
+									combineData();
+								}else{
+									reload(ViewComponents.INITIALIZE);
+								}
+							}
+							
+						});
+					}
+				}
 			}
 		});
+		
 	}
 
 	public void combineData(){

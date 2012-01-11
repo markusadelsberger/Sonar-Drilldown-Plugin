@@ -16,13 +16,11 @@ public class BenchmarkDecorator implements Decorator {
 	private static String logMarker = "BenchmarkDecorator";
 
 	public boolean shouldExecuteOnProject(Project project) {
-
 		return BatchUtility.checkFileExist(project, BenchmarkSensor.fileName, logger, logMarker);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void decorate( Resource resource, DecoratorContext context) {
-
 		if (Scopes.isHigherThan(resource, Scopes.FILE)) {
 			Measure measure = new Measure(DrilldownMetrics.BENCHMARK_PROJECTKEY, context.getProject().getKey());
 			context.saveMeasure(measure);
