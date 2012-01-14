@@ -4,12 +4,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BenchmarkData {
+	//the date in the benchmarkfile
 	private String date;
+	
+	//the projects that were used as baseline
 	private List<String> projects;
+	
+	//the tools that were used to for checking
 	private List<BenchmarkTool> tools;
+	
+	//any errors that occured whilst parsing the xml file
 	private List<String> errors;
+	
 	public BenchmarkData(){
-		projects=new LinkedList<String>();
+		projects = new LinkedList<String>();
 		tools = new LinkedList<BenchmarkTool>();
 		errors = new LinkedList<String>();
 	}

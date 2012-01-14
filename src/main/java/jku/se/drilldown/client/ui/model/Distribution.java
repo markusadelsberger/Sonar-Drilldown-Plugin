@@ -18,7 +18,6 @@ public class Distribution {
 		this.q75=q75;
 		this.max=max;
 	}
-	
 
 	public String getName(){
 		return name;
@@ -43,7 +42,6 @@ public class Distribution {
 	public float getMax(){
 		return max;
 	}
-
 
 	public String getTool() {
 		return tool;

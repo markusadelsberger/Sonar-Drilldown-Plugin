@@ -24,6 +24,7 @@ public class BenchmarkSensor implements Sensor{
 	
 	public void analyse(Project project, SensorContext sensorContext) {
 		try{
+			//the baseDir is the root folder of the project
 			String baseDir = project.getFileSystem().getBasedir().toString();
 			String xml = BatchUtility.readFile(baseDir+"\\"+fileName);
 			Measure measure = new Measure(DrilldownMetrics.BENCHMARK,xml);

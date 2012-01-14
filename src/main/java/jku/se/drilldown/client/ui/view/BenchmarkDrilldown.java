@@ -19,7 +19,6 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -45,23 +44,21 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		return new Label("Benchmark Drilldown");
 	}
 
-
 	@Override
 	public String getItemIdentifier(List<Measure> selectedItem) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int gridColumnCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 4;
 	}
 
 	@Override
 	public void doLoadData(){
 		this.setGrid(new Grid(6, 4));
 		getGrid().setStyleName("spaced");
+		
 		for(int i=0;i<=5;i++){
 			addDrilldownAnchor("Q"+i, i);
 		}
@@ -78,43 +75,45 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 
 	@Override
 	public void reload(ViewComponents viewComponent) {
+		//if reload is called and initialized is false, this means that the benchmarkdata hasn't been loaded yet
 		if(initialized){
 			switch(viewComponent){
-			case INITIALIZE:
-				if(drilldownModel.getCount("benchmark_total")!=null && drilldownModel.getCount("benchmark_total")>0){
-					for(int i = 0; i<=5; i++){
-						addMeasures(i, drilldownModel.getCount("q"+i));
-						addGraph("q"+i, i);
-					}
-					render(getGrid());
-				}else{
-					if(errors!=null){
-						this.setGrid(new Grid(errors.size()+1, 1));
-						getGrid().setText(0, 0, "Errors found in benchmarkData:");
-						int i = 1;
-						for(String s : errors){
-							getGrid().setText(i, 0, s);
-							i++;
+				case INITIALIZE:
+					//if valid data is found, the count and graph is added to the BenchmarkDrilldown
+					if(drilldownModel.getCount("benchmark_total")!=null && drilldownModel.getCount("benchmark_total")>0){
+						for(int i = 0; i<=5; i++){
+							addMeasures(i, drilldownModel.getCount("q"+i));
+							addGraph("q"+i, i);
 						}
 						render(getGrid());
 					}else{
-						render(new Label("No Benchmarkdata found."));
+						if(errors!=null){
+							this.setGrid(new Grid(errors.size()+1, 1));
+							getGrid().setText(0, 0, "Errors found in benchmarkData:");
+							int i = 1;
+							for(String s : errors){
+								getGrid().setText(i, 0, s);
+								i++;
+							}
+							render(getGrid());
+						}else{
+							render(new Label("No Benchmarkdata found."));
+						}
 					}
-				}
-
-				break;	
-
-			default: break;
+					break;	
+				default: break;
 			}
 
 		} else {
 			loadBenchmarkData();
 		}	
 	}
-
-	public void loadBenchmarkData(){
-		//Load the Benchmarkdata
+	
+	private void loadBenchmarkData(){
 		Resource resource = drilldownModel.getResource();
+		
+		//the resource object is loaded in case the resource object in the model is not the root resource object
+		//the key for the root resource object is saved by the decorator
 		ResourceQuery keyQuery = ResourceQuery.createForMetrics(resource.getKey(), "benchmark_projectkey");
 		Sonar.getInstance().find(keyQuery, new AbstractCallback<Resource>() {
 
@@ -126,6 +125,8 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 				}else{
 					Measure measure = result.getMeasure("benchmark_projectkey");
 					if(measure!=null){
+						//the returned resource object is used to load the xml data and the lines of code
+						//if returned then they are saved in the model
 						ResourceQuery query = ResourceQuery.createForMetrics(measure.getData(), "benchmark", "ncloc");
 						Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 							@Override
@@ -149,7 +150,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 		
 	}
 
-	public void combineData(){
+	private void combineData(){
 		try{
 			//Load the Rules
 			List<Measure> measureList = new ArrayList<Measure>();
@@ -160,8 +161,9 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			measureList.addAll(drilldownModel.getList("Info"));
 
 			BenchmarkData benchmarkData = drilldownModel.getBenchmarkData();
-			if(benchmarkData!=null && benchmarkData.getErrors().size()==0){
-				int linesOfCode = drilldownModel.getCount("loc");
+			Integer loc = drilldownModel.getCount("loc");
+			if(benchmarkData!=null && loc!=null && benchmarkData.getErrors().size()==0){
+				int linesOfCode = loc.intValue();
 				List<Measure> q0 = new ArrayList<Measure>();
 				List<Measure> q1 = new ArrayList<Measure>();
 				List<Measure> q2 = new ArrayList<Measure>();
@@ -183,25 +185,34 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 							for(Distribution distribution : benchmarkTool.getDistribution()){
 								if(distribution.getName().compareToIgnoreCase(rule)==0){
 									//The correct rule for a certain tool was found
-									float measureValue = (float)measure.getIntValue()/(float)linesOfCode;
-									if(measureValue<distribution.getMin()){
-										q0.add(measure);
-									} else if(measureValue<distribution.getQ25()){
-										q1.add(measure);
-									} else if(measureValue<distribution.getMedian()){
-										q2.add(measure);
-									} else if(measureValue<distribution.getQ75()){
-										q3.add(measure);
-									} else if(measureValue<distribution.getMax()){
-										q4.add(measure);
-									} else {
-										q5.add(measure);
+									Integer measureIntValue = measure.getIntValue();
+									
+									/*If a valid value is found, the quantil is calculated by 
+									 * making it relative to the lines of code
+									 */
+									if(measureIntValue!=null){
+										float measureValue = measureIntValue.floatValue()/(float)linesOfCode;
+										if(measureValue<distribution.getMin()){
+											q0.add(measure);
+										} else if(measureValue<distribution.getQ25()){
+											q1.add(measure);
+										} else if(measureValue<distribution.getMedian()){
+											q2.add(measure);
+										} else if(measureValue<distribution.getQ75()){
+											q3.add(measure);
+										} else if(measureValue<distribution.getMax()){
+											q4.add(measure);
+										} else {
+											q5.add(measure);
+										}
 									}
 								}
 							}					
 						}
 					}
 				}
+				
+				//the count of the quantils is the number of violations, not the number of elements in the list
 				drilldownModel.addCount("q0", q0.size());
 				drilldownModel.addCount("q1", q1.size());
 				drilldownModel.addCount("q2", q2.size());
@@ -219,15 +230,17 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			}else{
 				errors=benchmarkData.getErrors();
 			}
-		}catch(Exception e){
-			Window.alert("CombineData: "+e.toString());
+		}catch(NullPointerException e){
+			errors.add("NullPointerException whilst combining data, a Violation list could not be loaded; Error: "+e.getMessage());
+		}catch(IndexOutOfBoundsException e){
+			errors.add("IndexOutOfBoundsException whilst combining data, a rulename was incorrect; Error: "+e.getMessage());
 		}
 		reload(ViewComponents.INITIALIZE);
 	}
 
-	private double getGraphWidth(String severety){
+	private double getGraphWidth(String category){
 		Integer totalCount = drilldownModel.getCount("benchmark_total");
-		Integer severetyCount = drilldownModel.getCount(severety);
+		Integer severetyCount = drilldownModel.getCount(category);
 		if(severetyCount!=null && totalCount!=null){
 			return (severetyCount.doubleValue()/totalCount.doubleValue())*100;
 		}else{
@@ -237,8 +250,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 
 	@Override
 	public void renderRow(List<Measure> item, int row) {
-		// TODO Auto-generated method stub
-
+		//not applicable for this class
 	}
 
 	private void addDrilldownAnchor(String name, int row){

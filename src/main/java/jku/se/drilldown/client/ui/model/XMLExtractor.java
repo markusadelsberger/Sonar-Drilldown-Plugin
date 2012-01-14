@@ -12,7 +12,7 @@ import com.google.gwt.xml.client.XMLParser;
 public final class XMLExtractor {
 	
 	private XMLExtractor (){
-		; //this class is a utility class, instantiation do not make sense. 
+		; //this class is a utility class, instantiation does not make sense. 
 	}
 	
 	public static BenchmarkData extract (String xml){
@@ -35,7 +35,10 @@ public final class XMLExtractor {
 			if(projects!=null && projects.getLength()>0){
 				List<String> projectList = new ArrayList<String>(projects.getLength());
 				for(int i = 0; i < projects.getLength();i++){
-					projectList.add(((Element)projects.item(i)).getAttribute("name"));
+					String name = ((Element)projects.item(i)).getAttribute("name");
+					if (name!=null){
+						projectList.add(name);
+					}
 				}
 				benchmarkData.setProjects(projectList);
 			}
@@ -52,7 +55,7 @@ public final class XMLExtractor {
 					String version = ((Element)tools.item(i)).getAttribute("version");
 					BenchmarkTool tool = new BenchmarkTool(name, version);
 					
-					//Get all the children of the tool node -> all distributions, loop through them, get their data, and save it
+					//Get all the distribution nodes  of the tool node -> all distributions, loop through them, get their data, and save it
 					NodeList distribution = ((Element)tools.item(i)).getElementsByTagName("distribution");
 					
 					if(distribution!=null && distribution.getLength()>0){
@@ -99,13 +102,11 @@ public final class XMLExtractor {
 					benchmarkData.addError("Toolcount was "+String.valueOf(tools.getLength()));
 				}				
 			}
-			
 		} catch(NullPointerException e) {
 			benchmarkData.addError("NullPointerException XML Extractor outside try: "+e.getMessage());
 		} catch(ClassCastException e) {
 			benchmarkData.addError("ClassCastException XML Extractor outside try: "+e.getMessage());
 		}
-		
 		return benchmarkData;
 	}
 }

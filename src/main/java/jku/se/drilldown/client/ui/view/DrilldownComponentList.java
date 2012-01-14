@@ -63,7 +63,7 @@ public abstract class DrilldownComponentList<T> extends DrilldownComponent imple
 	public abstract void doLoadData();
 
 	/**
-	 * Method returns the unique identifier of an list item. 
+	 * Method returns the unique identifier of a list item. 
 	 * The identifier is used as key value in the map. 
 	 * 
 	 * @param item Item from which the identifier will be returned.  

@@ -10,8 +10,8 @@ import org.sonar.wsclient.services.Resource;
 
 /**
  * @author markus
- * The model part of the MVC Principle of the Drilldown. Three kinds of Data can be saved, Measures, the Name of Active Elements
- * and the count of Measures. These are saved internally under a String.
+ * The model part of the MVC Principle of the Drilldown. Three kinds of data can be saved, Measures, 
+ * the name of active elements and the count of measures. These are saved internally under a String.
  */
 public class DrilldownModel {
 	
@@ -19,7 +19,12 @@ public class DrilldownModel {
 	private Map<String, String> activeMap;
 	private Map<String, Integer> countMap;
 	
+	//currently selected Measure
 	private Measure activeMeasure;
+	
+	/* list of currently available Measures, for instance all the measures of the active severety or quantil
+	 * these are shown in the DrilldownComponentRuleList
+	 */
 	private List<Measure> activeMeasures;
 	private Resource resource;
 	private Map<ViewComponents,Resource> selectedResource;

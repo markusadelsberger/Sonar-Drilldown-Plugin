@@ -28,12 +28,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	public DrilldownComponentRuleList(DrilldownController controller) {
 		super(controller);
-		
 		this.controller=controller;
-		
-		Grid grid = new Grid(0, gridColumnCount());
-		grid.setStyleName("spaced");
-		setGrid(grid);
 		
 		drilldownModel=controller.getModel();
 	}
@@ -50,23 +45,43 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 
 	@Override
 	public void doLoadData() {
-		
+		Grid grid = new Grid(0, gridColumnCount());
+		grid.setStyleName("spaced");
+		setGrid(grid);
 	}
 	
+	/**
+	 * Loads the icon for the severety
+	 * @param severity Name of the severety
+	 * @return HTML Code for the icon
+	 */
 	private String getIcon(String severity){
-		if(severity.compareTo("BLOCKER")==0){
-			return Icons.get().priorityBlocker().getHTML();
-		}else if(severity.compareTo("CRITICAL")==0){
-			return Icons.get().priorityCritical().getHTML();
-		}else if(severity.compareTo("MAJOR")==0){
-			return Icons.get().priorityMajor().getHTML();
-		}else if(severity.compareTo("MINOR")==0){
-			return Icons.get().priorityMinor().getHTML();
-		}else if(severity.compareTo("INFO")==0){
-			return Icons.get().priorityInfo().getHTML();
+		if(severity!=null){
+			if(severity.compareTo("BLOCKER")==0){
+				return Icons.get().priorityBlocker().getHTML();
+			}else if(severity.compareTo("CRITICAL")==0){
+				return Icons.get().priorityCritical().getHTML();
+			}else if(severity.compareTo("MAJOR")==0){
+				return Icons.get().priorityMajor().getHTML();
+			}else if(severity.compareTo("MINOR")==0){
+				return Icons.get().priorityMinor().getHTML();
+			}else if(severity.compareTo("INFO")==0){
+				return Icons.get().priorityInfo().getHTML();
+			}else{
+				return null;
+			}
 		}else{
 			return null;
 		}
+	}
+	
+	@Override
+	public void renderRow(Measure item, int row) {
+		renderIconCells(item, row);
+		renderNameCell(item, row, 1);
+		renderValueCell(item, row, 2);
+		renderBarCell(item, row, 3);
+		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
 	}
 	
 	private void renderIconCells(Measure measure, int row ) {
@@ -88,15 +103,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		getGrid().setHTML(row, column, String.valueOf(measure.getIntValue()));
 	}
 
-	@Override
-	public void renderRow(Measure item, int row) {
-		renderIconCells(item, row);
-		renderNameCell( item, row, 1);
-		renderValueCell( item, row, 2);
-		renderBarCell(item, row, 3);
-		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
-	}
-
 	private void renderBarCell(Measure item, int row, int column) {
 		String severety = item.getRuleSeverity();
 		double width = Math.round(getGraphWidth(severety, item));
@@ -115,7 +121,6 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		}
 	}
 	
-	
 	@Override
 	public String getItemIdentifier(Measure item) {
 		return item.getRuleKey();
@@ -125,37 +130,42 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		return drilldownModel.getActiveMeasure();
 	}
 	
+	/**
+	 * Adds a list of measures that is shown the next time the DrilldownComponentRuleList is reloaded
+	 * If the active measure is in this list then the row of the measure is marked as selected via a CSS class
+	 * @param measures List of measures that should be shown
+	 */
 	public void addMeasures(List<Measure> measures){
-		int row = getGrid().getRowCount();
-		getGrid().resizeRows(row+measures.size());
+		if(measures!=null){
+			int row = getGrid().getRowCount();
+			getGrid().resizeRows(row+measures.size());
 
-		Map<String, Integer> hashmap= new HashMap<String,Integer>();
+			Map<String, Integer> hashmap= new HashMap<String,Integer>();
 
-		for (Measure measure : measures) {
-			renderRow(measure, row);
-			hashmap.put(getItemIdentifier(measure), Integer.valueOf(row));
-			row++;
-		}
+			for (Measure measure : measures) {
+				renderRow(measure, row);
+				hashmap.put(getItemIdentifier(measure), Integer.valueOf(row));
+				row++;
+			}
 
-		this.setHashmap(hashmap);
+			this.setHashmap(hashmap);
 
-		if(containsSelectedItem(drilldownModel.getActiveMeasure())) {
-			selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+			if(containsSelectedItem(drilldownModel.getActiveMeasure())) {
+				selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+			}
 		}
 	}
 	
-	protected void reloadBegin(){
-		getGrid().resizeRows(0);
-	}
-	
-	public void reloadFinished(){
-		render(getGrid());
-	}
-
+	/**
+	 * Takes the clicked rule and sets it as the active measure in the model; then notifies the controller to reload
+	 */
 	public void onClick(ClickEvent event) {
+		//element is the rule that was clicked, the measure is saved in the property object "measure"
 		Element element = event.getRelativeElement();
 		Measure selectedMeasure = (Measure)element.getPropertyObject("measure");
 		
+		//if a measure was found the old selected measure is deselected, the new measure selected;
+		//after that the measure is set as active measure in the model and the controller is notified
 		if(selectedMeasure != null) {
 			if(containsSelectedItem(getSelectedItem())){
 				deselectRow(getHashmap().get(getItemIdentifier(getSelectedItem())));
@@ -179,23 +189,23 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 			case SEVERETYDRILLDOWN:
 			case INITIALIZE:
 			case RULEDRILLDOWN:
+				//if a severety is active only the measures of this severety are loaded
+				//if no severety is active all lists are loaded
+				getGrid().resizeRows(0);
+				List<Measure> measureList;
 				if(drilldownModel.getActiveMeasures()!=null) {
-					List<Measure> measureList = drilldownModel.getActiveMeasures();
-					reloadBegin();
-					addMeasures(measureList);
-					reloadFinished();
+					measureList = drilldownModel.getActiveMeasures();
 				}
 				else {
-					List<Measure> measureList = new LinkedList<Measure>();
+					measureList = new LinkedList<Measure>();
 					measureList.addAll(drilldownModel.getList("Blocker"));
 					measureList.addAll(drilldownModel.getList("Critical"));
 					measureList.addAll(drilldownModel.getList("Major"));
 					measureList.addAll(drilldownModel.getList("Minor"));
 					measureList.addAll(drilldownModel.getList("Info"));
-					reloadBegin();
-					addMeasures(measureList);
-					reloadFinished();
 				}
+				addMeasures(measureList);
+				render(getGrid());
 			break;
 			
 			default: break;

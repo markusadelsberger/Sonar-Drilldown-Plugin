@@ -20,10 +20,8 @@ public final class BatchUtility {
 		File file = new File(baseDir+"\\"+fileName);
 		
 		if(file.exists()){
-			// logger.info(logMarker+" scan ..."); 
 			return true;
-		}
-		else {
+		}else{
 			logger.info(logMarker+": "+fileName+" not available"); 
 			logger.warn(logMarker+" not executed");
 			return false;

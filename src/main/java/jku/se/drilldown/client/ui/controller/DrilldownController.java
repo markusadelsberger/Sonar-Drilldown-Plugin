@@ -17,15 +17,19 @@ import org.sonar.wsclient.services.ResourceQuery;
 /**
  * @author markus
  * Implements the Controller of the Drilldown MVC Principle
- * After the creation the setter methods must be called
  */
 public class DrilldownController implements IComponentController{
 
 	private DrilldownModel drilldownModel;
 	private List<DrilldownComponent> listenerList = new LinkedList<DrilldownComponent>();
 	
+	/**
+	 * To instantiate the controller a model must be given; the controller must be instantiated before the views,
+	 * as the views register with the view via the super-Constructor in DrilldownComponent
+	 * @param drilldownModel A DrilldownModel-Object, if it isn't given the NullPointerException will be thrown
+	 * @throws NullPointerException
+	 */
 	public DrilldownController (DrilldownModel drilldownModel) throws NullPointerException{
-		
 		if(drilldownModel == null) {
 			throw new NullPointerException();
 		}
@@ -34,12 +38,12 @@ public class DrilldownController implements IComponentController{
 		}
 	}
 	
+	/**
+	 * Adds the given DrilldownComponent to the list that is notified at a reload
+	 * @param drilldownComponent
+	 */
 	public void addListener(DrilldownComponent drilldownComponent){
 		listenerList.add(drilldownComponent);
-	}
-	
-	public void removeListener(DrilldownComponent drilldownComponent){
-		listenerList.remove(drilldownComponent);
 	}
 	
 	/**
@@ -95,14 +99,14 @@ public class DrilldownController implements IComponentController{
 
 	/**
 	 * Gets the used Model
-	 * @return The Model in use, if null is returned the method setModel(DrilldownModel drilldownModel) was not called correctly
+	 * @return The Model in use
 	 */
 	public DrilldownModel getModel(){
 		return drilldownModel;
 	}
 	
 	/**
-	 * Loads the Ruledata for a given String and saves it into the Model; after loading the Severety List and the Rule List are reloaded
+	 * Loads the Ruledata for a given String and saves it into the Model
 	 * @param metric The Metric Name from the org.sonar.gwt.Metrics Interface
 	 */
 	public void loadRuleDataForMetric(String... metric){
@@ -111,8 +115,13 @@ public class DrilldownController implements IComponentController{
 
 			@Override
 			protected void doOnResponse(Resource resource) {
+				//the response from the query came back, the measures are saved in measureList
 				List<Measure>measureList = resource.getMeasures();
-
+				
+				/*a list for every severety is created and a count; the count represents the number of violations of the
+				* rules, not the nuber of violated rules
+				*/
+				
 				List<Measure>blockerList = new LinkedList<Measure>();
 				int blockerCount=0;
 				
@@ -128,7 +137,7 @@ public class DrilldownController implements IComponentController{
 				List<Measure>infoList = new LinkedList<Measure>();
 				int infoCount=0;
 				
-				
+				//depending on the severety the measure is added to the appropriate list
 				for(Measure measure : measureList){
 					String metric = measure.getRuleSeverity();
 					if(metric.compareTo("BLOCKER")==0){
@@ -149,6 +158,7 @@ public class DrilldownController implements IComponentController{
 					}
 				}
 				
+				//the lists are added to the model, so that they can be loaded later on, same goes for the counts
 				drilldownModel.addList("Blocker", blockerList);
 				drilldownModel.addList("Critical", criticalList);
 				drilldownModel.addList("Major", majorList);
@@ -162,6 +172,7 @@ public class DrilldownController implements IComponentController{
 				drilldownModel.addCount("Info", infoCount);
 				drilldownModel.addCount("SeveretyTotal", blockerCount+criticalCount+majorCount+minorCount+infoCount);
 				
+				//the views are reloaded
 				onSelectedItemChanged(ViewComponents.INITIALIZE);
 			}
 

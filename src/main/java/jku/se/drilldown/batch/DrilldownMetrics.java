@@ -32,7 +32,7 @@ public final class DrilldownMetrics implements Metrics {
 	    .create();
 	
 	public static final Metric BENCHMARK_PROJECTKEY = new Metric.Builder("benchmark_projectkey", "ProjectKey", Metric.ValueType.STRING)
-	.setDescription("Key indicates the resource object that holds the Benchmark data.")
+	.setDescription("Key indicates the resource object that holds the benchmark data.")
 	.setDirection(Metric.DIRECTION_BETTER)
 	.setQualitative(false)
 	.setDomain(CoreMetrics.DOMAIN_GENERAL)
