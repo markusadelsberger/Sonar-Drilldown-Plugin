@@ -104,6 +104,7 @@
 							<goal>compile</goal>
 						</goals>
 					</execution>
+					 
 					<execution>
 						<id>XML</id>
 						<configuration>
@@ -117,6 +118,7 @@
 							<goal>compile</goal>
 						</goals>
 					</execution>
+					
 				</executions>
 			</plugin>
 			<plugin>

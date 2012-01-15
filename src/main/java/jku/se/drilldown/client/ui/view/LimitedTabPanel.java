@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * LimitedTabPanel extends the functionality of a normal TabPanel because it limits the number of displayed tab.
+ * LimitedTabPanel extends the functionality of a normal TabPanel because it limits the number of displayed tabs.
  * To iterate thru all tabs a next and previous tab is offered. 
  * 
  * @author Johannes
@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class LimitedTabPanel extends Composite implements SelectionHandler<Integer>{
 	
+	// number of tabs which will be displayed
 	private int visibleTabs; 
 	private List<TabItem> tabItemList;
 	private int startListIndex;
@@ -57,7 +58,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	 * @param tabText Text which is displayed at the top of the tab panel. 
 	 * @param toolTip Tooltip which is shown when mouse moves over the text. 
 	 */
-	public void add(Widget widget, String tabText, String toolTip){
+	public void add(Widget widget, String tabText, String toolTip) {
 		tabItemList.add(new TabItem(widget,tabText,toolTip));
 		
 		if(tabItemList.size() > visibleTabs) {
@@ -67,8 +68,7 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		}
 	}
 
-	private void addTabToTabPanel(Widget content, String tabText, String toolTip)
-	{
+	private void addTabToTabPanel(Widget content, String tabText, String toolTip) {
 		Label label = new Label(tabText);
 		
 		TooltipMouseHandler mouseHandler = new TooltipMouseHandler(toolTip,5000);
@@ -80,21 +80,22 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 	}
 	
 	private void rebuildTabPanel(int startIndex, int count) {
-		
 		tabPanel.clear();
 		
 		//if(startIndex!=0)
-			addTabToTabPanel(first, "("+startIndex+") <<","previous Quality Model");	
+		addTabToTabPanel(first, "("+startIndex+") <<","previous Quality Model");	
 				
 		for(int i =startIndex; i<startIndex+count; i++) {
 			addTabToTabPanel(tabItemList.get(i).getWidget(), tabItemList.get(i).getText(),tabItemList.get(i).getToolTip());	
 		}
 		
 		//if((widgetList.size()-startIndex-count)!=0)
-			addTabToTabPanel(last, ">> ("+(tabItemList.size()-startIndex-count)+")","next Quality Model");
-	
+		addTabToTabPanel(last, ">> ("+(tabItemList.size()-startIndex-count)+")","next Quality Model");
 	}
 
+	/**
+	 * Methods handles events that occurs when tabs are selected.
+	 */
 	public void onSelection(SelectionEvent<Integer> event) {
 		
 		if(tabPanel.getWidget(event.getSelectedItem())==first) {
@@ -117,10 +118,13 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 			selectedTabIndex = event.getSelectedItem();
 		}
 		
-		tabPanel.selectTab(selectedTabIndex);
-		
+		tabPanel.selectTab(selectedTabIndex);	
 	}
 	
+	/**
+	 * Allows to define a tab as selected. 
+	 * @param index Index of the selected tab. Greater than 0; Lesser than number of tabs; 
+	 */
 	public void selectTab(int index) {
 
 		if(index>=0 && index<tabItemList.size()) {
@@ -135,7 +139,11 @@ public class LimitedTabPanel extends Composite implements SelectionHandler<Integ
 		}
 	}
 	
-	
+	/**
+	 * Inner model class to encapsulate all data from a tab in an object.
+	 * 
+	 * @author Johannes
+	 */
 	private class TabItem{
 		private Widget widget;
 		private String text;

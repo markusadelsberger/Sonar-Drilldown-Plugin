@@ -10,6 +10,11 @@ import jku.se.drilldown.batch.QMDrilldownDecorator;
 import jku.se.drilldown.batch.QMDrilldownSensor;
 import org.sonar.api.SonarPlugin;
  
+/**
+ * Class defines all extensions points which are necessary for the plugin.
+ * @author Johannes
+ *
+ */
 public class DrilldownPlugin extends SonarPlugin {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -21,12 +26,13 @@ public class DrilldownPlugin extends SonarPlugin {
 		    // Batch
 		    QMDrilldownSensor.class, 
 		    QMDrilldownDecorator.class,
+		    
 		    BenchmarkSensor.class,
 		    BenchmarkDecorator.class,
 
 		    // UI
 		    QMDrilldownPage.class,
 		    BenchmarkPage.class
-		    );
+		);
 	}
 }

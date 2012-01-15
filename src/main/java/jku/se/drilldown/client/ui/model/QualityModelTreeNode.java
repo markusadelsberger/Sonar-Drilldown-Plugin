@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Model represents a node element in a tree. Therefore it stores a list of further QualityModelTreeNodes.
+ * Model represents a node element in a tree. 
+ * Therefore, it stores a list of further QualityModelTreeNodes.
  * 
  * @author Johannes
- *
  */
 public class QualityModelTreeNode {
 

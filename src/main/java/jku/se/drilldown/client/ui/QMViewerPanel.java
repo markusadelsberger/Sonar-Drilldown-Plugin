@@ -19,9 +19,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * QMViewerPanel represents UI of the QMDrilldown. 
  * 
  * @author Johannes
- *
  */ 
 public class QMViewerPanel extends Page{
 
@@ -34,21 +34,20 @@ public class QMViewerPanel extends Page{
 			Panel rightPanel=new HorizontalPanel();
 			Panel leftPanel=new HorizontalPanel();
 
+			// at the beginning controller has to be initialized, because UI-components need controller. 
 			DrilldownController drilldownController = new DrilldownController(new DrilldownModel(resource));
 			
+			// creates components
 			PathComponent pathComponent = new PathComponent(drilldownController,ViewComponents.QMTREE);
-
 			QualityModelComponent qmComponent = new QualityModelComponent(drilldownController);
-			
-			DrilldownComponentRuleList drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
-			
+			DrilldownComponentRuleList ruleListComponent=new DrilldownComponentRuleList(drilldownController);
 			StructureDrilldownComponent structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.QMDrilldownPage");
 			
 			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(qmComponent);
 
-			rightPanel.add(drilldownComponentRuleList);
+			rightPanel.add(ruleListComponent);
 			rightPanel.setWidth("100%");
 			
 			mainPanel.add(leftPanel);

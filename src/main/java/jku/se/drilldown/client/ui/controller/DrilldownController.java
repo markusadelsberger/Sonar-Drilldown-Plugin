@@ -13,7 +13,6 @@ import org.sonar.wsclient.services.Measure;
 import org.sonar.wsclient.services.Resource;
 import org.sonar.wsclient.services.ResourceQuery;
 
-
 /**
  * @author markus
  * Implements the Controller of the Drilldown MVC Principle
@@ -42,7 +41,7 @@ public class DrilldownController implements IComponentController{
 	 * Adds the given DrilldownComponent to the list that is notified at a reload
 	 * @param drilldownComponent
 	 */
-	public void addListener(DrilldownComponent drilldownComponent){
+	public void addListener(DrilldownComponent drilldownComponent) {
 		listenerList.add(drilldownComponent);
 	}
 	
@@ -59,8 +58,8 @@ public class DrilldownController implements IComponentController{
 	
 	/**
 	 * Resets the selected element
-	 * @param component The component that called the method
-	*/
+	 * @param component The component that called the method;
+	 */
 	public void clearElement(ViewComponents component){
 		
 		switch(component){
@@ -99,7 +98,7 @@ public class DrilldownController implements IComponentController{
 
 	/**
 	 * Gets the used Model
-	 * @return The Model in use
+	 * @return The Model in use;
 	 */
 	public DrilldownModel getModel(){
 		return drilldownModel;

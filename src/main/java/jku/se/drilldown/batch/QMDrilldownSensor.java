@@ -16,6 +16,12 @@ import org.spqr.base.core.resources.model.IQualityModelElement;
 import org.spqr.base.core.resources.model.IQualityModelList;
 import org.spqr.base.internal.core.files.SpqrQualityModelFiles;
 
+/**
+ * Sensor works when qualitymodel.xml is available in a project directory. 
+ * Stores content of the file in a sonar metric. 
+ * 
+ * @author Johannes
+ */
 public class QMDrilldownSensor implements Sensor {
 
 	public static String fileName = "qualitymodel.xml";
@@ -24,30 +30,28 @@ public class QMDrilldownSensor implements Sensor {
 	private static String logMarker = "QMDrilldownSensor";
 	
 	/**
-	 * Methods checks if the project has a qualitymodel.xml. 
-	 * If the project does not have one the sensor will not be executed. 
+	 * Methods checks if the project has a qualitymodel.xml file. 
+	 * If the file is absent the sensor will not be executed. 
 	 */
 	public boolean shouldExecuteOnProject(Project project) {
-		
 		return BatchUtility.checkFileExist(project, fileName, logger, logMarker);
 	}
 
-	public void analyse(Project project, SensorContext context) {
-		
-		//Calendar starttime = Calendar.getInstance();
- 	
+	/**
+	 * Method reads the qualitymodel.xml file and converts the models in a JSON object.
+	 * Then the JSON object is stored in the QMTREE metric.  
+	 */
+	public void analyse(Project project, SensorContext context) { 	
 	    JSONArray jArray = new JSONArray();
 		
 		String baseDir = project.getFileSystem().getBasedir().toString();
 	    File file = new File(baseDir+"\\qualitymodel.xml");
 	    
 	    try {
-			
+			// spqr API provides list of quality models
 	    	IQualityModelList modelList = SpqrQualityModelFiles.loadQualityModel(file);
 				
-		  	for (IQualityModel model : modelList.getAllQualityModels() )
-			{
-				
+		  	for (IQualityModel model : modelList.getAllQualityModels() ) {
 				JSONObject node = new JSONObject();
 				node.put("name", model.getBaseModelName());
 				node.put("childs", iterateQMTreeRekursive(model));
@@ -62,16 +66,11 @@ public class QMDrilldownSensor implements Sensor {
 	    
 	    Measure measure = new Measure(DrilldownMetrics.QMTREE, jArray.toString());
 	    context.saveMeasure(measure);
-	    
-	    //Calendar endtime = Calendar.getInstance();
-	    	        
-	    //logger.info(logMarker+" done: "+ (endtime.getTimeInMillis() - starttime.getTimeInMillis() )+" ms"); 
-
 	}
 
 	/**
 	 * Method iterates thru the quality model tree. 
-	 * Therefore a recursive algorithm is used. 
+	 * Therefore, a recursive algorithm is used. 
 	 * 
 	 * @param modelElement The current tree node
 	 * @return A JSON array which includes the name of the current node and its child nodes. 

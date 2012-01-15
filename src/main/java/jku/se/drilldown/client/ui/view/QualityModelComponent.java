@@ -41,7 +41,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * 
  * @author Johannes
- *
  */
 public class QualityModelComponent extends DrilldownComponent implements SelectionHandler<TreeItem>, OpenHandler<TreeItem> {
 
@@ -121,8 +120,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     				
     				hashmap= new HashMap<String,Measure>();
 
-    		  		for (Measure item : resource.getMeasures()){
-    		  			
+    		  		for (Measure item : resource.getMeasures()){ 		  			
     		  			String key = item.getRuleKey();
     		  			
     		  			if(key.indexOf(':')>0) {

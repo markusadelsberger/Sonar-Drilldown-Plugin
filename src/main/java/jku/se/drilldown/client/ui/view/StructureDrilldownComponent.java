@@ -85,7 +85,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 			
 			structurePanel = new Grid(1,3);
 			
-			moduleList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
+			moduleList.setWidth(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
 			structurePanel.setWidget(0, listPosition, moduleList);
 			
@@ -105,7 +105,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				structurePanel = new Grid(1,2);
 			}
 			
-			packageList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
+			packageList.setWidth(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
 			structurePanel.setWidget(0, listPosition, packageList);
 
@@ -126,7 +126,7 @@ public class StructureDrilldownComponent extends DrilldownComponent{
 				structurePanel = new Grid(1,1);
 			}
 			
-			fileList.setSize(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
+			fileList.setWidth(verticalPanel.getOffsetWidth()/structurePanel.getColumnCount());
 			
 			structurePanel.setWidget(0, listPosition, fileList);
 		}
