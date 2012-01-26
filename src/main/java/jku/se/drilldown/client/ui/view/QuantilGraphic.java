@@ -79,6 +79,7 @@ public class QuantilGraphic extends DrilldownComponent {
 	public void reload(ViewComponents viewComponent)
 	{
 		switch(viewComponent){
+			case BENCHMARKDRILLDOWN:
 			case RULEDRILLDOWN:
 				
 				horizontalPanel=new HorizontalPanel();
@@ -98,8 +99,19 @@ public class QuantilGraphic extends DrilldownComponent {
 						//value of the chosen distribution
 						float value = (float)drilldownModel.getActiveMeasure().getIntValue()/(float)drilldownModel.getCount("loc");
 						
-						//get the position of the line on the scale
-						int pos = getLinePos(min, q25, median, q75, max, value);
+						int pos = -3;
+						//check if value is smaller than min or bigger than max, if so the getScale method reacts differently
+						if(value<min){
+							pos=-2;
+						}else if(value>max){
+							pos=-1;
+						}else{
+							//get the position of the line on the scale
+							pos = getLinePos(q25, median, q75, max, value);
+						}
+						
+						
+						
 						
 						NumberFormat format = NumberFormat.getScientificFormat();
 		
@@ -169,12 +181,65 @@ public class QuantilGraphic extends DrilldownComponent {
 		data.add(widget);
 	}
 	
-	private HTML getScale(Integer position, float min, float q25, float median, float q75, float max, float value){
-		int x = 30;
+	private HTML getScale(int position, float min, float q25, float median, float q75, float max, float value){
+		int x = 50;
 		int y1 = 20;
 		int y2 = 100;
 		
-		String blackLines = 
+		NumberFormat format = NumberFormat.getScientificFormat();
+				
+		String data = "<text x=\""+(x)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(min).toString()+"</text>"+
+					"<text x=\""+(x+100)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q25).toString()+"</text>"+
+					"<text x=\""+(x+200)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(median).toString()+"</text>"+
+					"<text x=\""+(x+300)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q75).toString()+"</text>"+
+					"<text x=\""+(x+400)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(max).toString()+"</text>";
+					
+		if(position>-1){
+			data +=	"<!-- value line -->"+
+					"<text x=\""+(position+x)+"\" y=\"15\"  style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>"+
+					"<line x1=\""+(position+x)+"\" y1=\""+y1+"\" x2=\""+(position+x)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: green;\"/>";	
+		}else if(position==-2){
+			data += "<!-- value below min -->"+
+					"<line x1=\"20\" y1=\""+y1+"\" x2=\"20\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: red;\"/>" +
+					"<line x1=\"20\" y1=\""+((y1+y2)/2)+"\" x2=\"50\" y2=\""+((y1+y2)/2)+"\" style=\"stroke-width=10; stroke: red; stroke-dasharray:2,2;\"/>" +
+					"<text x=\"20\" y=\"15\" style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>";
+		}else if(position==-1){
+			data += "<!-- value above max -->"+
+					"<line x1=\""+(x+420)+"\" y1=\""+y1+"\" x2=\""+(x+420)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: red;\"/>" +
+					"<line x1=\""+(x+420)+"\" y1=\""+((y1+y2)/2)+"\" x2=\""+(x+400)+"\" y2=\""+((y1+y2)/2)+"\" style=\"stroke-width=10; stroke: red; stroke-dasharray:2,2;\"/>" +
+					"<text x=\"470\" y=\"15\" style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>";
+		}else {
+			data = "";
+		}
+		
+		HTML scale = new HTML(getSVG(data, x, y1, y2));
+		
+		return scale;
+	}
+	
+	public int getLinePos(float q25, float median, float q75, float max, float value){
+		if(value<q25){
+			return (int) ((value/q25)*100);
+		}else if(value<median){
+			return (int) ((value/median)*100)+100;
+		}else if(value<q75){
+			return (int) ((value/q75)*100)+200;
+		}else if(value<max){
+			return (int) ((value/max)*100)+300;
+		}
+		else return -3;
+	}
+	
+	private String getRowCssClass(int row, boolean selected) {
+		return row % 2 == 0 ? "even" + getRowCssSelected(selected) : "odd" + getRowCssSelected(selected);
+	}
+	
+	private String getRowCssSelected(boolean selected) {
+		return selected ? " selected" : "";
+	}
+	
+	private String getSVG(String svg, int x, int y1, int y2){
+		return "<svg width=\"520px\" height=\"120px\" viewBox=\"0 0 520 120\">" +
 				"<!-- min line -->"+
 				"<line x1=\""+(x)+"\" y1=\""+y1+"\" x2=\""+x+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- q25 line -->"+
@@ -186,55 +251,8 @@ public class QuantilGraphic extends DrilldownComponent {
 				"<!-- maximum line -->"+
 				"<line x1=\""+(x+400)+"\" y1=\""+y1+"\" x2=\""+(x+400)+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: black;\"/>" +
 				"<!-- vertical -->"+
-				"<line x1=\"30\" y1=\""+((y1+y2)/2)+"\" x2=\"430\" y2=\""+((y1+y2)/2)+"\" style=\"stroke-width=10; stroke: black;\"/>";
-		String svg = "";
-		if(position!=null){
-			NumberFormat format = NumberFormat.getScientificFormat();
-
-			svg = 
-					"<svg width=\"520px\" height=\"120px\" viewBox=\"0 0 520 120\">" +
-							blackLines +
-							"<!-- value line -->"+
-							"<line x1=\""+position+"\" y1=\""+y1+"\" x2=\""+position+"\" y2=\""+y2+"\" style=\"stroke-width=10; stroke: green;\"/>" +
-							"<text x=\""+(x)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(min).toString()+"</text>"+
-							"<text x=\""+(x+100)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q25).toString()+"</text>"+
-							"<text x=\""+(x+200)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(median).toString()+"</text>"+
-							"<text x=\""+(x+300)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(q75).toString()+"</text>"+
-							"<text x=\""+(x+400)+"\" y=\""+(y2+15)+"\" style=\"text-anchor: middle;\">"+format.format(max).toString()+"</text>"+
-							"<text x=\""+(position)+"\" y=\"15\"  style=\"text-anchor: middle;\">"+format.format(value).toString()+"</text>"+
-					"</svg>";
-		} else {
-			svg = 
-					"<svg width=\"520px\" height=\"100px\" viewBox=\"0 0 520 100\">" +
-							blackLines +
-					"</svg>";
-		}
-		
-		HTML scale = new HTML(svg);
-		
-		return scale;
-	}
-	
-	public int getLinePos(float min, float q25, float median, float q75, float max, float value){
-		
-		if(value<min){
-			return (int)((value/min)*100)+10;
-		}else if(value<q25){
-			return (int) ((value/q25)*100)+10;
-		}else if(value<median){
-			return (int) ((value/median)*100)+110;
-		}else if(value<q75){
-			return (int) ((value/q75)*100)+210;
-		}else{
-			return (int) ((value/max)*100)+310;
-		}
-	}
-	
-	private String getRowCssClass(int row, boolean selected) {
-		return row % 2 == 0 ? "even" + getRowCssSelected(selected) : "odd" + getRowCssSelected(selected);
-	}
-	
-	private String getRowCssSelected(boolean selected) {
-		return selected ? " selected" : "";
+				"<line x1=\""+x+"\" y1=\""+((y1+y2)/2)+"\" x2=\""+(x+400)+"\" y2=\""+((y1+y2)/2)+"\" style=\"stroke-width=10; stroke: black;\"/>"+
+				svg+
+		"</svg>";
 	}
 }
