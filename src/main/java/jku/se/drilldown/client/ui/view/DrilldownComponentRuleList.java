@@ -80,8 +80,13 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		renderIconCells(item, row);
 		renderNameCell(item, row, 1);
 		renderValueCell(item, row, 2);
-		renderBarCell(item, row, 3);
+		
 		getGrid().getRowFormatter().setStyleName(row, getRowCssClass(row, false));
+	}
+	
+	private void renderRowWithBar(Measure item, int row, int sumOfViolations) {
+		renderRow(item, row);
+		renderBarCell(item, row, 3, sumOfViolations);
 	}
 	
 	private void renderIconCells(Measure measure, int row ) {
@@ -103,22 +108,18 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		getGrid().setHTML(row, column, String.valueOf(measure.getIntValue()));
 	}
 
-	private void renderBarCell(Measure item, int row, int column) {
-		String severety = item.getRuleSeverity();
-		double width = Math.round(getGraphWidth(severety, item));
+	private void renderBarCell(Measure item, int row, int column, int sumOfViolations) {
+		//String severety = item.getRuleSeverity();
+			
+		double width = -1D;
+		
+		if(sumOfViolations != 0 && item!=null && item.getValue()!=null) {
+			Integer measureCount = item.getIntValue();
+			width = Math.round((measureCount.doubleValue()/sumOfViolations)*100);
+		} 
+		
 		HTML bar = new HTML("<div class='barchart' style='width: 60px'><div style='width: "+String.valueOf(width)+"%;background-color:#777;'></div></div>");
 		getGrid().setWidget(row, column, bar);
-	}
-	
-	private double getGraphWidth(String severety, Measure item){
-		Integer severetyCount = drilldownModel.getCount(severety);
-		Integer measureCount = item.getIntValue();
-		
-		if(severetyCount!=null && measureCount!=null){
-			return (measureCount.doubleValue()/severetyCount.doubleValue())*100;
-		}else{
-			return -1D;
-		}
 	}
 	
 	@Override
@@ -136,14 +137,21 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	 * @param measures List of measures that should be shown
 	 */
 	public void addMeasures(List<Measure> measures){
+		
 		if(measures!=null){
 			int row = getGrid().getRowCount();
 			getGrid().resizeRows(row+measures.size());
 
 			Map<String, Integer> hashmap= new HashMap<String,Integer>();
 
+			int sumOfViolations=0;
+			
 			for (Measure measure : measures) {
-				renderRow(measure, row);
+				sumOfViolations+=measure.getIntValue();
+			}
+			
+			for (Measure measure : measures) {
+				renderRowWithBar(measure, row, sumOfViolations);
 				hashmap.put(getItemIdentifier(measure), Integer.valueOf(row));
 				row++;
 			}
