@@ -8,7 +8,6 @@ import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.QualityModelComponent;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
@@ -42,8 +41,6 @@ public class QMViewerPanel extends Page{
 			QualityModelComponent qmComponent = new QualityModelComponent(drilldownController);
 			DrilldownComponentRuleList ruleListComponent=new DrilldownComponentRuleList(drilldownController);
 			StructureDrilldownComponent structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.QMDrilldownPage");
-			
-			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(qmComponent);
 

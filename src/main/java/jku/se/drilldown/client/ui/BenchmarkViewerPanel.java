@@ -9,7 +9,6 @@ import jku.se.drilldown.client.ui.view.PathComponent;
 import jku.se.drilldown.client.ui.view.QuantilGraphic;
 import jku.se.drilldown.client.ui.view.StructureDrilldownComponent;
 
-import org.sonar.gwt.Metrics;
 import org.sonar.gwt.ui.Page;
 import org.sonar.wsclient.services.Resource;
 
@@ -34,19 +33,18 @@ public class BenchmarkViewerPanel extends Page{
 				
 			PathComponent pathComponent = new PathComponent(drilldownController, ViewComponents.BENCHMARKDRILLDOWN);
 			
-			BenchmarkDrilldown benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
-			benchmarkDrilldown.setWidth("175px");
 			
 			DrilldownComponentRuleList drilldownComponentRuleList=new DrilldownComponentRuleList(drilldownController);
 			drilldownComponentRuleList.setWidth("100%");
+			
+			BenchmarkDrilldown benchmarkDrilldown=new BenchmarkDrilldown(drilldownController);
+			benchmarkDrilldown.setWidth("175px");
 			
 			StructureDrilldownComponent structureComponent= new StructureDrilldownComponent(drilldownController, "jku.se.drilldown.BenchmarkPage");
 			
 			QuantilGraphic quantilGraphic = new QuantilGraphic(drilldownController);
 			quantilGraphic.setWidth("100%");
 			quantilGraphic.setHeight("170px");
-			
-			drilldownController.loadRuleDataForMetric(Metrics.VIOLATIONS);
 			
 			leftPanel.add(benchmarkDrilldown);
 			leftPanel.setWidth("175px");

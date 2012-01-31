@@ -1,7 +1,6 @@
 package jku.se.drilldown.client.ui.view;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -187,7 +186,8 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 	}
 	
 	/**
-	 * Reloads the rules from the model and rerenders the grid
+	 * Reloads the rules from the model and rerenders the grid; if no list is active, then the list "completeList" is loaded
+	 * In this list all of the rules should be available
 	 */
 	@Override
 	public void reload(ViewComponents viewComponent){
@@ -205,12 +205,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 					measureList = drilldownModel.getActiveMeasures();
 				}
 				else {
-					measureList = new LinkedList<Measure>();
-					measureList.addAll(drilldownModel.getList("Blocker"));
-					measureList.addAll(drilldownModel.getList("Critical"));
-					measureList.addAll(drilldownModel.getList("Major"));
-					measureList.addAll(drilldownModel.getList("Minor"));
-					measureList.addAll(drilldownModel.getList("Info"));
+					measureList = drilldownModel.getList("completeList");
 				}
 				addMeasures(measureList);
 				render(getGrid());

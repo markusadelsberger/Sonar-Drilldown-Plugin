@@ -130,6 +130,9 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		  			hashmap.put(key, item);
     		   		}
     		  		
+    		  		model.addList("completeList", new ArrayList<Measure>(hashmap.values()));
+    				controller.onSelectedItemChanged(ViewComponents.INITIALIZE);	
+    		  		
     		  		ResourceQuery projectKeyQuery = ResourceQuery.createForMetrics(resource.getKey(), "projectkey");
         			Sonar.getInstance().find(projectKeyQuery, new AbstractCallback<Resource>() {
 
@@ -265,6 +268,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     	    data.add(new Label("For the project is no quality model available."));
 		}
 		
+		@SuppressWarnings("deprecation")
 		@Override
 		protected void doOnResponse(Resource result) {
 						
@@ -320,14 +324,15 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     			//tabPanel.add(new Label("test1"), "001","Toolttip");
     			//tabPanel.add(new Label("test2"), "002","Toolttip");
     			//tabPanel.add(new Label("test3"), "003","Toolttip");
-
+    			
+    			
+    			
         	    data.clear(); 
         	    data.add(tabPanel);
         	    
     			tabPanel.selectTab(0);
     			
-    		}// if - else
-    			    
+    		}// if - else    
 		}// doOnResponse
 
 		private String getNameFromJSONObject(JSONObject jsonObj) {
