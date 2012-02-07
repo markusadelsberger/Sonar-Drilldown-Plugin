@@ -25,6 +25,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -107,7 +108,7 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
  
-	    ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.VIOLATIONS)
+	    ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
 	    	.setDepth(0)
 	    	.setExcludeRules(false);
 
@@ -117,7 +118,6 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     		protected void doOnResponse(Resource resource) {
 
     			if (resource!=null && !resource.getMeasures().isEmpty()) {
-    				
     				hashmap= new HashMap<String,Measure>();
 
     		  		for (Measure item : resource.getMeasures()){ 		  			
@@ -152,6 +152,8 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     			    		}
     					}	
         			});// Sonar.getInstance().find	
+    			}else{
+    				Window.alert("resource null");
     			}
     		}			
 	    });// Sonar.getInstance().find	

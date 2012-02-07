@@ -20,6 +20,7 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -63,7 +64,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			addDrilldownAnchor("Q"+i, i);
 			getGrid().getRowFormatter().setStyleName(i, getRowCssClass(i, false));
 		}
-		loadBenchmarkData();
+		loadViolationsData();
 	}
 
 	@Override
@@ -96,6 +97,24 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			}
 	}
 	
+	private void loadViolationsData(){
+		ResourceQuery query = ResourceQuery.createForResource(drilldownModel.getResource(), Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS).setDepth(0).setExcludeRules(false);
+		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+			@Override
+			protected void doOnResponse(Resource resource) {
+				if(resource!=null){
+					//the response from the query came back and wasn't null, the measures are saved in measureList
+					List<Measure>measureList = resource.getMeasures();
+					drilldownModel.addList("violations", measureList);
+					loadBenchmarkData();
+				}else{
+					drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
+				}
+			}
+		});
+	}
+	
+	
 	private void loadBenchmarkData(){
 		ResourceQuery query = ResourceQuery.createForMetrics("jku.se.drilldown:sonar-drilldown-plugin", "benchmark", "ncloc");
 		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
@@ -109,102 +128,96 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 					drilldownModel.addCount("loc", loc.getIntValue());
 					combineData();
 				}else{
-					reload(ViewComponents.INITIALIZE);
+					Window.alert("benchmark resource was null");
+					drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
 				}
 			}
 		});	
 	}
 
 	private void combineData(){
-		ResourceQuery query = ResourceQuery.createForResource(drilldownModel.getResource(), Metrics.VIOLATIONS).setDepth(0).setExcludeRules(false);
-		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
-			@Override
-			protected void doOnResponse(Resource resource) {
-				//the response from the query came back, the measures are saved in measureList
-				List<Measure>measureList = resource.getMeasures();
-				if(measureList!=null && measureList.size()>0){
-					try{
-						//Load the Rules
-						BenchmarkData benchmarkData = drilldownModel.getBenchmarkData();
-						Integer loc = drilldownModel.getCount("loc");
-						if(benchmarkData!=null && loc!=null && benchmarkData.getErrors().size()==0){
-							int linesOfCode = loc.intValue();
-							List<Measure> q0 = new ArrayList<Measure>();
-							List<Measure> q1 = new ArrayList<Measure>();
-							List<Measure> q2 = new ArrayList<Measure>();
-							List<Measure> q3 = new ArrayList<Measure>();
-							List<Measure> q4 = new ArrayList<Measure>();
-							List<Measure> q5 = new ArrayList<Measure>();
-							List<Measure> completeList = new ArrayList<Measure>();
+		List<Measure>measureList = drilldownModel.getList("violations");
+		if(measureList!=null && measureList.size()>0){
+			try{
+				//Load the Rules
+				BenchmarkData benchmarkData = drilldownModel.getBenchmarkData();
+				Integer loc = drilldownModel.getCount("loc");
+				if(benchmarkData!=null && loc!=null && benchmarkData.getErrors().size()==0){
+					int linesOfCode = loc.intValue();
+					List<Measure> q0 = new ArrayList<Measure>();
+					List<Measure> q1 = new ArrayList<Measure>();
+					List<Measure> q2 = new ArrayList<Measure>();
+					List<Measure> q3 = new ArrayList<Measure>();
+					List<Measure> q4 = new ArrayList<Measure>();
+					List<Measure> q5 = new ArrayList<Measure>();
+					List<Measure> completeList = new ArrayList<Measure>();
 
-							for(Measure measure : measureList){
-								String key = measure.getRuleKey();
+					for(Measure measure : measureList){
+						String key = measure.getRuleKey();
 
-								//The toolname and the rulename are saved in seperate Strings
-								String tool=key.substring(0, key.indexOf(':'));
-								String rule=key.substring(key.indexOf(':')+1, key.length());
+						//The toolname and the rulename are saved in seperate Strings
+						String tool=key.substring(0, key.indexOf(':'));
+						String rule=key.substring(key.indexOf(':')+1, key.length());
 
-								//All the benchmarkTools are looped to find the right one in the rule data
-								for(BenchmarkTool benchmarkTool : benchmarkData.getTools()){
-									if(benchmarkTool.getName().compareToIgnoreCase(tool)==0){
-										//If so, all distributions are looped to find the correct rule
-										for(Distribution distribution : benchmarkTool.getDistribution()){
-											if(distribution.getName().compareToIgnoreCase(rule)==0){
-												//The correct rule for a certain tool was found
-												Integer measureIntValue = measure.getIntValue();
-												completeList.add(measure);
-												/*If a valid value is found, the quantil is calculated by 
-												 * making it relative to the lines of code
-												 */
-												if(measureIntValue!=null){
-													float measureValue = measureIntValue.floatValue()/(float)linesOfCode;
-													if(measureValue<distribution.getMin()){
-														q0.add(measure);
-													} else if(measureValue<distribution.getQ25()){
-														q1.add(measure);
-													} else if(measureValue<distribution.getMedian()){
-														q2.add(measure);
-													} else if(measureValue<distribution.getQ75()){
-														q3.add(measure);
-													} else if(measureValue<distribution.getMax()){
-														q4.add(measure);
-													} else {
-														q5.add(measure);
-													}
-												}
+						//All the benchmarkTools are looped to find the right one in the rule data
+						for(BenchmarkTool benchmarkTool : benchmarkData.getTools()){
+							if(benchmarkTool.getName().compareToIgnoreCase(tool)==0){
+								//If so, all distributions are looped to find the correct rule
+								for(Distribution distribution : benchmarkTool.getDistribution()){
+									if(distribution.getName().compareToIgnoreCase(rule)==0){
+										//The correct rule for a certain tool was found
+										Integer measureIntValue = measure.getIntValue();
+										completeList.add(measure);
+										/*If a valid value is found, the quantil is calculated by 
+										 * making it relative to the lines of code
+										 */
+										if(measureIntValue!=null){
+											float measureValue = measureIntValue.floatValue()/(float)linesOfCode;
+											if(measureValue<distribution.getMin()){
+												q0.add(measure);
+											} else if(measureValue<distribution.getQ25()){
+												q1.add(measure);
+											} else if(measureValue<distribution.getMedian()){
+												q2.add(measure);
+											} else if(measureValue<distribution.getQ75()){
+												q3.add(measure);
+											} else if(measureValue<distribution.getMax()){
+												q4.add(measure);
+											} else {
+												q5.add(measure);
 											}
-										}					
+										}
 									}
-								}
+								}					
 							}
-							//the count of the quantils is the number of violations, not the number of elements in the list
-							drilldownModel.addCount("q0", q0.size());
-							drilldownModel.addCount("q1", q1.size());
-							drilldownModel.addCount("q2", q2.size());
-							drilldownModel.addCount("q3", q3.size());
-							drilldownModel.addCount("q4", q4.size());
-							drilldownModel.addCount("q5", q5.size());
-							drilldownModel.addCount("benchmark_total", q0.size()+q1.size()+q2.size()+q3.size()+q4.size()+q5.size());
-
-							drilldownModel.addList("q0", q0);
-							drilldownModel.addList("q1", q1);
-							drilldownModel.addList("q2", q2);
-							drilldownModel.addList("q3", q3);
-							drilldownModel.addList("q4", q4);
-							drilldownModel.addList("q5", q5);
-							drilldownModel.addList("completeList", completeList);
-						}else{
-							errors=benchmarkData.getErrors();
 						}
-					}catch(NullPointerException e){
-						errors.add("NullPointerException whilst combining data, a Violation list could not be loaded; Error: "+e.getMessage());
-					}catch(IndexOutOfBoundsException e){
-						errors.add("IndexOutOfBoundsException whilst combining data, a rulename was incorrect; Error: "+e.getMessage());
 					}
+					//the count of the quantils is the number of violations, not the number of elements in the list
+					drilldownModel.addCount("q0", q0.size());
+					drilldownModel.addCount("q1", q1.size());
+					drilldownModel.addCount("q2", q2.size());
+					drilldownModel.addCount("q3", q3.size());
+					drilldownModel.addCount("q4", q4.size());
+					drilldownModel.addCount("q5", q5.size());
+					drilldownModel.addCount("benchmark_total", q0.size()+q1.size()+q2.size()+q3.size()+q4.size()+q5.size());
+
+					drilldownModel.addList("q0", q0);
+					drilldownModel.addList("q1", q1);
+					drilldownModel.addList("q2", q2);
+					drilldownModel.addList("q3", q3);
+					drilldownModel.addList("q4", q4);
+					drilldownModel.addList("q5", q5);
+					drilldownModel.addList("completeList", completeList);
+				}else{
+					errors=benchmarkData.getErrors();
 				}
-				drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
+			}catch(NullPointerException e){
+				errors.add("NullPointerException whilst combining data, a Violation list could not be loaded; Error: "+e.getMessage());
+			}catch(IndexOutOfBoundsException e){
+				errors.add("IndexOutOfBoundsException whilst combining data, a rulename was incorrect; Error: "+e.getMessage());
 			}
-		});
+		}
+		drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
 	}
 
 	private double getGraphWidth(String category){

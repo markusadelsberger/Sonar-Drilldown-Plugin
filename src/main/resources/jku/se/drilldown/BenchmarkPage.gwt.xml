@@ -9,7 +9,6 @@
 <extend-property name="locale" values="en" />
 <extend-property name="locale" values="fr" />
 
-<stylesheet src="style.css"/>
 
 </module>
  
