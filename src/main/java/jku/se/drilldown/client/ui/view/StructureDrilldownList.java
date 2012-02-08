@@ -87,13 +87,22 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		
 		column= renderIconCells(item, row, column);
 	
-		column=renderNameCell( item, row, column);
-
-		renderValueCell( item, row, column);
+		column= renderNameCell( item, row, column);	
+		
+		renderValueCell( item, row, column, 0);
+	}
+	
+	public void renderRow(Resource item, int row, int sumOfValues) {
+		int column = 0;
+		
+		column= renderIconCells(item, row, column);
+	
+		column= renderNameCell( item, row, column);	
+		
+		renderValueCell( item, row, column, sumOfValues);
 	}
 		
-	public void reload(ViewComponents viewComponent)
-	{
+	public void reload(ViewComponents viewComponent) {
 		reload();
 	}
 	
@@ -110,34 +119,47 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 			
 			@Override
 			protected void doOnResponse(List<Resource> resourceList) {
-				Grid gridList = new Grid(resourceList.size(), gridColumnCount());
-				gridList.setStyleName("spaced");
-				setGrid(gridList);
 				
-				HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
-			
-				if(scope.equals(Resource.SCOPE_SET) && !resourceList.isEmpty()) {
-					resourceList.remove(0);
-				}
-									
-				int row = 0;
-				for (Resource item : resourceList) {
-					renderRow(item, row);
-					hashmap.put(getItemIdentifier(item), Integer.valueOf(row));
+				if(resourceList != null)
+				{
+					Grid gridList = new Grid(resourceList.size(), gridColumnCount());
+					gridList.setStyleName("spaced");
+					setGrid(gridList);
 
-					row++;
-				}
+					HashMap<String,Integer> hashmap= new HashMap<String,Integer>();
 				
-				setHashmap(hashmap);
-				
-				if(containsSelectedItem(selectedItem)) {
-					selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
-				}
+					if(scope.equals(Resource.SCOPE_SET) && !resourceList.isEmpty()) {
+						resourceList.remove(0);
+					}
+					
+					int row = 0;
+					for (Resource item : resourceList) {
 						
-				render(getGrid());	
-				
-				if(next!=null) {
-					next.reload();	
+						int sumOfValues=0;
+						
+						for(Measure measure : item.getMeasures()) {
+							sumOfValues += Integer.parseInt(measure.getFormattedValue());
+						}
+
+						if(sumOfValues>0) {
+							renderRow(item, row, sumOfValues);
+							hashmap.put(getItemIdentifier(item), Integer.valueOf(row));
+		
+							row++;
+						}
+					}
+					
+					setHashmap(hashmap);
+					
+					if(containsSelectedItem(selectedItem)) {
+						selectRow(hashmap.get(getItemIdentifier(getSelectedItem())));
+					}
+			
+					render(gridList);	
+									
+					if(next!=null) {
+						next.reload();	
+					}
 				}
 			}
 
@@ -216,21 +238,9 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	 * @param column The column of the grid.
 	 * @return The next column in which a widget can be presented.
 	 */
-	private void renderValueCell(Resource resource, int row, int column) {
+	private void renderValueCell(Resource resource, int row, int column, int sumOfValues) {
 		
-		if((this.selectedMeasures!=null) && (this.selectedMeasures.size()>0))
-		{
-			int sumOfValues=0;
-			
-			for(Measure measure : resource.getMeasures()) {
-				sumOfValues += Integer.parseInt(measure.getFormattedValue());
-			}
-
-			getGrid().setHTML(row, column, ""+sumOfValues);
-		} else {
-			getGrid().setHTML(row, column, resource.getMeasureValue(Metrics.VIOLATIONS).toString());
-		}
-		
+		getGrid().setHTML(row, column, ""+sumOfValues);
 		getGrid().getCellFormatter().setStyleName(row, column,getRowCssClass(row, false));
 	}
 
@@ -257,10 +267,17 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 	private ResourceQuery getQuery() {
 		Resource queryResource = getRootResource();
 		
+		//Abfrage für 2.13
+		//ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
+		//		.setScopes(scope)
+	    //		.setDepth(-1);
+		
+		//Abfrage für 2.11
 		ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.VIOLATIONS)
 	    		.setScopes(scope)
 	    		.setDepth(-1);
 		
+	
 		if(this.selectedMeasures!= null) {
 			String[] selectedRuleKeys = new String[this.selectedMeasures.size()];
 			
@@ -269,10 +286,10 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 				selectedRuleKeys[i]=measure.getRuleKey();
 				i++;
 			}
-					
+			
 			query.setRules(selectedRuleKeys);
 		}
-		
+	
 		return query;
 	}
 	 

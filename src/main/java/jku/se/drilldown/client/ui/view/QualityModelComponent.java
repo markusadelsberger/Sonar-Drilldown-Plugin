@@ -108,9 +108,16 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
 	    final SelectionHandler<TreeItem> selectionHandler = this;
 	    final OpenHandler<TreeItem> openHandler = this;
  
-	    ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
+	    //Abfrage für 2.11
+	    ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.VIOLATIONS)
 	    	.setDepth(0)
 	    	.setExcludeRules(false);
+	     
+	    
+	    //Abfrage für 2.13
+	    //ResourceQuery violationsQuery = ResourceQuery.createForResource(model.getResource(), Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
+	    //	.setDepth(0)
+	    //	.setExcludeRules(false);
 
 	    Sonar.getInstance().find(violationsQuery, new AbstractCallback<Resource>() {
 
@@ -152,8 +159,10 @@ public class QualityModelComponent extends DrilldownComponent implements Selecti
     			    		}
     					}	
         			});// Sonar.getInstance().find	
-    			}else{
-    				Window.alert("resource null");
+    			} 
+    			else
+    			{
+    				Window.alert("The resource object is null.");
     			}
     		}			
 	    });// Sonar.getInstance().find	
