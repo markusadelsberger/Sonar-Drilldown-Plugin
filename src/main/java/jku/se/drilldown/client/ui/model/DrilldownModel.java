@@ -30,6 +30,8 @@ public class DrilldownModel {
 	private Map<ViewComponents,Resource> selectedResource;
 	private BenchmarkData benchmarkData;
 	
+	private boolean olderVersion = false;
+	
 	public DrilldownModel(Resource resource){
 		this.resource=resource;
 		
@@ -145,5 +147,13 @@ public class DrilldownModel {
 	
 	public List<Measure> getActiveMeasures() {
 		return this.activeMeasures;
+	}
+
+	public boolean isOlderVersion() {
+		return olderVersion;
+	}
+
+	public void setOlderVersion(boolean olderVersion) {
+		this.olderVersion = olderVersion;
 	}
 }
