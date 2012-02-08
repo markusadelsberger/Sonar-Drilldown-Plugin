@@ -268,14 +268,14 @@ public class StructureDrilldownList extends DrilldownComponentList<Resource>{
 		Resource queryResource = getRootResource();
 		
 		//Abfrage für 2.13
-		//ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
-		//		.setScopes(scope)
-	    //		.setDepth(-1);
+		ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.BLOCKER_VIOLATIONS, Metrics.CRITICAL_VIOLATIONS, Metrics.MAJOR_VIOLATIONS, Metrics.MINOR_VIOLATIONS, Metrics.INFO_VIOLATIONS)
+				.setScopes(scope)
+	    		.setDepth(-1);
 		
 		//Abfrage für 2.11
-		ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.VIOLATIONS)
-	    		.setScopes(scope)
-	    		.setDepth(-1);
+		//ResourceQuery query = ResourceQuery.createForResource(queryResource, Metrics.VIOLATIONS)
+	    //		.setScopes(scope)
+	    //		.setDepth(-1);
 		
 	
 		if(this.selectedMeasures!= null) {
