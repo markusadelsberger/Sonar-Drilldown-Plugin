@@ -109,10 +109,7 @@ public class QuantilGraphic extends DrilldownComponent {
 							//get the position of the line on the scale
 							pos = getLinePos(q25, median, q75, max, value);
 						}
-						
-						
-						
-						
+								
 						NumberFormat format = NumberFormat.getScientificFormat();
 		
 						//set the data in the grid
@@ -122,8 +119,7 @@ public class QuantilGraphic extends DrilldownComponent {
 						grid.setText(3, 1, String.valueOf(format.format(median)));
 						grid.setText(4, 1, String.valueOf(format.format(q75)));
 						grid.setText(5, 1, String.valueOf(format.format(max)));
-						
-						
+				
 						
 						rightPanel.add(new Label(drilldownModel.getActiveMeasure().getRuleName()));
 						rightPanel.add(getScale(pos, min, q25, median, q75, max, value));

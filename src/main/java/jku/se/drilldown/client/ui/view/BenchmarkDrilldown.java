@@ -20,7 +20,6 @@ import org.sonar.wsclient.services.ResourceQuery;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -130,23 +129,44 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 	
 	
 	private void loadBenchmarkData(){
-		ResourceQuery query = ResourceQuery.createForMetrics("jku.se.drilldown:sonar-drilldown-plugin", "benchmark", "ncloc");
-		Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+		Resource resource = drilldownModel.getResource();
+
+		//the resource object is loaded in case the resource object in the model is not the root resource object
+		//the key for the root resource object is saved by the decorator
+		ResourceQuery keyQuery = ResourceQuery.createForMetrics(resource.getKey(), "benchmark_projectkey");
+		Sonar.getInstance().find(keyQuery, new AbstractCallback<Resource>() {
+
 			@Override
 			protected void doOnResponse(Resource result) {
-				drilldownModel.setResource(result);
-				Measure benchmark = result.getMeasure("benchmark");
-				Measure loc = result.getMeasure("ncloc");
-				if(benchmark != null && loc!=null){
-					drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
-					drilldownModel.addCount("loc", loc.getIntValue());
-					combineData();
-				}else{
-					Window.alert("benchmark resource was null");
-					drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
+				
+				if(result==null){
+					reload(ViewComponents.INITIALIZE);
+				} else {
+					Measure measure = result.getMeasure("benchmark_projectkey");
+					if(measure!=null){
+						//the returned resource object is used to load the xml data and the lines of code
+						//if returned then they are saved in the model
+						ResourceQuery query = ResourceQuery.createForMetrics(measure.getData(), "benchmark", "ncloc");
+						Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
+		
+							@Override
+							protected void doOnResponse(Resource result) {
+								Measure benchmark = result.getMeasure("benchmark");
+								Measure loc = result.getMeasure("ncloc");
+	
+								if(benchmark != null && loc!=null){
+									drilldownModel.setBenchmarkData(XMLExtractor.extract(benchmark.getData()));
+									drilldownModel.addCount("loc", loc.getIntValue());
+									combineData();
+								} else {
+									reload(ViewComponents.INITIALIZE);
+								}
+							}
+						});
+					}
 				}
 			}
-		});	
+		});
 	}
 
 	private void combineData(){
