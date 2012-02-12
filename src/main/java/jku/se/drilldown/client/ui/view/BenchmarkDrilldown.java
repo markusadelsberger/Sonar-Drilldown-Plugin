@@ -111,7 +111,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 					Sonar.getInstance().find(query, new AbstractCallback<Resource>() {
 						@Override
 						protected void doOnResponse(Resource resource) {
-							if(resource!=null){
+							if(resource!=null && !resource.getMeasures().isEmpty()){
 								List<Measure>measureList = resource.getMeasures();
 								drilldownModel.addList("violations", measureList);
 								drilldownModel.setOlderVersion(true);
@@ -139,9 +139,7 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 			@Override
 			protected void doOnResponse(Resource result) {
 				
-				if(result==null){
-					reload(ViewComponents.INITIALIZE);
-				} else {
+				if(result!=null && !result.getMeasures().isEmpty()){
 					Measure measure = result.getMeasure("benchmark_projectkey");
 					if(measure!=null){
 						//the returned resource object is used to load the xml data and the lines of code
@@ -159,11 +157,12 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 									drilldownModel.addCount("loc", loc.getIntValue());
 									combineData();
 								} else {
-									reload(ViewComponents.INITIALIZE);
-								}
+									drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);								}
 							}
 						});
 					}
+				}else{
+					drilldownController.onSelectedItemChanged(ViewComponents.INITIALIZE);
 				}
 			}
 		});

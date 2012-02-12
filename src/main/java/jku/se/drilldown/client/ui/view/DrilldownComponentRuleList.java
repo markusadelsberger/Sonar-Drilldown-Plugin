@@ -96,7 +96,7 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 		Anchor link = new Anchor(measure.getRuleName());
 
 		link.setName(measure.getRuleKey());
-		link.setTitle(measure.getRuleName());
+		link.setTitle(measure.getRuleKey());
 		link.getElement().setPropertyObject("measure", measure);
 		link.addClickHandler(this);
 
@@ -207,7 +207,9 @@ public class DrilldownComponentRuleList extends DrilldownComponentList<Measure> 
 				else {
 					measureList = drilldownModel.getList("completeList");
 				}
-				addMeasures(measureList);
+				if(measureList!=null){
+					addMeasures(measureList);
+				}
 				render(getGrid());
 			break;
 			
