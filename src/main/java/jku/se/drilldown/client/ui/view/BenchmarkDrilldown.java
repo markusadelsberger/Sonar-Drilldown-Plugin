@@ -138,7 +138,6 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 
 			@Override
 			protected void doOnResponse(Resource result) {
-				
 				if(result!=null && !result.getMeasures().isEmpty()){
 					Measure measure = result.getMeasure("benchmark_projectkey");
 					if(measure!=null){
@@ -187,7 +186,6 @@ public class BenchmarkDrilldown extends DrilldownComponentList<List<Measure>>{
 
 					for(Measure measure : measureList){
 						String key = measure.getRuleKey();
-
 						//The toolname and the rulename are saved in seperate Strings
 						String tool=key.substring(0, key.indexOf(':'));
 						String rule=key.substring(key.indexOf(':')+1, key.length());
